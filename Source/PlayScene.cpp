@@ -10,7 +10,8 @@ PlayScene::~PlayScene()
 
 void PlayScene::Update()
 {
-	if (CheckHitKey(KEY_INPUT_T)) {
+	if (CheckHitKey(KEY_INPUT_T))
+	{
 		SceneManager::ChangeScene("TITLE");
 	}
 }
