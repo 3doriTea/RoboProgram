@@ -161,6 +161,7 @@
     <ClInclude Include="Source\PlayScene.h" />
     <ClInclude Include="Source\SceneFactory.h" />
     <ClInclude Include="Source\TitleScene.h" />
+    <ClInclude Include="Source\Utility\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -178,9 +179,11 @@
     <ClCompile Include="Library\Time.cpp" />
     <ClCompile Include="Source\BootScene.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />
+    <ClCompile Include="Source\IO\SourceObserver.cpp" />
     <ClCompile Include="Source\PlayScene.cpp" />
     <ClCompile Include="Source\SceneFactory.cpp" />
     <ClCompile Include="Source\TitleScene.cpp" />
+    <ClCompile Include="Source\Utility\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Test.txt" />
