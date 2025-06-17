@@ -50,7 +50,9 @@
     <ClCompile Include="Library\Time.cpp">
       <Filter>Library</Filter>
     </ClCompile>
-    <ClCompile Include="Source\IO\Input.cpp" />
+    <ClCompile Include="Source\IO\Input.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -115,7 +117,15 @@
     <ClInclude Include="Library\myDxLib.h">
       <Filter>Library</Filter>
     </ClInclude>
-    <ClInclude Include="Source\IO\Input.h" />
+    <ClInclude Include="Source\IO\Input.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Compiler\Analyzer.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\IO\SourceObserver.h">
+      <Filter>IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -136,5 +146,14 @@
     <Filter Include="PlayScene\CodeReader">
       <UniqueIdentifier>{e6bf0aae-6c4e-4d3b-93d8-a8dfcc7a0516}</UniqueIdentifier>
     </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{7f54842a-3b1d-441f-9ba3-11b0d848c0db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Compiler">
+      <UniqueIdentifier>{8b50a3a9-53e8-4798-adc5-d20a1ea34a09}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Test.txt" />
   </ItemGroup>
 </Project>
