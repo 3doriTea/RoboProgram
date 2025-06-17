@@ -50,6 +50,7 @@
     <ClCompile Include="Library\Time.cpp">
       <Filter>Library</Filter>
     </ClCompile>
+    <ClCompile Include="Source\IO\Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -114,6 +115,7 @@
     <ClInclude Include="Library\myDxLib.h">
       <Filter>Library</Filter>
     </ClInclude>
+    <ClInclude Include="Source\IO\Input.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
