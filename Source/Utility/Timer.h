@@ -15,7 +15,7 @@ private:
 public:
 	static void AddAram(const float _time, const std::function<void()>& _callback);
 
-	static void Instance();
+	static Timer& Instance();
 
 public:
 	void Update();
@@ -27,5 +27,5 @@ private:
 	{}
 
 private:
-	std::list<QUEUE_ELEMENT> timerQueue_;
+	std::list<QUEUE_ELEMENT*> timerQueue_;
 };
