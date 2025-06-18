@@ -59,6 +59,9 @@
     <ClCompile Include="Source\Utility\Timer.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Library\CsvReader\CsvReader.cpp">
+      <Filter>Library</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -136,6 +139,9 @@
       <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="Source\Utility\VectorUtil.h" />
+    <ClInclude Include="Library\CsvReader\CsvReader.h">
+      <Filter>Library</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

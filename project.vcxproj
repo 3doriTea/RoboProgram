@@ -147,6 +147,7 @@
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="Library\App.h" />
+    <ClInclude Include="Library\CsvReader\CsvReader.h" />
     <ClInclude Include="Library\GameObject.h" />
     <ClInclude Include="Library\myDxLib.h" />
     <ClInclude Include="Library\ObjectManager.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Library\App.cpp" />
+    <ClCompile Include="Library\CsvReader\CsvReader.cpp" />
     <ClCompile Include="Library\main.cpp" />
     <ClCompile Include="Library\ObjectManager.cpp" />
     <ClCompile Include="Library\SceneManager.cpp" />
