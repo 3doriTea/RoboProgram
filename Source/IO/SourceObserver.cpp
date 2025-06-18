@@ -1,6 +1,8 @@
 #include "SourceObserver.h"
 #include <fstream>
 #include <cassert>
+#include "../Utility/VectorUtil.h"
+#include <DxLib.h>
 
 
 SourceObserver::SourceObserver(const std::string& _fileName) :
@@ -14,12 +16,16 @@ SourceObserver::~SourceObserver()
 
 void SourceObserver::Update()
 {
+	printfDx("Checking\n");
+
+	using VectorUtil::CopyVector;
+
 	std::ifstream ifs(fileName_);
 	
 	assert(ifs.is_open()
 		&& "ファイルを開くのに失敗した @SourceObserver::Update");
 
-	std::vector<std::string> lines;
+	std::vector<std::string> lines{};
 	std::string line;
 	while (std::getline(ifs, line))
 	{
@@ -27,8 +33,9 @@ void SourceObserver::Update()
 	}
 	ifs.close();
 
-	if (prevSourceLines_.size() != lines.size())
+	if (lines.size() != prevSourceLines_.size())
 	{
+		CopyVector(prevSourceLines_, lines);
 		onUpdateSource_();
 		return;
 	}
@@ -37,6 +44,7 @@ void SourceObserver::Update()
 	{
 		if (lines[i] != prevSourceLines_[i])
 		{
+			CopyVector(prevSourceLines_, lines);
 			onUpdateSource_();
 			return;
 		}

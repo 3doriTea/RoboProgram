@@ -20,7 +20,7 @@ private:
 	int previousMouse_;
 
 public:
-	static Input* Instance();
+	static Input& Instance();
 
 	static bool IsMouse(int _mouseCode);
 	static bool IsMouseDown(int _mouseCode);

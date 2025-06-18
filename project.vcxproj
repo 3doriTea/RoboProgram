@@ -162,6 +162,7 @@
     <ClInclude Include="Source\SceneFactory.h" />
     <ClInclude Include="Source\TitleScene.h" />
     <ClInclude Include="Source\Utility\Timer.h" />
+    <ClInclude Include="Source\Utility\VectorUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImGui\imgui.cpp" />

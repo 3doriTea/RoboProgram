@@ -53,6 +53,12 @@
     <ClCompile Include="Source\IO\Input.cpp">
       <Filter>IO</Filter>
     </ClCompile>
+    <ClCompile Include="Source\IO\SourceObserver.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utility\Timer.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -126,6 +132,10 @@
     <ClInclude Include="Source\IO\SourceObserver.h">
       <Filter>IO</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utility\Timer.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utility\VectorUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -151,6 +161,9 @@
     </Filter>
     <Filter Include="Compiler">
       <UniqueIdentifier>{8b50a3a9-53e8-4798-adc5-d20a1ea34a09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{a36bd451-a35d-4121-8976-580560b2de90}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
