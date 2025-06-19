@@ -3,6 +3,9 @@
 #include "Utility/Timer.h"
 #include "IO/SourceObserver.h"
 
+#include "Background.h"
+#include "Stage.h"
+
 
 namespace
 {
@@ -12,6 +15,9 @@ namespace
 PlayScene::PlayScene() :
 	pSourceObserver_{ new SourceObserver{ SRC_FILE_NAME } }
 {
+	new Background{};
+	new Stage{};
+
 	pSourceObserver_->OnUpdateSource([&, this]()
 	{
 		printfDx("ソースファイルに変更があった\n");

@@ -62,6 +62,12 @@
     <ClCompile Include="Library\CsvReader\CsvReader.cpp">
       <Filter>Library</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Stage.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Background.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -141,6 +147,18 @@
     <ClInclude Include="Source\Utility\VectorUtil.h" />
     <ClInclude Include="Library\CsvReader\CsvReader.h">
       <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Stage.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Background.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RectInt.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Vector2Int.h">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
