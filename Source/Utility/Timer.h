@@ -18,6 +18,11 @@ public:
 	static void AddAram(const float _time, const std::function<void()>& _callback);
 	static void AddInterval(const float _time, const std::function<void()>& _callback);
 
+	/// <summary>
+	/// タイマーキューをすべてクリアする
+	/// </summary>
+	static void Clear();
+
 	static Timer& Instance();
 
 public:

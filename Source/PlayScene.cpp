@@ -27,6 +27,8 @@ PlayScene::PlayScene() :
 	{
 		pSourceObserver_->Update();
 	});
+
+	Timer::Instance().Clear();  // 最初にタイマーをクリアする
 }
 
 PlayScene::~PlayScene()

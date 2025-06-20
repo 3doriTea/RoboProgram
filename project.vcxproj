@@ -159,6 +159,9 @@
     <ClInclude Include="Source\Compiler\Analyzer.h" />
     <ClInclude Include="Source\IO\Input.h" />
     <ClInclude Include="Source\IO\SourceObserver.h" />
+    <ClInclude Include="Source\Object2D.h" />
+    <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\Rectan.h" />
     <ClInclude Include="Source\RectInt.h" />
     <ClInclude Include="Source\Screen.h" />
     <ClInclude Include="Source\PlayScene.h" />
@@ -167,6 +170,7 @@
     <ClInclude Include="Source\TitleScene.h" />
     <ClInclude Include="Source\Utility\Timer.h" />
     <ClInclude Include="Source\Utility\VectorUtil.h" />
+    <ClInclude Include="Source\Vector2.h" />
     <ClInclude Include="Source\Vector2Int.h" />
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +192,8 @@
     <ClCompile Include="Source\BootScene.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />
     <ClCompile Include="Source\IO\SourceObserver.cpp" />
+    <ClCompile Include="Source\Object2D.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\PlayScene.cpp" />
     <ClCompile Include="Source\SceneFactory.cpp" />
     <ClCompile Include="Source\Stage.cpp" />

@@ -1,35 +1,54 @@
 #include "Stage.h"
 #include "IO/Input.h"
 #include "../Library/CsvReader/CsvReader.h"
+#include <cassert>
+#include "Player.h"
 
 
 namespace
 {
 	static const int TILE_WIDTH{ 80 };
 	static const int TILE_HEIGHT{ 80 };
+	static const char* TILE_FILES[]
+	{
+		"",
+		"Data/Image/tileGround1.png",
+		"",
+		"",
+	};
 }
 
-Stage::Stage() :
-	map_{ new CsvReader{ "Data/map.csv" } }
+Stage::Stage()
 {
-	for (int y = 0; y < map_->GetLines(); y++)
+	int hImage = LoadGraph(TILE_FILES[TILE_GROUND]);
+	assert(hImage > 0
+		&& "画像読み込みに失敗 @Stage::Stage");
+	hImages_.insert({ TILE_GROUND, hImage });
+
+	CsvReader* csv{ new CsvReader{ "Data/map.csv" } };
+	
+	// CSVからステージデータを読み込む
+	for (int line = 0; line < csv->GetLines(); line++)
 	{
-		for (int x = 0; x < map_->GetColumns(y); x++)
+		std::vector<Tile> mapLine{};
+		for (int column = 0; column < csv->GetColumns(line); column++)
 		{
-			switch (map_->GetInt(y, x))
-			{
-			case TILE_PLAYER:
-				break;
-			default:
-				break;
-			}
+			mapLine.push_back((Tile)csv->GetInt(line, column));
 		}
+		map_.push_back(mapLine);
 	}
+
+	delete csv;
+
+	Vector2 playerPosition{};
+	assert(TryFindPlayerPositionFromMap(&playerPosition)
+		&& "マップデータにプレイヤーがいない");
+
+	new Player{ playerPosition };
 }
 
 Stage::~Stage()
 {
-	delete map_;
 }
 
 void Stage::Update()
@@ -40,23 +59,121 @@ void Stage::Draw()
 {
 }
 
+#pragma region 当たり判定
+float Stage::CheckRight(Vector2 _position)
+{
+	if (IsWall(_position) == false)
+	{
+		return 0.0f;
+	}
+
+	Vector2 tileWorldPosition{ ToWorldPosition(ToTilePosition(_position)) };
+	return _position.x - tileWorldPosition.x + 1;  // 端数が0の場合も1足す
+}
+
+float Stage::CheckLeft(Vector2 _position)
+{
+	if (IsWall(_position) == false)
+	{
+		return 0.0f;
+	}
+
+	Vector2 tileWorldPosition{ ToWorldPosition(ToTilePosition(_position)) };
+
+	return TILE_WIDTH - (_position.x - tileWorldPosition.x);
+}
+
+float Stage::CheckBottom(Vector2 _position)
+{
+	if (IsWall(_position) == false)
+	{
+		return 0.0f;
+	}
+
+	Vector2 tileWorldPosition{ ToWorldPosition(ToTilePosition(_position)) };
+	return _position.y - tileWorldPosition.y + 1;  // こっちも端数を1足している
+}
+
+float Stage::CheckTop(Vector2 _position)
+{
+	if (IsWall(_position) == false)
+	{
+		return 0.0f;
+	}
+
+	Vector2 tileWorldPosition{ ToWorldPosition(ToTilePosition(_position)) };
+
+	return TILE_HEIGHT - (_position.y - tileWorldPosition.y);
+}
+
+bool Stage::IsWall(const Vector2& _position)
+{
+	Vector2 tilePosition{ ToTilePosition(_position) };
+
+	// 配列の外に行くかもしれない 落ちた先は何もないから当たってない判定に
+	if (tilePosition.y < 0.0f || tilePosition.y >= map_.size())
+	{
+		return false;
+	}
+	// 同じく配列の外の処理 TODO: 壁の外にいけないようにしたいなら、ここはtrue返す
+	if (tilePosition.x < 0.0f || tilePosition.x >= map_[tilePosition.y].size())
+	{
+		return false;
+	}
+
+	// タイルの番号を見て、壁かどうか確定する
+	switch (map_[tilePosition.y][tilePosition.x])
+	{
+	case TILE_NONE:  // 空白
+	case TILE_PLAYER:  // プレイヤー
+	case TILE_COIN:  // コイン
+	case TILE_MAX:  // ?
+		return false;  // 壁でない
+	default:
+		break;
+	}
+	// 値を返す関数がちゃんと値を返しているかを保障するために、見やすさのため
+	return true;  // 壁である
+}
+#pragma endregion
+
+#pragma region 変換系
+Vector2 Stage::ToWorldPosition(const Vector2& tilePosition)
+{
+	return
+	{
+		tilePosition.x * TILE_WIDTH,
+		tilePosition.y * TILE_HEIGHT,
+	};
+}
+
+Vector2 Stage::ToTilePosition(const Vector2& worldPosition)
+{
+	return
+	{  // 端数を削る
+		static_cast<float>(static_cast<int>(worldPosition.x / TILE_WIDTH)),
+		static_cast<float>(static_cast<int>(worldPosition.y / TILE_HEIGHT)),
+	};
+}
+#pragma endregion
+
 const Vector2Int Stage::GetPush(const Vector2Int& _point, const PushDir _dir) const
 {
 	int tileX{ _point.x / TILE_WIDTH };
 	int tileY{ _point.y / TILE_HEIGHT };
 
 	// 範囲外除外
-	if (tileY < 0 || map_->GetLines() <= tileY)
+	if (tileY < 0 || map_.size() <= tileY)
 	{
 		return Vector2Int::Zero();
 	}
-	if (tileX < 0 || map_->GetColumns(tileY) <= tileX)
+	if (tileX < 0 || map_[tileY].size() <= tileX)
 	{
 		return Vector2Int::Zero();
 	}
 
 	// タイルが壁であるか
-	int tile = map_->GetInt(tileY, tileX);
+	Tile tile = map_[tileY][tileX];
 	switch (tile)
 	{
 	case TILE_GROUND:
@@ -89,7 +206,39 @@ const Vector2Int Stage::GetPush(const Vector2Int& _point, const PushDir _dir) co
 
 const Vector2Int Stage::GetPush(const RectInt& _rect) const
 {
-
+	Vector2Int push{};
+	GetPush({}, PushDir::Up);
 
 	return Vector2Int();
+}
+
+void Stage::DrawTile(const Vector2Int& _tilePosition, const Tile& _tileId)
+{
+	int w{ TILE_WIDTH };
+	int h{ TILE_HEIGHT };
+
+	DrawRectGraph(
+		_tilePosition.x * w - scroll_.x, _tilePosition.y * h - scroll_.y,
+		TILE_WIDTH * w, TILE_HEIGHT * h,
+		w, h,
+		hImages_[_tileId], TRUE);
+}
+
+bool Stage::TryFindPlayerPositionFromMap(Vector2* _pPosition) const
+{
+	for (int y = 0; y < map_.size(); y++)
+	{
+		for (int x = 0; x < map_[y].size(); x++)
+		{
+			if (map_[y][x] == 9)
+			{
+				*_pPosition = Vector2(
+					x * TILE_WIDTH + TILE_WIDTH / 2.0f,
+					y * TILE_HEIGHT + TILE_HEIGHT / 2.0f);
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

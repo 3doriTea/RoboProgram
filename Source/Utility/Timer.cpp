@@ -15,6 +15,16 @@ void Timer::AddInterval(const float _time, const std::function<void()>& _callbac
 	Instance().EnqueueTimer(pElement);
 }
 
+void Timer::Clear()
+{
+	for (auto& pTimer : Instance().pTimerQueue_)
+	{
+		delete pTimer;
+	}
+
+	Instance().pTimerQueue_.clear();
+}
+
 Timer& Timer::Instance()
 {
 	static Timer* pInstance{ new Timer{} };
