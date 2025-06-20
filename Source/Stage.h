@@ -1,5 +1,5 @@
 #pragma once
-#include "../Library/GameObject.h"
+#include "Object2D.h"
 #include "Vector2Int.h"
 #include "RectInt.h"
 #include "Vector2.h"
@@ -9,7 +9,7 @@
 
 class CsvReader;
 
-class Stage : public GameObject
+class Stage : public Object2D
 {
 private:
 	enum struct PushDir
@@ -33,7 +33,7 @@ public:
 	Stage();
 	~Stage();
 
-	void Update() override;
+	//void Update() override;
 	void Draw() override;
 
 #pragma region 当たり判定
@@ -99,6 +99,7 @@ public:
 
 private:
 	Vector2 scroll_;  // スクロール量
+	Vector2 position_;  // 座標
 
 	std::vector<std::vector<Tile>> map_;
 	std::map<Tile, int> hImages_;

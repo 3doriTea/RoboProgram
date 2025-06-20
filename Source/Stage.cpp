@@ -51,12 +51,48 @@ Stage::~Stage()
 {
 }
 
-void Stage::Update()
-{
-}
+//void Stage::Update()
+//{
+//}
 
 void Stage::Draw()
 {
+	for (int y = 0; y < map_.size(); y++)
+	{
+		for (int x = 0; x < map_[y].size(); x++)
+		{
+			position_.x = x * TILE_WIDTH;
+			position_.y = y * TILE_HEIGHT;
+
+			int tileType = map_[y][x];
+
+			switch (tileType)
+			{
+			case TILE_GROUND:
+				DrawTile({ x, y }, TILE_GROUND);
+				break;
+			default:
+				break;
+
+			//case 8:
+			//	//DrawTile({ static_cast<float>(x), static_cast<float>(y) }, { 3, 0 });
+			//	break;
+			//case 3:
+			//	//DrawTile({ static_cast<float>(x), static_cast<float>(y) }, { 5, 1 });
+			//	break;
+			//case 2:
+			//	//DrawTile({ static_cast<float>(x), static_cast<float>(y) }, { 4, 1 });
+			//	break;
+			//case 1:
+			//	//DrawTile({ static_cast<float>(x), static_cast<float>(y) }, { 3, 1 });
+			//	break;
+			//case 0:
+			//default:
+			//	break;
+			}
+
+		}
+	}
 }
 
 #pragma region “–‚½‚è”»’è
@@ -217,11 +253,15 @@ void Stage::DrawTile(const Vector2Int& _tilePosition, const Tile& _tileId)
 	int w{ TILE_WIDTH };
 	int h{ TILE_HEIGHT };
 
-	DrawRectGraph(
+	DrawGraph(
+		_tilePosition.x * w - scroll_.x,
+		_tilePosition.y * h - scroll_.y,
+		hImages_[_tileId], TRUE);
+	/*DrawRectGraph(
 		_tilePosition.x * w - scroll_.x, _tilePosition.y * h - scroll_.y,
 		TILE_WIDTH * w, TILE_HEIGHT * h,
 		w, h,
-		hImages_[_tileId], TRUE);
+		hImages_[_tileId], TRUE);*/
 }
 
 bool Stage::TryFindPlayerPositionFromMap(Vector2* _pPosition) const
@@ -230,7 +270,7 @@ bool Stage::TryFindPlayerPositionFromMap(Vector2* _pPosition) const
 	{
 		for (int x = 0; x < map_[y].size(); x++)
 		{
-			if (map_[y][x] == 9)
+			if (map_[y][x] == TILE_PLAYER)
 			{
 				*_pPosition = Vector2(
 					x * TILE_WIDTH + TILE_WIDTH / 2.0f,

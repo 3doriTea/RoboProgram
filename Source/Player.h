@@ -16,7 +16,7 @@ private:
 	bool isGrounded;
 	bool prevPushedSpace;
 
-	Vector2 position_;
+	//Vector2 position_;
 	
 	float gravity;
 	float jumpHeight;
