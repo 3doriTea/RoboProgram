@@ -14,10 +14,23 @@ struct Vector2
 	float x;
 	float y;
 
+	Vector2& operator=(const Vector2Int& _other)
+	{
+		x = _other.x;
+		y = _other.y;
+		return *this;
+	}
+
 	inline Vector2& operator+=(const Vector2& _v)
 	{
 		x += _v.x;
 		y += _v.y;
+		return *this;
+	}
+	inline Vector2& operator-=(const Vector2& _v)
+	{
+		x -= _v.x;
+		y -= _v.y;
 		return *this;
 	}
 };
@@ -25,4 +38,9 @@ struct Vector2
 inline Vector2 operator+(const Vector2& _v1, const Vector2& _v2)
 {
 	return Vector2{ _v1 } += _v2;
+}
+
+inline Vector2 operator-(const Vector2& _v1, const Vector2& _v2)
+{
+	return Vector2{ _v1 } -= _v2;
 }

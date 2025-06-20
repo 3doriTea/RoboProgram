@@ -5,6 +5,7 @@
 
 #include "Background.h"
 #include "Stage.h"
+#include "CodeBox.h"
 
 
 namespace
@@ -17,8 +18,10 @@ PlayScene::PlayScene() :
 {
 	new Background{};
 	new Stage{};
+	new CodeBox{};
 
-	pSourceObserver_->OnUpdateSource([&, this]()
+	pSourceObserver_->OnUpdateSource([&, this](
+		const std::vector<std::string>& _newSource)
 	{
 		printfDx("ソースファイルに変更があった\n");
 	});

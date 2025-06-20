@@ -10,6 +10,7 @@
 class SourceObserver
 {
 public:
+	using UpdateSourceCallback = std::function<void(const std::vector<std::string>&)>;
 	SourceObserver(const std::string& _fileName);
 	~SourceObserver();
 
@@ -20,8 +21,8 @@ public:
 	/// <summary>
 	/// ソースが変更されたときのコールバック処理
 	/// </summary>
-	/// <param name="_callback">void()</param>
-	void OnUpdateSource(const std::function<void()>& _callback) { onUpdateSource_ = _callback; }
+	/// <param name="_callback">void(const std::vector<std::string>&)</param>
+	void OnUpdateSource(const UpdateSourceCallback& _callback) { onUpdateSource_ = _callback; }
 
 private:
 	std::string fileName_;
