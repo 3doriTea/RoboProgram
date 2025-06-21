@@ -1,5 +1,7 @@
 #include "ProtoAnalyzer.h"
 #include <sstream>
+#include "../ByteCodeDefine.h"
+
 
 ProtoAnalyzer::~ProtoAnalyzer()
 {
@@ -9,17 +11,18 @@ void ProtoAnalyzer::Analyze(std::vector<std::pair<int, Byte>>& _outRef)
 {
 	_outRef.clear();
 
-	for (const auto& line : in_)
+	for (int line = 0; line < in_.size(); line++)
 	{
+		const std::string& lineStr{ in_[line] };
 		std::string word{};
 		bool isInComment{ false };
 
-		for (auto itr = line.begin(); itr != line.end(); itr++)
+		for (auto itr = lineStr.begin(); itr != lineStr.end(); itr++)
 		{
 			if ((*itr) == '/')
 			{
 				itr++;
-				if (itr == line.end())
+				if (itr == lineStr.end())
 				{
 					break;
 				}
@@ -33,13 +36,13 @@ void ProtoAnalyzer::Analyze(std::vector<std::pair<int, Byte>>& _outRef)
 
 			if (isInComment)
 			{
-				break;
+				break;  // ƒRƒƒ“ƒg‚È‚ç‚±‚Ìs–³‹
 			}
 
 			if ((*itr) == ' '
 				|| (*itr) == '\t')
 			{
-				break;  // ‹ó”’Œn‚Í–³‹
+				continue;  // ‹ó”’Œn‚Í–³‹
 			}
 
 			word += (*itr);
@@ -47,7 +50,17 @@ void ProtoAnalyzer::Analyze(std::vector<std::pair<int, Byte>>& _outRef)
 
 		if (word == "Run();")
 		{
-
+			_outRef.push_back({ line, BCD_ACT });
+			_outRef.push_back({ line, BCD_ACT_RUN });
+		}
+		else if (word == "Jump();")
+		{
+			_outRef.push_back({ line, BCD_ACT });
+			_outRef.push_back({ line, BCD_ACT_JUMP });
+		}
+		else
+		{
+			_outRef.push_back({ line, BCD_NOP });
 		}
 	}
 }

@@ -3,6 +3,7 @@
 
 
 class SourceObserver;
+class Player;
 
 /// <summary>
 /// ゲームプレイのシーンを制御する
@@ -17,4 +18,5 @@ public:
 
 private:
 	SourceObserver* pSourceObserver_;
+	Player* pPlayer_;
 };

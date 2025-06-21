@@ -1,3 +1,4 @@
+#include <cassert>
 #include "PlayScene.h"
 #include "IO/Input.h"
 #include "Utility/Timer.h"
@@ -6,7 +7,9 @@
 #include "Background.h"
 #include "Stage.h"
 #include "CodeBox.h"
+#include "Player.h"
 
+#include "Compiler/ProtoAnalyzer.h"
 
 namespace
 {
@@ -19,21 +22,29 @@ PlayScene::PlayScene() :
 	Timer::Instance().Clear();  // 最初にタイマーをクリアする
 
 	new Background{};
-	new Stage{};
+	Stage* pStage{ new Stage{} };
 	CodeBox* pCodeBox{ new CodeBox{} };
+
+	pPlayer_ = pStage->GetPlayer();
+	assert(pPlayer_ != nullptr
+		&& "ステージからプレイヤーの取得に失敗 @PlayScene::PlayScene");
 
 	pSourceObserver_->OnUpdateSource([&, this, pCodeBox](
 		const std::vector<std::string>& _newSource)
 	{
 		printfDx("ソースファイルに変更があった\n");
  		pCodeBox->SetSourceLines(_newSource);
+
+		ProtoAnalyzer* analyzer{ new ProtoAnalyzer{ _newSource } };
+		std::vector<std::pair<int, Byte>> byteCodeAndLines{};
+		analyzer->Analyze(byteCodeAndLines);
+		pPlayer_->SetByteCode(byteCodeAndLines);
 	});
 
 	Timer::AddInterval(1.0f, [&, this]()
 	{
 		pSourceObserver_->Update();
 	});
-
 }
 
 PlayScene::~PlayScene()

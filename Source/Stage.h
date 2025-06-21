@@ -8,6 +8,7 @@
 
 
 class CsvReader;
+class Player;
 
 class Stage : public Object2D
 {
@@ -96,6 +97,8 @@ public:
 	inline void SetScroll(const Vector2& _scroll) { scroll_ = _scroll; }
 
 	bool TryFindPlayerPositionFromMap(Vector2* _pPosition) const;
+
+	Player* GetPlayer() { return pPlayer_; }
 
 private:
 	Vector2 scroll_;  // ÉXÉNÉçÅ[Éãó 

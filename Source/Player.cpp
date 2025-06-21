@@ -9,6 +9,8 @@ namespace
 {
 	static const int IMAGE_SIZE{ 80 };
 	static const char PLAYER_IMAGE_FILE[]{ "Data/Image/Player.png" };
+	static const char PLAYER_READY_IMAGE_FILE[]{ "Data/Image/Player-ready.png" };
+	static const char PLAYER_RUNNING_IMAGE_FILE[]{ "Data/Image/Player-running.png" };
 	static const float MOVE_SPEED{ 5 };
 	static const float JUMP_HEIGHT{ 80 };
 	static const float GRAVITY{ 0.05 };
@@ -50,7 +52,7 @@ Player::Player(const Vector2& _position) :
 			}
 		});
 
-	SetByteCode(
+	/*SetByteCode(
 		{
 			{ 0, 0x00 },
 			{ 1, 0x00 },
@@ -58,7 +60,7 @@ Player::Player(const Vector2& _position) :
 			{ 2, 0x01 },
 			{ 3, 0x00 },
 			{ 4, 0x00 },
-		});
+		});*/
 }
 
 Player::~Player()

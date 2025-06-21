@@ -10,7 +10,7 @@ template<typename InT, typename OutT>
 class Analyzer
 {
 public:
-	Analyzer(InT& _inRef);
+	Analyzer(const InT& _inRef);
 	virtual ~Analyzer();
 
 	/// <summary>
@@ -20,11 +20,11 @@ public:
 	virtual void Analyze(OutT& _outRef) = 0;
 
 protected:
-	InT& in_;
+	const InT& in_;
 };
 
 template<typename InT, typename OutT>
-inline Analyzer<InT, OutT>::Analyzer(InT& _inRef) :
+inline Analyzer<InT, OutT>::Analyzer(const InT& _inRef) :
 	in_{ _inRef }
 {
 }
