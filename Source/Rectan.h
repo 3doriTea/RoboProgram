@@ -27,4 +27,9 @@ struct Rectan
 	{
 		return { pivot.x + width / 2, pivot.y + height / 2 };
 	}
+
+	Vector2 GetEnd() const
+	{
+		return { pivot.x + width, pivot.y + height };
+	}
 };

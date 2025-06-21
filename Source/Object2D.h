@@ -1,8 +1,12 @@
 #pragma once
 #include "../Library/GameObject.h"
 #include "Vector2.h"
+#include "Vector2Int.h"
 #include "Rectan.h"
+#include "RectInt.h"
 
+
+using Byte = unsigned char;
 
 class Stage;
 

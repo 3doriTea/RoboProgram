@@ -25,18 +25,19 @@ public:
 
 	static Timer& Instance();
 
+	static void Release();
 public:
 	void Update();
 
 private:
 	Timer()
 	{}
-	~Timer()
-	{}
+	~Timer();
 
 	void EnqueueTimer(QUEUE_ELEMENT* _pElement);
 
 private:
+	static Timer* pInstance_;
 	std::list<QUEUE_ELEMENT*> pTimerQueue_;  // タイマーキュー
 	std::map<QUEUE_ELEMENT*, float> pReenqueueElements_;  // 使いまわしする要素のタイマー情報
 };

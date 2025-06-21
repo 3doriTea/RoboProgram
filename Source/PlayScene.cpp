@@ -16,14 +16,17 @@ namespace
 PlayScene::PlayScene() :
 	pSourceObserver_{ new SourceObserver{ SRC_FILE_NAME } }
 {
+	Timer::Instance().Clear();  // 最初にタイマーをクリアする
+
 	new Background{};
 	new Stage{};
-	new CodeBox{};
+	CodeBox* pCodeBox{ new CodeBox{} };
 
-	pSourceObserver_->OnUpdateSource([&, this](
+	pSourceObserver_->OnUpdateSource([&, this, pCodeBox](
 		const std::vector<std::string>& _newSource)
 	{
 		printfDx("ソースファイルに変更があった\n");
+ 		pCodeBox->SetSourceLines(_newSource);
 	});
 
 	Timer::AddInterval(1.0f, [&, this]()
@@ -31,7 +34,6 @@ PlayScene::PlayScene() :
 		pSourceObserver_->Update();
 	});
 
-	Timer::Instance().Clear();  // 最初にタイマーをクリアする
 }
 
 PlayScene::~PlayScene()

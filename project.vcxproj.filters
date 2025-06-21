@@ -77,6 +77,15 @@
     <ClCompile Include="Source\CodeBox.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Robot.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CodeReader\ByteCodeReader.cpp">
+      <Filter>PlayScene\CodeReader</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Compiler\ProtoAnalyzer.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -185,6 +194,18 @@
     </ClInclude>
     <ClInclude Include="Source\CodeBox.h">
       <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Robot.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ByteCodeDefine.h">
+      <Filter>PlayScene\CodeReader</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CodeReader\ByteCodeReader.h">
+      <Filter>PlayScene\CodeReader</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Compiler\ProtoAnalyzer.h">
+      <Filter>Compiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

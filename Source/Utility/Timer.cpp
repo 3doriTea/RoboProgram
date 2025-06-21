@@ -27,9 +27,22 @@ void Timer::Clear()
 
 Timer& Timer::Instance()
 {
-	static Timer* pInstance{ new Timer{} };
+	if (pInstance_ == nullptr)
+	{
+		pInstance_ = new Timer{};
+	}
 	
-	return *pInstance;
+	return *pInstance_;
+}
+
+void Timer::Release()
+{
+	Instance().Clear();
+	if (pInstance_ != nullptr)
+	{
+		delete pInstance_;
+		pInstance_ = nullptr;
+	}
 }
 
 void Timer::Update()
@@ -77,6 +90,14 @@ void Timer::Update()
 	}
 }
 
+Timer::~Timer()
+{
+	for (auto& pTimer : Instance().pTimerQueue_)
+	{
+		delete pTimer;
+	}
+}
+
 void Timer::EnqueueTimer(QUEUE_ELEMENT* _pElement)
 {
 	float lefter{ _pElement->timeLeft };  // Œ¸ŽZ—p
@@ -99,3 +120,5 @@ void Timer::EnqueueTimer(QUEUE_ELEMENT* _pElement)
 	// Œ©‚Â‚©‚ç‚È‚©‚Á‚½‚ç––’[‚É’Ç‰Á
 	Instance().pTimerQueue_.push_back(_pElement);
 }
+
+Timer* Timer::pInstance_{ nullptr };

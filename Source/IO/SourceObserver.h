@@ -27,5 +27,5 @@ public:
 private:
 	std::string fileName_;
 	std::vector<std::string> prevSourceLines_;
-	std::function<void()> onUpdateSource_;
+	UpdateSourceCallback onUpdateSource_;
 };

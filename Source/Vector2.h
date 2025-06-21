@@ -1,4 +1,8 @@
 #pragma once
+#include "Vector2Int.h"
+
+
+struct Vector2Int;
 
 struct Vector2
 {
@@ -16,8 +20,8 @@ struct Vector2
 
 	Vector2& operator=(const Vector2Int& _other)
 	{
-		x = _other.x;
-		y = _other.y;
+		x = static_cast<float>(_other.x);
+		y = static_cast<float>(_other.y);
 		return *this;
 	}
 
@@ -33,6 +37,12 @@ struct Vector2
 		y -= _v.y;
 		return *this;
 	}
+
+	/// <summary>
+	/// ®”Œ^‚É•ÏŠ·‚·‚é
+	/// </summary>
+	/// <returns></returns>
+	inline Vector2Int ToInt() const { return { static_cast<int>(x), static_cast<int>(y) }; }
 };
 
 inline Vector2 operator+(const Vector2& _v1, const Vector2& _v2)

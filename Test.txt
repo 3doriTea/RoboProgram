@@ -1,2 +1,5 @@
-HelloWorld
-Worldokpowajdoifjsaioejfoaepkweeknkmk
+// 毎ビート呼ばれるよ！
+void Update()
+{
+  Run();  // これを書くと走るよ！
+}

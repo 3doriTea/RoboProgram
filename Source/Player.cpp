@@ -2,6 +2,7 @@
 #include "Stage.h"
 #include <cassert>
 #include <cmath>
+#include "Utility/Timer.h"
 
 
 namespace
@@ -13,6 +14,8 @@ namespace
 	static const float GRAVITY{ 0.05 };
 	static const int IMAGE_WIDTH{ 80 };
 	static const int IMAGE_HEIGHT{ 160 };
+	static const float ROBOT_STEP_TIME_SEC{ 0.1 };
+	static const float ROBOT_BEAT_TIME_SEC{ 1 };
 }
 
 Player::Player(const Vector2& _position) :
@@ -20,7 +23,8 @@ Player::Player(const Vector2& _position) :
 	gravity{ GRAVITY },
 	jumpHeight{ JUMP_HEIGHT },
 	moveSpeed{ MOVE_SPEED },
-	jumpV0{}
+	jumpV0{},
+	robot_{ rect_, moveSpeed, jumpV0, pStage_, isGrounded, velocity_, prevPushedSpace, byteCode_ }
 {
 	jumpV0 = -std::sqrtf(2.0f * gravity * jumpHeight);
 
@@ -31,6 +35,30 @@ Player::Player(const Vector2& _position) :
 	hImage_ = LoadGraph(PLAYER_IMAGE_FILE);
 	assert(hImage_ > 0
 		&& "Playerのイメージ読み込みに失敗 @Player::Player");
+
+	Timer::AddInterval(ROBOT_STEP_TIME_SEC, [&, this]()
+		{
+			bool succeed = robot_.TryReadNext();
+			if (succeed == false)
+			{
+				static int sleepCount{ 0 };
+				sleepCount++;
+				if (sleepCount > static_cast<int>(ROBOT_BEAT_TIME_SEC / ROBOT_STEP_TIME_SEC))
+				{
+					robot_.Reset();
+				}
+			}
+		});
+
+	SetByteCode(
+		{
+			{ 0, 0x00 },
+			{ 1, 0x00 },
+			{ 2, 0xCB },
+			{ 2, 0x01 },
+			{ 3, 0x00 },
+			{ 4, 0x00 },
+		});
 }
 
 Player::~Player()
@@ -39,25 +67,6 @@ Player::~Player()
 
 void Player::Update()
 {
-	if (CheckHitKey(KEY_INPUT_A))
-	{
-		rect_.pivot.x -= moveSpeed;
-
-		float push = pStage_->CheckLeft(rect_.pivot + Vector2{ 0, 0 });
-		rect_.pivot.x += push;
-		push = pStage_->CheckLeft(rect_.pivot + Vector2{ 0, rect_.height });
-		rect_.pivot.x += push;
-	}
-	if (CheckHitKey(KEY_INPUT_D))
-	{
-		rect_.pivot.x += moveSpeed;
-		// 右上の当たり判定と埋め込み反発取得
-		float push = pStage_->CheckRight(rect_.pivot + Vector2{ rect_.width, 0 });
-		rect_.pivot.x -= push;
-		// 右下の当たり判定と埋め込み反発取得
-		push = pStage_->CheckRight(rect_.pivot + Vector2{ rect_.width, rect_.height });
-		rect_.pivot.x -= push;
-	}
 	{
 		isGrounded = false;
 
@@ -86,7 +95,29 @@ void Player::Update()
 			isGrounded = true;
 		}
 	}
-	{
+
+	// ロボ処理
+	robot_.Update();
+
+	//if (CheckHitKey(KEY_INPUT_A))
+	//{
+	//	rect_.pivot.x -= moveSpeed;
+	//	float push = pStage_->CheckLeft(rect_.pivot + Vector2{ 0, 0 });
+	//	rect_.pivot.x += push;
+	//	push = pStage_->CheckLeft(rect_.pivot + Vector2{ 0, rect_.height });
+	//	rect_.pivot.x += push;
+	//}
+	//if (CheckHitKey(KEY_INPUT_D))
+	//{
+	//	rect_.pivot.x += moveSpeed;
+	//	// 右上の当たり判定と埋め込み反発取得
+	//	float push = pStage_->CheckRight(rect_.pivot + Vector2{ rect_.width, 0 });
+	//	rect_.pivot.x -= push;
+	//	// 右下の当たり判定と埋め込み反発取得
+	//	push = pStage_->CheckRight(rect_.pivot + Vector2{ rect_.width, rect_.height });
+	//	rect_.pivot.x -= push;
+	//}
+	/*{
 		if (isGrounded)
 		{
 			if (CheckHitKey(KEY_INPUT_SPACE))
@@ -102,7 +133,7 @@ void Player::Update()
 				prevPushedSpace = false;
 			}
 		}
-	}
+	}*/
 	{
 		// 上の壁に当たらないようにする処理
 		if (velocity_.y < 0.0f)
@@ -147,4 +178,31 @@ void Player::Update()
 void Player::Draw()
 {
 	Object2D::Draw();
+}
+
+int Player::GetHeight() const
+{
+	return IMAGE_HEIGHT;
+}
+
+void Player::SetByteCode(const std::vector<std::pair<int, Byte>>& _byteCode)
+{
+	robot_.Reset();
+
+	byteCodeAndLines_ = _byteCode;
+	byteCode_.clear();
+	for (auto&& byteCodeAndLine : byteCodeAndLines_)
+	{
+		byteCode_.push_back(byteCodeAndLine.second);
+	}
+}
+
+int Player::GetReadLine() const
+{
+	int index{ robot_.GetReadByteCodeIndex() };
+	if (index < 0 || byteCodeAndLines_.size() <= index)
+	{
+		return -1;
+	}
+	return byteCodeAndLines_[index].first;
 }

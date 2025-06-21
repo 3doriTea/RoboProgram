@@ -44,7 +44,7 @@ Stage::Stage()
 	assert(TryFindPlayerPositionFromMap(&playerPosition)
 		&& "マップデータにプレイヤーがいない");
 
-	new Player{ playerPosition };
+	pPlayer_ = new Player{ playerPosition };
 }
 
 Stage::~Stage()

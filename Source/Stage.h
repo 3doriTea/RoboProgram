@@ -100,6 +100,7 @@ public:
 private:
 	Vector2 scroll_;  // スクロール量
 	Vector2 position_;  // 座標
+	Player* pPlayer_;
 
 	std::vector<std::vector<Tile>> map_;
 	std::map<Tile, int> hImages_;
