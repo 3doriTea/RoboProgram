@@ -35,6 +35,11 @@ void CodeBox::Draw()
 	// 枠の矩形 (フレームなし)
 	RectInt drawBox{ GetDrawRect() };
 
+	if (drawBox.y < 0)
+	{
+		drawBox.y +
+	}
+
 	// フレームの描画
 	DrawBox(
 		drawBox.x - FRAME_MARGIN, drawBox.y - FRAME_MARGIN,
