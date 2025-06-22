@@ -173,6 +173,7 @@
     <ClInclude Include="Source\SceneFactory.h" />
     <ClInclude Include="Source\Stage.h" />
     <ClInclude Include="Source\TitleScene.h" />
+    <ClInclude Include="Source\Utility\RectanUtility.h" />
     <ClInclude Include="Source\Utility\Timer.h" />
     <ClInclude Include="Source\Utility\VectorUtil.h" />
     <ClInclude Include="Source\Vector2.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="Source\SceneFactory.cpp" />
     <ClCompile Include="Source\Stage.cpp" />
     <ClCompile Include="Source\TitleScene.cpp" />
+    <ClCompile Include="Source\Utility\RectanUtility.cpp" />
     <ClCompile Include="Source\Utility\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>

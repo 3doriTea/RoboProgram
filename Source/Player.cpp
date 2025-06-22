@@ -34,23 +34,18 @@ Player::Player(const Vector2& _position) :
 	rect_.width = IMAGE_WIDTH;
 	rect_.height = IMAGE_HEIGHT;
 
-	hImage_ = LoadGraph(PLAYER_IMAGE_FILE);
-	assert(hImage_ > 0
-		&& "Playerのイメージ読み込みに失敗 @Player::Player");
+	hStateImages[S_READY] = LoadGraph(PLAYER_READY_IMAGE_FILE);
+	assert(hStateImages[S_READY] > 0
+		&& "PlayerのReadyイメージ読み込みに失敗 @Player::Player");
+	hStateImages[S_RUN] = LoadGraph(PLAYER_RUNNING_IMAGE_FILE);
+	assert(hStateImages[S_RUN] > 0
+		&& "PlayerのRunイメージ読み込みに失敗 @Player::Player");
 
-	Timer::AddInterval(ROBOT_STEP_TIME_SEC, [&, this]()
-		{
-			bool succeed = robot_.TryReadNext();
-			if (succeed == false)
-			{
-				static int sleepCount{ 0 };
-				sleepCount++;
-				if (sleepCount > static_cast<int>(ROBOT_BEAT_TIME_SEC / ROBOT_STEP_TIME_SEC))
-				{
-					robot_.Reset();
-				}
-			}
-		});
+	SetState(S_READY);
+
+	/*hImage_ = LoadGraph(PLAYER_IMAGE_FILE);
+	assert(hImage_ > 0
+		&& "Playerのイメージ読み込みに失敗 @Player::Player");*/
 
 	/*SetByteCode(
 		{
@@ -207,4 +202,38 @@ int Player::GetReadLine() const
 		return -1;
 	}
 	return byteCodeAndLines_[index].first;
+}
+
+void Player::SetState(const State _state)
+{
+	assert(0 <= _state < S_MAX
+		&& "範囲外のステータスはセットできません。 @Player::SetState");
+
+	hImage_ = hStateImages[static_cast<int>(_state)];
+	currentState_ = _state;
+
+	// ステート別処理走らせる
+	switch (_state)
+	{
+	case S_READY:
+		Timer::Clear();
+		break;
+	case S_RUN:
+		Timer::AddInterval(ROBOT_STEP_TIME_SEC, [&, this]()
+			{
+				bool succeed = robot_.TryReadNext();
+				if (succeed == false)
+				{
+					static int sleepCount{ 0 };
+					sleepCount++;
+					if (sleepCount > static_cast<int>(ROBOT_BEAT_TIME_SEC / ROBOT_STEP_TIME_SEC))
+					{
+						robot_.Reset();
+					}
+				}
+			});
+		break;
+	default:
+		break;
+	}
 }

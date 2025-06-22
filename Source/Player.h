@@ -6,6 +6,15 @@
 
 class Player : public Object2D
 {
+private:
+	enum State : int
+	{
+		S_READY,
+		S_RUN,
+
+		S_MAX,
+	};
+
 public:
 	Player(const Vector2& _position);
 	~Player();
@@ -24,6 +33,12 @@ public:
 	int GetReadLine() const;
 
 private:
+	State GetState() const { return currentState_; }
+	void SetState(const State _state);
+
+private:
+	State currentState_;
+	int hStateImages[S_MAX];
 
 	Vector2 velocity_;
 	bool isGrounded;
