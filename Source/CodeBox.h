@@ -19,11 +19,17 @@ public:
 		const std::vector<std::string>& _lines);
 
 private:
-	enum PositionStyle
+	enum PositionStyleY
 	{
-		PS_PLAYER,
-		PS_TOP,
-		PS_BOTTOM,
+		PSY_PLAYER,
+		PSY_TOP,
+		PSY_BOTTOM,
+	};
+
+	enum PositionStyleX
+	{
+		PSX_PLAYER,
+		PSX_PLAYER_RIGHT,
 	};
 
 	/// <summary>
@@ -40,12 +46,12 @@ private:
 	/// テキストボックスの描画開始点を取得
 	/// </summary>
 	/// <returns>描画座標</returns>
-	Vector2Int GetDrawTextBegin(const PositionStyle _positionStyle) const;
+	Vector2Int GetDrawTextBegin(const PositionStyleY _posStyleY, const PositionStyleX _posStyleX) const;
 	/// <summary>
 	/// フレームなしの描画矩形
 	/// </summary>
 	/// <returns></returns>
-	RectInt GetDrawRect(const PositionStyle _positionStyle) const;
+	RectInt GetDrawRect(const PositionStyleY _posStyleY, const PositionStyleX _posStyleX) const;
 
 	std::vector<std::string> sourceLines_;
 	int sourceMaxLength_;  // TODO: もし最大幅で失敗したら、最大の行番号を保存する、そこから幅計算

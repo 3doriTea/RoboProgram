@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector2Int.h"
+#include <cmath>
 
 
 struct Vector2Int;
@@ -36,6 +37,11 @@ struct Vector2
 		x -= _v.x;
 		y -= _v.y;
 		return *this;
+	}
+
+	inline float Size() const
+	{
+		return std::sqrtf(x * x + y * y);
 	}
 
 	/// <summary>

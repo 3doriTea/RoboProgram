@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector2.h"
+#include "RectInt.h"
 
 /// <summary>
 /// <para>矩形は以下の要素で成り立つ</para>
@@ -26,6 +27,16 @@ struct Rectan
 		};
 		Vector2 size;
 	};
+
+	RectInt ToInt() const
+	{
+		RectInt rectInt{};
+
+		rectInt.pivot = pivot.ToInt();
+		rectInt.size = size.ToInt();
+
+		return rectInt;
+	}
 
 	/// <summary>
 	/// 中心座標を取得

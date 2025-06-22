@@ -3,16 +3,39 @@
 #include <DxLib.h>
 
 
-void Timer::AddAram(const float _time, const std::function<void()>& _callback)
-{
-	Instance().EnqueueTimer(new QUEUE_ELEMENT{ _callback, _time });
-}
-
-void Timer::AddInterval(const float _time, const std::function<void()>& _callback)
+TimerHandle Timer::AddAram(const float _time, const std::function<void()>& _callback)
 {
 	QUEUE_ELEMENT* pElement{ new QUEUE_ELEMENT{ _callback, _time } };
+	Instance().EnqueueTimer(pElement);
+	return reinterpret_cast<TimerHandle>(pElement);
+}
+
+TimerHandle Timer::AddInterval(const float _time, const std::function<void()>& _callback, const bool _firstCall)
+{
+	QUEUE_ELEMENT* pElement{ new QUEUE_ELEMENT{ _callback, _firstCall ? 0 : _time } };
 	Instance().pReenqueueElements_.insert({ pElement, _time });
 	Instance().EnqueueTimer(pElement);
+	return reinterpret_cast<TimerHandle>(pElement);
+}
+
+void Timer::Remove(TimerHandle _hTimer)
+{
+	QUEUE_ELEMENT* pElement{ reinterpret_cast<QUEUE_ELEMENT*>(_hTimer) };
+	if (Instance().pReenqueueElements_.count(pElement) > 0)
+	{
+		Instance().pReenqueueElements_.erase(pElement);
+	}
+	for (auto itr = Instance().pTimerQueue_.begin(); itr != Instance().pTimerQueue_.end();)
+	{
+		if ((*itr) == pElement)
+		{
+			itr = Instance().pTimerQueue_.erase(itr);
+		}
+		else
+		{
+			itr++;
+		}
+	}
 }
 
 void Timer::Clear()

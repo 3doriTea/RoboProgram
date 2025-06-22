@@ -2,7 +2,10 @@
 #include "Stage.h"
 #include <cassert>
 #include <cmath>
-#include "Utility/Timer.h"
+#include "Utility/RectanUtility.h"
+#include "IO/Input.h"
+#include "PlayScene.h"
+#include "Screen.h"
 
 
 namespace
@@ -16,7 +19,7 @@ namespace
 	static const float GRAVITY{ 0.05 };
 	static const int IMAGE_WIDTH{ 80 };
 	static const int IMAGE_HEIGHT{ 160 };
-	static const float ROBOT_STEP_TIME_SEC{ 0.1 };
+	static const float ROBOT_STEP_TIME_SEC{ 0.07 };
 	static const float ROBOT_BEAT_TIME_SEC{ 1 };
 }
 
@@ -26,7 +29,8 @@ Player::Player(const Vector2& _position) :
 	jumpHeight{ JUMP_HEIGHT },
 	moveSpeed{ MOVE_SPEED },
 	jumpV0{},
-	robot_{ rect_, moveSpeed, jumpV0, pStage_, isGrounded, velocity_, prevPushedSpace, byteCode_ }
+	robot_{ rect_, moveSpeed, jumpV0, pStage_, isGrounded, velocity_, prevPushedSpace, byteCode_ },
+	hBeatTimer_{ 0 }
 {
 	jumpV0 = -std::sqrtf(2.0f * gravity * jumpHeight);
 
@@ -64,6 +68,26 @@ Player::~Player()
 
 void Player::Update()
 {
+	int mouseX{}, mouseY{};
+	GetMousePoint(&mouseX, &mouseY);
+
+	if (RectanUtility::IsHit(GetRect(), {static_cast<float>(mouseX), static_cast<float>(mouseY)}))
+	{
+		if (Input::IsMouseDown(MOUSE_INPUT_LEFT))
+		{
+			State current = GetState();
+			if (current == S_READY)
+			{
+				SetState(S_RUN);
+			}
+			else
+			{
+				SetState(S_READY);
+				GetScene<PlayScene>()->OpenSrcFile();
+			}
+		}
+	}
+
 	{
 		isGrounded = false;
 
@@ -154,6 +178,12 @@ void Player::Update()
 		}
 	}
 
+	if (rect_.pivot.y > Screen::HEIGHT)
+	{
+		rect_.pivot = pStage_->GetCheckPoint();
+		SceneManager::ReloadScene();
+	}
+
 	// スクロールの計算
 	Vector2 scroll{ pStage_->GetScroll() };
 	float drawX{ rect_.pivot.x - scroll.x };
@@ -180,6 +210,11 @@ void Player::Draw()
 int Player::GetHeight() const
 {
 	return IMAGE_HEIGHT;
+}
+
+int Player::GetWidth() const
+{
+	return IMAGE_WIDTH;
 }
 
 void Player::SetByteCode(const std::vector<std::pair<int, Byte>>& _byteCode)
@@ -216,17 +251,25 @@ void Player::SetState(const State _state)
 	switch (_state)
 	{
 	case S_READY:
-		Timer::Clear();
+		Timer::Remove(hBeatTimer_);
 		break;
 	case S_RUN:
-		Timer::AddInterval(ROBOT_STEP_TIME_SEC, [&, this]()
+		prevIsSucceedTryRead = false;
+		sleepCount_ = 0;
+		robot_.Reset();
+
+		hBeatTimer_ = Timer::AddInterval(ROBOT_STEP_TIME_SEC, [&, this]()
 			{
 				bool succeed = robot_.TryReadNext();
+				if (succeed != prevIsSucceedTryRead)
+				{
+					prevIsSucceedTryRead = succeed;
+					sleepCount_ = 0;
+				}
 				if (succeed == false)
 				{
-					static int sleepCount{ 0 };
-					sleepCount++;
-					if (sleepCount > static_cast<int>(ROBOT_BEAT_TIME_SEC / ROBOT_STEP_TIME_SEC))
+					sleepCount_++;
+					if (sleepCount_ > static_cast<int>(ROBOT_BEAT_TIME_SEC / ROBOT_STEP_TIME_SEC))
 					{
 						robot_.Reset();
 					}

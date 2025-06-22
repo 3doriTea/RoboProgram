@@ -30,6 +30,8 @@ namespace SceneManager
 	/// <param name="sceneName">シーン名</param>
 	void ChangeScene(const std::string& sceneName);
 
+	void ReloadScene();
+
 	/// <summary>
 	/// 現在のシーンを返す
 	/// SceneBase*で返すので、適宜キャストして使います

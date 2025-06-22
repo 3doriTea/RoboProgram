@@ -27,6 +27,7 @@ public:
 		TILE_GROUND,
 		TILE_COIN,
 		TILE_PLAYER,
+		TILE_FLAG,
 
 		TILE_MAX,
 	};
@@ -98,9 +99,22 @@ public:
 
 	bool TryFindPlayerPositionFromMap(Vector2* _pPosition) const;
 
-	Player* GetPlayer() { return pPlayer_; }
+	Player* GetPlayer();
+
+	/// <summary>
+	/// チェックポイント
+	/// </summary>
+	/// <param name="_point">新しくチェックポイント</param>
+	void SetCheckPoint(const Vector2& _point);
+	/// <summary>
+	/// チェックポイントを取得
+	/// </summary>
+	/// <returns>チェックポイントの座標を取得</returns>
+	Vector2 GetCheckPoint() const;
 
 private:
+	static Vector2 checkPoint_;  // チェックポイント
+
 	Vector2 scroll_;  // スクロール量
 	Vector2 position_;  // 座標
 	Player* pPlayer_;

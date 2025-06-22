@@ -2,6 +2,7 @@
 #include "PlayScene.h"
 #include "IO/Input.h"
 #include "Utility/Timer.h"
+#include "Utility/StringUtility.h"
 #include "IO/SourceObserver.h"
 
 #include "Background.h"
@@ -13,7 +14,7 @@
 
 namespace
 {
-	static const char SRC_FILE_NAME[]{ "Test.txt" };
+	static const char SRC_FILE_NAME[]{ "SourceCode.txt" };
 }
 
 PlayScene::PlayScene() :
@@ -29,22 +30,38 @@ PlayScene::PlayScene() :
 	assert(pPlayer_ != nullptr
 		&& "ステージからプレイヤーの取得に失敗 @PlayScene::PlayScene");
 
-	pSourceObserver_->OnUpdateSource([&, this, pCodeBox](
-		const std::vector<std::string>& _newSource)
-	{
-		printfDx("ソースファイルに変更があった\n");
- 		pCodeBox->SetSourceLines(_newSource);
+	using StringUtility::ToString;
 
-		ProtoAnalyzer* analyzer{ new ProtoAnalyzer{ _newSource } };
-		std::vector<std::pair<int, Byte>> byteCodeAndLines{};
-		analyzer->Analyze(byteCodeAndLines);
-		pPlayer_->SetByteCode(byteCodeAndLines);
-	});
+	pSourceObserver_
+		->OnCreateSource([&, this](
+			std::vector<std::string>& _newSource)
+			{
+				//printfDx("新規でソースが作られた\n");
+				_newSource =
+				{
+					u8"// 毎ビート呼ばれるよ！",
+					u8"void Update()",
+					u8"{",
+					u8"  Run();  // これを書くと走るよ",
+					u8"}",
+				};
+			})
+		.OnUpdateSource([&, this, pCodeBox](
+			const std::vector<std::string>& _newSource)
+			{
+				//printfDx("ソースファイルに変更があった\n");
+ 				pCodeBox->SetSourceLines(_newSource);
+
+				ProtoAnalyzer* analyzer{ new ProtoAnalyzer{ _newSource } };
+				std::vector<std::pair<int, Byte>> byteCodeAndLines{};
+				analyzer->Analyze(byteCodeAndLines);
+				pPlayer_->SetByteCode(byteCodeAndLines);
+			});
 
 	Timer::AddInterval(1.0f, [&, this]()
 	{
 		pSourceObserver_->Update();
-	});
+	}, true);
 }
 
 PlayScene::~PlayScene()
@@ -63,12 +80,17 @@ void PlayScene::Update()
 
 	if (Input::IsKeyDown(KEY_INPUT_F))
 	{
-		ShellExecute(NULL, "open", "Test.txt", "", "", SW_SHOW);
+		OpenSrcFile();
 	}
 }
 
 void PlayScene::Draw()
 {
-	DrawString(0, 0, "PLAY SCENE", GetColor(255, 255, 255));
-	DrawString(100, 400, "Push [T]Key To Title", GetColor(255, 255, 255));
+	/*DrawString(0, 0, "PLAY SCENE", GetColor(255, 255, 255));
+	DrawString(100, 400, "Push [T]Key To Title", GetColor(255, 255, 255));*/
+}
+
+void PlayScene::OpenSrcFile()
+{
+	ShellExecute(NULL, "open", SRC_FILE_NAME, "", "", SW_SHOW);
 }

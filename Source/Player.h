@@ -2,6 +2,7 @@
 #include "Object2D.h"
 #include <vector>
 #include "Robot.h"
+#include "Utility/Timer.h"
 
 
 class Player : public Object2D
@@ -27,6 +28,11 @@ public:
 	/// </summary>
 	/// <returns>身長(pixel)</returns>
 	int GetHeight() const;
+	/// <summary>
+	/// プレイヤーの横幅を取得
+	/// </summary>
+	/// <returns>横幅(pixel)</returns>
+	int GetWidth() const;
 
 	void SetByteCode(const std::vector<std::pair<int, Byte>>& _byteCode);
 
@@ -37,6 +43,11 @@ private:
 	void SetState(const State _state);
 
 private:
+	TimerHandle hBeatTimer_;
+
+	int sleepCount_;
+	bool prevIsSucceedTryRead;
+
 	State currentState_;
 	int hStateImages[S_MAX];
 

@@ -172,8 +172,12 @@
     <ClInclude Include="Source\PlayScene.h" />
     <ClInclude Include="Source\SceneFactory.h" />
     <ClInclude Include="Source\Stage.h" />
+    <ClInclude Include="Source\StageObject.h" />
     <ClInclude Include="Source\TitleScene.h" />
+    <ClInclude Include="Source\Coin.h" />
+    <ClInclude Include="Source\Flag.h" />
     <ClInclude Include="Source\Utility\RectanUtility.h" />
+    <ClInclude Include="Source\Utility\StringUtility.h" />
     <ClInclude Include="Source\Utility\Timer.h" />
     <ClInclude Include="Source\Utility\VectorUtil.h" />
     <ClInclude Include="Source\Vector2.h" />
@@ -198,7 +202,9 @@
     <ClCompile Include="Source\BootScene.cpp" />
     <ClCompile Include="Source\CodeBox.cpp" />
     <ClCompile Include="Source\CodeReader\ByteCodeReader.cpp" />
+    <ClCompile Include="Source\Coin.cpp" />
     <ClCompile Include="Source\Compiler\ProtoAnalyzer.cpp" />
+    <ClCompile Include="Source\Flag.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />
     <ClCompile Include="Source\IO\SourceObserver.cpp" />
     <ClCompile Include="Source\Object2D.cpp" />
@@ -207,12 +213,14 @@
     <ClCompile Include="Source\Robot.cpp" />
     <ClCompile Include="Source\SceneFactory.cpp" />
     <ClCompile Include="Source\Stage.cpp" />
+    <ClCompile Include="Source\StageObject.cpp" />
     <ClCompile Include="Source\TitleScene.cpp" />
     <ClCompile Include="Source\Utility\RectanUtility.cpp" />
+    <ClCompile Include="Source\Utility\StringUtility.cpp" />
     <ClCompile Include="Source\Utility\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Test.txt" />
+    <Text Include="Test1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

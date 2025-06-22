@@ -10,6 +10,7 @@ namespace
 	SceneBase* m_currentScene; // 今のシーンのインスタンスを保持
 	SceneFactory* m_factory;   // シーン切り替え用のFactoryのポインター
 	bool m_exitRequest;
+	bool m_reloadRequest;
 };
 
 void SceneManager::Init()
@@ -27,8 +28,10 @@ void SceneManager::Init()
 
 void SceneManager::Update()
 {
-	if (*m_nextName != *m_currentName)
-	{ // シーン切り替えの指定があったので
+	if (*m_nextName != *m_currentName || m_reloadRequest)
+	{
+		m_reloadRequest = false;
+		// シーン切り替えの指定 / リロード要求 があったので
 		if (m_currentScene != nullptr)
 		{ // 今までのシーンを解放
 			delete m_currentScene;
@@ -71,6 +74,11 @@ void SceneManager::Release()
 void SceneManager::ChangeScene(const std::string& sceneName)
 {
 	*m_nextName = sceneName;
+}
+
+void SceneManager::ReloadScene()
+{
+	m_reloadRequest = true;
 }
 
 SceneBase* SceneManager::CurrentScene()

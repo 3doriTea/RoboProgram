@@ -3,12 +3,15 @@
 #include "../Library/CsvReader/CsvReader.h"
 #include <cassert>
 #include "Player.h"
+#include "Coin.h"
+#include "Flag.h"
 
 
 namespace
 {
 	static const int TILE_WIDTH{ 80 };
 	static const int TILE_HEIGHT{ 80 };
+	static const float INVALED_POSITION{ -100 };
 	static const char* TILE_FILES[]
 	{
 		"",
@@ -40,11 +43,49 @@ Stage::Stage()
 
 	delete csv;
 
-	Vector2 playerPosition{};
-	assert(TryFindPlayerPositionFromMap(&playerPosition)
-		&& "マップデータにプレイヤーがいない");
+	// チェックポイントの情報がない
+	if (checkPoint_.x <= INVALED_POSITION + 1
+		&& checkPoint_.y <= INVALED_POSITION + 1)
+	{
+		Vector2 playerPosition{};
+		assert(TryFindPlayerPositionFromMap(&playerPosition)
+			&& "マップデータにプレイヤーがいない");
 
-	pPlayer_ = new Player{ playerPosition };
+		pPlayer_ = new Player{ playerPosition };
+	}
+	else
+	{
+		pPlayer_ = new Player{ checkPoint_ };
+	}
+
+	for (int y = 0; y < map_.size(); y++)
+	{
+		for (int x = 0; x < map_[y].size(); x++)
+		{
+			switch (map_[y][x])
+			{
+			case TILE_COIN:
+				new Coin
+				{
+					{
+						static_cast<float>(x) * TILE_WIDTH,
+						static_cast<float>(y) * TILE_HEIGHT
+					}
+				};
+				break;
+			case TILE_FLAG:
+				new Flag
+				{
+					{
+						static_cast<float>(x)* TILE_WIDTH,
+						static_cast<float>(y)* TILE_HEIGHT
+					}
+				};
+			default:
+				break;
+			}
+		}
+	}
 }
 
 Stage::~Stage()
@@ -163,6 +204,7 @@ bool Stage::IsWall(const Vector2& _position)
 	case TILE_NONE:  // 空白
 	case TILE_PLAYER:  // プレイヤー
 	case TILE_COIN:  // コイン
+	case TILE_FLAG:  // チェックポイント
 	case TILE_MAX:  // ?
 		return false;  // 壁でない
 	default:
@@ -282,3 +324,21 @@ bool Stage::TryFindPlayerPositionFromMap(Vector2* _pPosition) const
 
 	return false;
 }
+
+Player* Stage::GetPlayer()
+{
+	assert(pPlayer_ != nullptr);
+	return pPlayer_;
+}
+
+void Stage::SetCheckPoint(const Vector2& _point)
+{
+	checkPoint_ = _point;
+}
+
+Vector2 Stage::GetCheckPoint() const
+{
+	return checkPoint_;
+}
+
+Vector2 Stage::checkPoint_{ INVALED_POSITION, INVALED_POSITION };

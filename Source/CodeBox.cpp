@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Vector2Int.h"
 #include "Utility/VectorUtil.h"
+#include "Utility/RectanUtility.h"
 #include "Screen.h"
 
 
@@ -13,6 +14,7 @@ namespace
 	static const int LINE_MARGIN{ 5 };  // 行の幅
 	static const int PLAYER_HEAD_MARGIN{ 30 };  // プレイヤー頭からの余白
 	static const int FRAME_OFFSET{ 100 };
+	static const int PLAYER_SIDE_MARGIN{ 300 };  // プレイヤー横の余白
 }
 
 CodeBox::CodeBox() :
@@ -34,18 +36,27 @@ void CodeBox::Update()
 
 void CodeBox::Draw()
 {
-	PositionStyle posStyle{ PS_PLAYER };
+	PositionStyleY posStyleY{ PSY_PLAYER };
+	PositionStyleX posStyleX{ PSX_PLAYER };
 	// 枠の矩形 (フレームなし)
-	RectInt drawBox{ GetDrawRect(posStyle) };
+	RectInt drawBox{ GetDrawRect(posStyleY, posStyleX) };
 	if (drawBox.y < 0)
 	{
-		posStyle = PS_BOTTOM;
-		drawBox = GetDrawRect(posStyle);
+		posStyleY = PSY_BOTTOM;
+		drawBox = GetDrawRect(posStyleY, posStyleX);
 	}
 	else if (drawBox.y + drawBox.height > Screen::HEIGHT)
 	{
-		posStyle = PS_TOP;
-		drawBox = GetDrawRect(posStyle);
+		posStyleY = PSY_TOP;
+		drawBox = GetDrawRect(posStyleY, posStyleX);
+	}
+
+	RectInt playerRect{ pPlayer_->GetRect().ToInt() };
+
+	if (RectanUtility::IsHit(drawBox, playerRect))
+	{
+		posStyleX = PSX_PLAYER_RIGHT;
+		drawBox = GetDrawRect(posStyleY, posStyleX);
 	}
 
 	// フレームの描画
@@ -60,7 +71,7 @@ void CodeBox::Draw()
 		0xffffff, TRUE);
 
 	// テキストの描画
-	Vector2Int textBegin{ GetDrawTextBegin(posStyle) };
+	Vector2Int textBegin{ GetDrawTextBegin(posStyleY, posStyleX) };
 	if (textBegin.y < 0)
 	{
 		textBegin.y += pPlayer_->GetHeight() + PLAYER_HEAD_MARGIN;
@@ -87,6 +98,10 @@ void CodeBox::Draw()
 				"%s", sourceLines_[line].c_str());
 		}
 	}
+
+	/*DEBUG_BOX
+	DrawBox(drawBox.x, drawBox.y, drawBox.x + drawBox.width, drawBox.y + drawBox.height, 0x00ff00, TRUE);
+	DrawBox(playerRect.x, playerRect.y, playerRect.x + playerRect.width, playerRect.y + playerRect.height, 0x0000ff, TRUE);*/
 }
 
 void CodeBox::SetSourceLines(const std::vector<std::string>& _lines)
@@ -140,25 +155,39 @@ int CodeBox::GetTextBoxHeight() const
 	return textHeight;
 }
 
-Vector2Int CodeBox::GetDrawTextBegin(const PositionStyle _positionStyle) const
+Vector2Int CodeBox::GetDrawTextBegin(
+	const PositionStyleY _posStyleY,
+	const PositionStyleX _posStyleX) const
 {
 	Vector2Int playerHead = pPlayer_->ToWorld({ 0, -pPlayer_->GetHeight() / 2.0f }).ToInt();
-	int beginX
+
+	int beginX{};
+
+	switch (_posStyleX)
 	{
-		playerHead.x  // プレイヤーの頭
-		- GetTextBoxWidth() / 2  // テキストボックスの半分を引く
-	};
+	case PSX_PLAYER:
+		beginX = playerHead.x  // プレイヤーの頭
+			- GetTextBoxWidth() / 2;  // テキストボックスの半分を引く
+		break;
+	case PSX_PLAYER_RIGHT:
+		beginX = playerHead.x  // プレイヤーの頭
+			+ pPlayer_->GetWidth()  // プレイヤーの肩幅
+			+ PLAYER_SIDE_MARGIN;  // 余白
+	default:
+		break;
+	}
+
 	int beginY{};
 
-	switch (_positionStyle)
+	switch (_posStyleY)
 	{
-	case PS_TOP:
+	case PSY_TOP:
 		beginY = FRAME_OFFSET;
 		break;
-	case PS_BOTTOM:
+	case PSY_BOTTOM:
 		beginY = Screen::HEIGHT - GetTextBoxHeight() - FRAME_OFFSET;
 		break;
-	case PS_PLAYER:
+	case PSY_PLAYER:
 		beginY =
 			playerHead.y  // プレイヤーの頭
 			- PLAYER_HEAD_MARGIN  // プレイヤーの頭とボックスの余白
@@ -171,11 +200,11 @@ Vector2Int CodeBox::GetDrawTextBegin(const PositionStyle _positionStyle) const
 	return Vector2Int{ beginX, beginY };
 }
 
-RectInt CodeBox::GetDrawRect(const PositionStyle _positionStyle) const
+RectInt CodeBox::GetDrawRect(const PositionStyleY _posStyleY, const PositionStyleX _posStyleX) const
 {
 	// テキストの余白も考慮
 	RectInt rect{};
-	rect.pivot = GetDrawTextBegin(_positionStyle) - Vector2Int{ TEXT_MARGIN, TEXT_MARGIN };
+	rect.pivot = GetDrawTextBegin(_posStyleY, _posStyleX) - Vector2Int{ TEXT_MARGIN, TEXT_MARGIN };
 	rect.width = GetTextBoxWidth() + TEXT_MARGIN;
 	rect.height = GetTextBoxHeight() + TEXT_MARGIN;
 

@@ -20,7 +20,8 @@ public:
 	virtual void Draw() override;
 
 	Vector2 GetPosition() const { return rect_.pivot; }
-	Rectan GetRect() const { return rect_; }
+	Rectan GetRect() const;
+	Rectan GetRectWorld() const { return rect_; }
 
 	Vector2 ToWorld(const Vector2& _localPosition) const;
 

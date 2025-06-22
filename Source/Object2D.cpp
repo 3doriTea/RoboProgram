@@ -48,6 +48,20 @@ void Object2D::Draw()
 	}
 }
 
+Rectan Object2D::GetRect() const
+{
+	Vector2 scroll{};
+	if (pStage_ != nullptr)
+	{
+		scroll = pStage_->GetScroll();
+	}
+	Rectan drawRect{};
+	drawRect.x = rect_.x - scroll.x;
+	drawRect.y = rect_.y - scroll.y,
+	drawRect.size = rect_.size;
+	return drawRect;
+}
+
 Vector2 Object2D::ToWorld(const Vector2& _localPosition) const
 {
 	Vector2 scroll{};

@@ -86,7 +86,21 @@
     <ClCompile Include="Source\Compiler\ProtoAnalyzer.cpp">
       <Filter>Compiler</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Utility\RectanUtility.cpp" />
+    <ClCompile Include="Source\Coin.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Flag.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utility\RectanUtility.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\StageObject.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utility\StringUtility.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -208,7 +222,21 @@
     <ClInclude Include="Source\Compiler\ProtoAnalyzer.h">
       <Filter>Compiler</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Utility\RectanUtility.h" />
+    <ClInclude Include="Source\Coin.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Flag.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utility\RectanUtility.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\StageObject.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utility\StringUtility.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -240,6 +268,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Test.txt" />
+    <Text Include="Test1.txt" />
   </ItemGroup>
 </Project>

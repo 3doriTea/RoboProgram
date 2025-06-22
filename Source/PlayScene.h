@@ -16,6 +16,8 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	void OpenSrcFile();
+
 private:
 	SourceObserver* pSourceObserver_;
 	Player* pPlayer_;
