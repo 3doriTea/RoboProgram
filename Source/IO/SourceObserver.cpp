@@ -32,7 +32,7 @@ void SourceObserver::Update()
 		HANDLE hNewFile = CreateFile(
 			"SourceCode.txt",  // ファイル名
 			GENERIC_WRITE,  // 書き込みするよ
-			FILE_SHARE_READ,  // シェアしないよー
+			FILE_SHARE_WRITE,  // シェアしないよー
 			nullptr,  // デフォルトのセキュリティ
 			CREATE_ALWAYS,  // 上書き保存
 			FILE_ATTRIBUTE_NORMAL,  // 属性は普通
@@ -61,8 +61,8 @@ void SourceObserver::Update()
 		}
 
 		CloseHandle(hNewFile);
+		hFile = FileRead_open(fileName_.c_str());
 	}
-	hFile = FileRead_open(fileName_.c_str());
 	assert(hFile != 0
 		&& "ファイルを開くのに失敗した @SourceObserver::Update");
 
