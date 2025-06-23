@@ -101,6 +101,7 @@
     <ClCompile Include="Source\Utility\StringUtility.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Compiler\LexicalAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -237,6 +238,7 @@
     <ClInclude Include="Source\Utility\StringUtility.h">
       <Filter>Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Compiler\LexicalAnalyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

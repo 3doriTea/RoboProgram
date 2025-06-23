@@ -17,5 +17,4 @@ enum ByteCodeDefine_ACT : Byte
 	BCD_ACT_NONE = 0x00,  // ‰½‚à‚µ‚È‚¢
 	BCD_ACT_RUN = 0x01,  // ‘–‚é
 	BCD_ACT_JUMP = 0x02,  // ƒWƒƒƒ“ƒv
-
 };

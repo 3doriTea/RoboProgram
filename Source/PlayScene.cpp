@@ -55,6 +55,7 @@ PlayScene::PlayScene() :
 				ProtoAnalyzer* analyzer{ new ProtoAnalyzer{ _newSource } };
 				std::vector<std::pair<int, Byte>> byteCodeAndLines{};
 				analyzer->Analyze(byteCodeAndLines);
+				
 				pPlayer_->SetByteCode(byteCodeAndLines);
 			});
 
