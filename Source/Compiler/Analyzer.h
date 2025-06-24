@@ -1,5 +1,36 @@
 #pragma once
+#include <vector>
+#include <string>
 
+using Byte = unsigned char;
+
+using LineCount = int;
+using LineString = std::string;
+
+using ColumnCount = int;
+
+/// <summary>
+/// ソースコードの座標情報
+/// </summary>
+struct SOURCE_POS
+{
+	LineCount line;
+	ColumnCount column;
+};
+
+// ソースコードの1行分
+using SourceLine = std::pair<LineCount, LineString>;
+using SourceLines = std::vector<SourceLine>;
+
+using TokenString = std::string;
+
+// トークン
+using Token = std::pair<SOURCE_POS, TokenString>;
+using Tokens = std::vector<Token>;
+
+// バイトコード
+using ByteCode = std::pair<SOURCE_POS, Byte>;
+using ByteCodes = std::vector<ByteCode>;
 
 /// <summary>
 /// 解析機

@@ -160,6 +160,7 @@
     <ClInclude Include="Source\CodeBox.h" />
     <ClInclude Include="Source\CodeReader\ByteCodeReader.h" />
     <ClInclude Include="Source\Compiler\Analyzer.h" />
+    <ClInclude Include="Source\Compiler\LexicalAnalyzer.h" />
     <ClInclude Include="Source\Compiler\ProtoAnalyzer.h" />
     <ClInclude Include="Source\IO\Input.h" />
     <ClInclude Include="Source\IO\SourceObserver.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="Source\CodeBox.cpp" />
     <ClCompile Include="Source\CodeReader\ByteCodeReader.cpp" />
     <ClCompile Include="Source\Coin.cpp" />
+    <ClCompile Include="Source\Compiler\LexicalAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\ProtoAnalyzer.cpp" />
     <ClCompile Include="Source\Flag.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />
