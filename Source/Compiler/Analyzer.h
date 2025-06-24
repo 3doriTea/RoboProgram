@@ -5,7 +5,7 @@
 using Byte = unsigned char;
 
 using LineCount = int;
-using LineString = int;
+using LineString = std::string;
 
 using ColumnCount = int;
 
