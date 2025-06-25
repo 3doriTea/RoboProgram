@@ -162,6 +162,7 @@
     <ClInclude Include="Source\Compiler\Analyzer.h" />
     <ClInclude Include="Source\Compiler\LexicalAnalyzer.h" />
     <ClInclude Include="Source\Compiler\ProtoAnalyzer.h" />
+    <ClInclude Include="Source\Compiler\SyntaxAnalyzer.h" />
     <ClInclude Include="Source\IO\Input.h" />
     <ClInclude Include="Source\IO\SourceObserver.h" />
     <ClInclude Include="Source\Object2D.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="Source\Coin.cpp" />
     <ClCompile Include="Source\Compiler\LexicalAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\ProtoAnalyzer.cpp" />
+    <ClCompile Include="Source\Compiler\SyntaxAnalyzer.cpp" />
     <ClCompile Include="Source\Flag.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />
     <ClCompile Include="Source\IO\SourceObserver.cpp" />

@@ -7,9 +7,9 @@ ProtoAnalyzer::~ProtoAnalyzer()
 {
 }
 
-void ProtoAnalyzer::Analyze(std::vector<std::pair<int, Byte>>& _outRef)
+void ProtoAnalyzer::Analyze()
 {
-	_outRef.clear();
+	out_.clear();
 
 	for (int line = 0; line < in_.size(); line++)
 	{
@@ -50,17 +50,17 @@ void ProtoAnalyzer::Analyze(std::vector<std::pair<int, Byte>>& _outRef)
 
 		if (word == "Run();")
 		{
-			_outRef.push_back({ line, BCD_ACT });
-			_outRef.push_back({ line, BCD_ACT_RUN });
+			out_.push_back({ line, BCD_ACT });
+			out_.push_back({ line, BCD_ACT_RUN });
 		}
 		else if (word == "Jump();")
 		{
-			_outRef.push_back({ line, BCD_ACT });
-			_outRef.push_back({ line, BCD_ACT_JUMP });
+			out_.push_back({ line, BCD_ACT });
+			out_.push_back({ line, BCD_ACT_JUMP });
 		}
 		else
 		{
-			_outRef.push_back({ line, BCD_NOP });
+			out_.push_back({ line, BCD_NOP });
 		}
 	}
 }

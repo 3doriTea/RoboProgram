@@ -1,7 +1,29 @@
 // 毎ビート呼ばれるよ！
 void Update()
 {
+Jump();
   Run();  // これを書くと走るよ
+  Run();
+Run();
+Run();
+Run();
+Run();
+Run();
+Run();
+if (IsOnGround() == true)
+{
   Jump();
+}
+if (CheckTile(0, 30) && false)
+{
+  Run(0x30);
+}
+
+Say("こんにちは\"");
+
+int a = 10;
+int b = 2, c = 3;
+
+int res = a + b * c;
 
 }

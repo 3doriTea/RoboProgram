@@ -11,6 +11,7 @@
 #include "Player.h"
 
 #include "Compiler/ProtoAnalyzer.h"
+#include "Compiler/LexicalAnalyzer.h"
 
 namespace
 {
@@ -52,11 +53,41 @@ PlayScene::PlayScene() :
 				//printfDx("ソースファイルに変更があった\n");
  				pCodeBox->SetSourceLines(_newSource);
 
-				ProtoAnalyzer* analyzer{ new ProtoAnalyzer{ _newSource } };
-				std::vector<std::pair<int, Byte>> byteCodeAndLines{};
-				analyzer->Analyze(byteCodeAndLines);
+				/*std::vector<std::pair<int, Byte>> byteCodeAndLines{};
+				ProtoAnalyzer* analyzer{ new ProtoAnalyzer{ _newSource, byteCodeAndLines } };
+				analyzer->OnError([&, this](const char* _msg, const LineCount& _line)
+					{
+						
+					});
+				analyzer->Analyze()*/;
 				
-				pPlayer_->SetByteCode(byteCodeAndLines);
+				//pPlayer_->SetByteCode(byteCodeAndLines);
+
+				SourceLines sourceLines{};
+
+				for (int l = 0; l < _newSource.size(); l++)
+				{
+					sourceLines.push_back({ l, _newSource[l] });
+				}
+
+				Tokens tokens{};
+
+				clsDx();
+
+				// 字句解析をする
+				LexicalAnalyzer{ sourceLines, tokens }
+					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
+					{
+						printfDx("(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+					})
+					.Analyze();
+
+				for (auto&& token : tokens)
+				{
+					printfDx("%s, ", token.second.c_str());
+				}
+
+				// 構文解析をする
 			});
 
 	Timer::AddInterval(1.0f, [&, this]()
