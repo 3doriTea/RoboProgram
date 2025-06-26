@@ -97,8 +97,8 @@ bool Robot::TryReadNext()
 	}
 	else if (bcr_.Consume(BCD_HALT))
 	{
-		// –¢’è‹`
-		assert(false && "–¢’è‹`: BCD_HALT");
+		using SeekPoint = ByteCodeReader::SeekPoint;
+		bcr_.SeekTo(SeekPoint::Tail);
 	}
 	else if (bcr_.Consume(BCD_ACT))
 	{

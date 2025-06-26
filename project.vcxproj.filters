@@ -103,6 +103,8 @@
     </ClCompile>
     <ClCompile Include="Source\Compiler\LexicalAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\SyntaxAnalyzer.cpp" />
+    <ClCompile Include="Source\CodeRunner\CodeRunner.cpp" />
+    <ClCompile Include="Source\CodeRunner\Stack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -241,6 +243,8 @@
     </ClInclude>
     <ClInclude Include="Source\Compiler\LexicalAnalyzer.h" />
     <ClInclude Include="Source\Compiler\SyntaxAnalyzer.h" />
+    <ClInclude Include="Source\CodeRunner\CodeRunner.h" />
+    <ClInclude Include="Source\CodeRunner\Stack.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

@@ -4,7 +4,6 @@ void SyntaxAnalyzer::Analyze()
 {
 	for (readIndex_ = 0; readIndex_ < in_.size(); readIndex_++)
 	{
-		
 	}
 }
 

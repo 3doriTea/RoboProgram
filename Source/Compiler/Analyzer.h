@@ -33,12 +33,12 @@ using Tokens = std::vector<Token>;
 // ƒ‚[ƒh‚ÌŒ^
 enum NodeType
 {
-	CONT,               // "for" | "if" | type
-	NUMBER,             // ”Žš
-	REGISTER_FUNC_NAME, // “o˜^‚³‚ê‚Ä‚¢‚éŠÖ”
-	REGISTER_VAR_NAME,  // (“o˜^‚³‚ê‚Ä‚¢‚é•Ï”–¼)
-	BOOL,               // true | false
-	REGISTER_TYPE_NAME, // (“o˜^‚³‚ê‚Ä‚¢‚éŒ^–¼)
+	NODE_CONT,               // "for" | "if" | type
+	NODE_NUMBER,             // ”Žš
+	NODE_REGISTER_FUNC_NAME, // “o˜^‚³‚ê‚Ä‚¢‚éŠÖ”
+	NODE_REGISTER_VAR_NAME,  // (“o˜^‚³‚ê‚Ä‚¢‚é•Ï”–¼)
+	NODE_BOOL,               // true | false
+	NODE_REGISTER_TYPE_NAME, // (“o˜^‚³‚ê‚Ä‚¢‚éŒ^–¼)
 };
 
 // ƒm[ƒh

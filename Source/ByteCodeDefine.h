@@ -4,22 +4,35 @@ using Byte = unsigned char;
 
 enum ByteCodeDefine : Byte
 {
+#pragma region ロボット制御
 	// 何もしない
 	BCD_NOP = 0x00,  // ()
 	// 停止
 	BCD_HALT = 0x76,  // ()
 	// アクションする
 	BCD_ACT = 0xCB,  // (アクション番号)
+#pragma endregion
 	
+#pragma region コード領域
 	// 関数呼び出し
-	BCD_CALL = 0xCD,  // (関数のポインタ)
+	BCD_CALL = 0xCD,  // (関数-相対コードアドレス)
 	// 関数返却
-	BCD_RET = 0xC9,  // () スタックマシンに返却値を入れる
+	BCD_RET = 0xC9,  // () スタックマシンに返却値を入れてある
 	// ジャンプ
-	BCD_JP = 0xC3,  // ()
+	//BCD_JP = 0xC3,  // (ジャンプ先-絶対コードアドレス)
+#pragma endregion
 
+#pragma region データ領域
+	// データ領域に値をセットする
+	BCD_DSET = 0xDB,  // (セット先-絶対データアドレス, セットする絶対レジスタアドレス)
+	// データ領域から値をコピーする
+	BCD_DGET,  // (ゲット元-絶対データアドレス, コピー先絶対レジスタアドレス)
+#pragma endregion
+
+#pragma region スタック領域
 	// スタックマシンにプッシュする
-	BCD_PUSH = 0xC5,  // (コピー元アドレス)
+	BCD_PUS = 0xC5,  // (コピー元レジスタ)
+	BCD_PUSW,        // (コピー元レジスタ, レジスタの使用サイズ)
 
 	// スタックマシンでトップ2つを加算、スタックマシンに入れる
 	BCD_ADD = 0x6B,
@@ -31,7 +44,9 @@ enum ByteCodeDefine : Byte
 	BCD_DIV,
 
 	// スタックマシンにポップする
-	BCD_POP = 0xC1,  // (移動先アドレス)
+	BCD_POP = 0xC1,  // (出力先レジスタ)
+	BCD_POPW,        // (出力先レジスタ, レジスタの使用サイズ)
+#pragma endregion
 };
 
 enum ByteCodeDefine_ACT : Byte

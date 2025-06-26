@@ -10,6 +10,12 @@ using Byte = unsigned char;
 class ByteCodeReader
 {
 public:
+	enum struct SeekPoint
+	{
+		Head,
+		Tail,
+	};
+
 	ByteCodeReader(const std::vector<Byte>& _byteCode, const size_t _current = 0);
 	~ByteCodeReader();
 
@@ -24,6 +30,11 @@ public:
 	/// <param name="_code">比較コード</param>
 	/// <returns>一致した true / false</returns>
 	bool Consume(const Byte _code);
+	/// <summary>
+	/// 単純に出力して進める
+	/// </summary>
+	/// <returns>現在見ている</returns>
+	Byte Pop();
 
 	/// <summary>
 	/// 現在のインデックスを取得
@@ -31,7 +42,16 @@ public:
 	/// <returns>現在見ているコードのインデックス</returns>
 	size_t GetCurrentIndex() const { return current_; }
 
+	/// <summary>
+	/// 現在見ているインデックスを指定する
+	/// </summary>
+	/// <param name="_index"></param>
 	void Seek(const size_t _index);
+	/// <summary>
+	/// 現在見ているインデックスを相対的に指定する
+	/// </summary>
+	/// <param name="_seekPoint"></param>
+	void SeekTo(const SeekPoint _seekPoint);
 
 private:
 	const std::vector<Byte>& byteCode_;  // 読み取るバイトコード

@@ -38,7 +38,6 @@ private:
 
 #pragma region è¡îÔÇ∆Ç©
 	bool Consume(const std::string& _str);
-	bool Except(const std::string& _str);
 #pragma endregion
 
 	SyntaxAnalyzer& Get() { return *this; }

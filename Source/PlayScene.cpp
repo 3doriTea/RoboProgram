@@ -13,6 +13,8 @@
 #include "Compiler/ProtoAnalyzer.h"
 #include "Compiler/LexicalAnalyzer.h"
 
+#include "ByteCodeDefine.h"
+
 namespace
 {
 	static const char SRC_FILE_NAME[]{ "SourceCode.txt" };
@@ -52,6 +54,16 @@ PlayScene::PlayScene() :
 			{
 				//printfDx("ソースファイルに変更があった\n");
  				pCodeBox->SetSourceLines(_newSource);
+
+				pPlayer_->SetByteCode(
+					{
+						{ -1, BCD_CALL },
+						{ -1, 2 },
+						{ -1, BCD_HALT },
+						{ 3, BCD_ACT },
+						{ 3, BCD_ACT_RUN },
+						{ 4, BCD_RET }
+					});
 
 				/*std::vector<std::pair<int, Byte>> byteCodeAndLines{};
 				ProtoAnalyzer* analyzer{ new ProtoAnalyzer{ _newSource, byteCodeAndLines } };
