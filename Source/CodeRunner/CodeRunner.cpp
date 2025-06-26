@@ -85,9 +85,18 @@ bool CodeRunner::TryReadNext()
 		Byte destRegAddr = bcr_.Pop();
 		register_[destRegAddr] = memory_[fromMemAddr];
 	}
-	else if (bcr_.Consume(BCD_PUSH))
+	else if (bcr_.Consume(BCD_PUS))
 	{
-
+		Byte fromRegAddr = bcr_.Pop();
+		stackMachine_.Push(register_[fromRegAddr]);
+	}
+	else if (bcr_.Consume(BCD_PUSW))
+	{
+		Byte fromRegAddr = bcr_.Pop();
+		Byte fromRegSize = bcr_.Pop();
+		int tmp{};
+		::memcpy(&tmp, &(register_.data()[fromRegAddr]), fromRegSize);
+		stackMachine_.Push(tmp);
 	}
 
 	return true;
