@@ -40,7 +40,7 @@ inline void Stack<ValueT>::Clear()
 template<typename ValueT>
 inline ValueT Stack<ValueT>::Pop()
 {
-	Byte byte = *listCollection_.end();
+	ValueT byte = *(listCollection_.end());
 	listCollection_.erase(listCollection_.end());
 	
 	return byte;

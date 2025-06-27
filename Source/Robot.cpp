@@ -28,6 +28,7 @@ Robot::Robot(
 	runningTimeLeft_{ 0.0f },
 	velocity_{ _velocity },
 	prevPushedSpace_{ _prevPushedSpace },
+	codeRunner_{ bcr_, memory_, stackMachine_, callStack_, register_, REGISTER_SIZE },
 	bcr_{ _byteCode }
 {
 }
@@ -86,6 +87,8 @@ void Robot::Update()
 
 bool Robot::TryReadNext()
 {
+	return codeRunner_.TryReadNext();
+
 	if (bcr_.IsEndOfCode())
 	{
 		return false;  // 終了地点なら失敗
@@ -129,7 +132,7 @@ bool Robot::TryReadNext()
 
 void Robot::Reset()
 {
-	bcr_.Seek(0);  // 最初にシークする
+	codeRunner_.Reset();
 }
 
 void Robot::Run()
@@ -151,3 +154,16 @@ void Robot::SetDir(const bool _isLeft)
 {
 	isLeftDir_ = _isLeft;
 }
+
+inline void Robot::GetMemoryRef(
+	const std::function<void(
+		const ByteCodeReader& _codeReader,
+		const std::vector<Byte>& _memory,
+		const Stack<int>& _stackMachine,
+		const Stack<Byte>& _callStack,
+		const std::vector<Byte>& _register)>& _callback) const
+{
+	_callback(bcr_, memory_, stackMachine_, callStack_, register_);
+}
+
+const int Robot::REGISTER_SIZE{ 4 };

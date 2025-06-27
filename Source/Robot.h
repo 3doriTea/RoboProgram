@@ -1,7 +1,9 @@
 #pragma once
 #include "Rectan.h"
 #include <vector>
+#include <functional>
 #include "CodeReader/ByteCodeReader.h"
+#include "CodeRunner/CodeRunner.h"
 
 
 using Byte = unsigned char;
@@ -32,9 +34,18 @@ public:
 	void ChangeDir();
 	void SetDir(const bool _isLeft);
 
+	inline void GetMemoryRef(const std::function<void(
+			const ByteCodeReader& _codeReader,
+			const std::vector<Byte>& _memory,
+			const Stack<int>& _stackMachine,
+			const Stack<Byte>& _callStack,
+			const std::vector<Byte>& _register)>& _callback) const;
+
 	inline int GetReadByteCodeIndex() const { return static_cast<int>(bcr_.GetCurrentIndex()); }
 
 private:
+	static const int REGISTER_SIZE;  // レジスタのサイズ
+
 	bool isLeftDir_;  // 左方向を見ている
 	bool toJump_;  // ジャンプする
 	float runningTimeLeft_;
@@ -47,4 +58,10 @@ private:
 	bool& prevPushedSpace_;
 
 	ByteCodeReader bcr_;
+	std::vector<Byte> memory_;
+	Stack<int> stackMachine_;
+	Stack<Byte> callStack_;
+	std::vector<Byte> register_;
+
+	CodeRunner codeRunner_;  // コードを実行する頭
 };

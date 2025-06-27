@@ -164,6 +164,7 @@
     <ClInclude Include="Source\Compiler\Analyzer.h" />
     <ClInclude Include="Source\Compiler\LexicalAnalyzer.h" />
     <ClInclude Include="Source\Compiler\ProtoAnalyzer.h" />
+    <ClInclude Include="Source\Compiler\SemanticAnalyzer.h" />
     <ClInclude Include="Source\Compiler\SyntaxAnalyzer.h" />
     <ClInclude Include="Source\IO\Input.h" />
     <ClInclude Include="Source\IO\SourceObserver.h" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Source\Utility\VectorUtil.h" />
     <ClInclude Include="Source\Vector2.h" />
     <ClInclude Include="Source\Vector2Int.h" />
+    <ClInclude Include="Source\ViewerBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -226,6 +228,7 @@
     <ClCompile Include="Source\Utility\RectanUtility.cpp" />
     <ClCompile Include="Source\Utility\StringUtility.cpp" />
     <ClCompile Include="Source\Utility\Timer.cpp" />
+    <ClCompile Include="Source\ViewerBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Test1.txt" />
