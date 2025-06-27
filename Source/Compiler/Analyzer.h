@@ -33,6 +33,14 @@ using Tokens = std::vector<Token>;
 // モードの型
 enum NodeType
 {
+	NODE_EXPR,  // 式
+	NODE_NFOR,  // for文
+	NODE_NIF,   // if文
+	NODE_VARDEC,  // 変数宣言
+	NODE_FUNCDEC,  // 関数宣言
+	NODE_VALUE,  // 値
+	NODE_CALLFUNC,  // 関数呼び出し
+
 	NODE_CONT,               // "for" | "if" | type
 	NODE_NUMBER,             // 数字
 	NODE_REGISTER_FUNC_NAME, // 登録されている関数
@@ -43,11 +51,80 @@ enum NodeType
 
 // ノード
 struct NODE
-{
+{  // total 32byte
 	int tokenIndex_;  // トークンのインデックス
 	NodeType type_;  // ノードの種類
-	NODE* ls;  // left side
-	NODE* rs;  // right side
+	
+	union  // 24byte
+	{
+		union  // 24byte
+		{
+			struct  // 反復処理
+			{
+				NODE* init;  // 初期化処理
+				NODE* expr;  // 継続条件
+				NODE* updt;  // 更新処理
+
+			} nfor;
+
+			struct  // 関数宣言
+			{
+				NODE* type;
+				NODE* name;
+				NODE* argu;
+			} fancDec;
+		};
+
+		union  // 16byte
+		{
+			struct  // 式
+			{
+				NODE* ls;  // left side
+				NODE* rs;  // right side
+			} expr;
+
+			struct  // 関数呼出し
+			{
+				NODE* name;
+				NODE* param;
+			} callFunc;
+
+			struct  // 実引数
+			{
+				NODE* expr;
+				NODE* next;
+			} param;
+			struct  // 仮引数
+			{
+				NODE* varDec;
+				NODE* next;
+			} argu;
+
+			struct  // 変数宣言
+			{
+				NODE* type;
+				NODE* name;
+			} varDec;
+		};
+
+		union  // 8byte
+		{
+			struct  // 条件分岐
+			{
+				NODE* expr;
+			} nif;
+
+			struct  // 変数
+			{
+				NODE* name;
+			} var;
+
+			struct  // リテラル
+			{
+				NODE* liter;
+			} liter;
+		};
+	};
 };
 
 // 構文ノード

@@ -1,0 +1,35 @@
+CppBNF
+
+expr = mul ("+" mul | "-" mul)*
+mul  = num ("*" num | "/" num)*
+
+
+-------------------------------------
+
+int a = 10;
+int b = 2, c = 3;
+
+int res = a + b * c;
+
+-------------------------------------
+
+global   = type | "void"
+
+con      = "for" | "if" | type |
+funcdef  = type 
+vardefs  = name "=" expr (";" | "," vardefs)
+type     = ( "bool" | "int" | "char" ) "*"? vardefs
+
+expr     = add ("==" add | "!=" add)*
+add      = mul ("+" mul | "-" mul)*
+mul      = unary ("*" unary | "/" unary)*
+unary    = ("+" | "-")? primary
+primary  = val | "(" expr ")"
+val      = num | calls | var | bool | "\"" str
+args     = expr ( ")" | ( "," args )* )
+str      = [Character]* | "\""
+num      = [0-9]*
+calls    = [Register function name] "(" args
+var      = [Register variable name]
+bool     = "true" | "false"
+typename = [Register type name]

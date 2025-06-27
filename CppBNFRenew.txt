@@ -1,0 +1,12 @@
+Cpp BNF renew
+
+expr
+equl
+add
+mul
+sign
+primary = val | "(" expr ")"
+
+val = liter |
+
+liter

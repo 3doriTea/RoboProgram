@@ -277,5 +277,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Test1.txt" />
+    <Text Include="CppBNF.txt" />
+    <Text Include="CppBNFRenew.txt" />
   </ItemGroup>
 </Project>
