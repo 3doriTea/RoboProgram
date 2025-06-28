@@ -18,6 +18,9 @@ public:
 	void SetSourceLines(
 		const std::vector<std::string>& _lines);
 
+	void SetByteCodes(
+		const std::vector<Byte>& _byteCode);
+
 private:
 	enum PositionStyleY
 	{
@@ -54,6 +57,7 @@ private:
 	RectInt GetDrawRect(const PositionStyleY _posStyleY, const PositionStyleX _posStyleX) const;
 
 	std::vector<std::string> sourceLines_;
+	std::vector<Byte> byteCodes_;
 	int sourceMaxLength_;  // TODO: もし最大幅で失敗したら、最大の行番号を保存する、そこから幅計算
 	int sourceMaxLengthLine_;
 

@@ -128,6 +128,11 @@ void CodeBox::SetSourceLines(const std::vector<std::string>& _lines)
 	sourceMaxLengthLine_ = maxLine;
 }
 
+void CodeBox::SetByteCodes(const std::vector<Byte>& _byteCode)
+{
+	byteCodes_ = _byteCode;
+}
+
 int CodeBox::GetTextBoxWidth() const
 {
 	if (sourceMaxLengthLine_ <= -1)
@@ -148,9 +153,16 @@ int CodeBox::GetTextBoxHeight() const
 		return 0;  // テキストが読み込まれていないなら幅は 0
 	}
 
+	size_t maxLinesCount
+	{
+		byteCodes_.size() > sourceLines_.size()
+		? byteCodes_.size()
+		: sourceLines_.size()
+	};
+
 	int fontHeight = GetFontSize();
-	int textHeight = fontHeight * sourceLines_.size();  // テキスト占有の高さ
-	textHeight += LINE_MARGIN * sourceLines_.size() - 1;
+	int textHeight = fontHeight * maxLinesCount;  // テキスト占有の高さ
+	textHeight += LINE_MARGIN;// * sourceLines_.size() - 1;
 
 	return textHeight;
 }
@@ -173,6 +185,7 @@ Vector2Int CodeBox::GetDrawTextBegin(
 		beginX = playerHead.x  // プレイヤーの頭
 			+ pPlayer_->GetWidth()  // プレイヤーの肩幅
 			+ PLAYER_SIDE_MARGIN;  // 余白
+		break;
 	default:
 		break;
 	}

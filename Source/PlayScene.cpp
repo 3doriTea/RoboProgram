@@ -9,9 +9,11 @@
 #include "Stage.h"
 #include "CodeBox.h"
 #include "Player.h"
+#include "ViewerBox.h"
 
 #include "Compiler/ProtoAnalyzer.h"
 #include "Compiler/LexicalAnalyzer.h"
+#include "Compiler/SyntaxAnalyzer.h"
 
 #include "ByteCodeDefine.h"
 
@@ -28,6 +30,11 @@ PlayScene::PlayScene() :
 	new Background{};
 	Stage* pStage{ new Stage{} };
 	CodeBox* pCodeBox{ new CodeBox{} };
+
+	ViewerBox* pViewerBox{ new ViewerBox{} };
+
+
+	pViewerBox->SetPosition();
 
 	pPlayer_ = pStage->GetPlayer();
 	assert(pPlayer_ != nullptr
@@ -49,11 +56,12 @@ PlayScene::PlayScene() :
 					u8"}",
 				};
 			})
-		.OnUpdateSource([&, this, pCodeBox](
+		.OnUpdateSource([&, this, pCodeBox, pViewerBox](
 			const std::vector<std::string>& _newSource)
 			{
 				//printfDx("ソースファイルに変更があった\n");
- 				pCodeBox->SetSourceLines(_newSource);
+ 				//pCodeBox->SetSourceLines(_newSource);
+				pViewerBox->SetTextLines(_newSource);
 
 				pPlayer_->SetByteCode(
 					{
@@ -89,9 +97,18 @@ PlayScene::PlayScene() :
 				// 字句解析をする
 				LexicalAnalyzer{ sourceLines, tokens }
 					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
-					{
-						printfDx("(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
-					})
+						{
+							printfDx("(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+						})
+					.Analyze();
+
+				Nodes nodes{};
+
+				SyntaxAnalyzer{ tokens, nodes }
+					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
+						{
+							printfDx("(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+						})
 					.Analyze();
 
 				for (auto&& token : tokens)

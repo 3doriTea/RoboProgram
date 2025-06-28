@@ -21,7 +21,7 @@ class CodeRunner
 {
 public:
 	CodeRunner(
-		const std::vector<Byte>& _byteCode,  // コード領域
+		ByteCodeReader& _byteCodeReader,  // コード領域
 		std::vector<Byte>& _memory,          // メモリ領域
 		Stack<int>& _stackMachine,           // スタック領域0
 		Stack<Byte>& _callStack,             // スタック領域1
@@ -45,7 +45,7 @@ private:
 
 	std::function<void(const ActionMessage)> onActionMessage_;
 
-	ByteCodeReader bcr_;           // コード領域リーダー
+	ByteCodeReader& bcr_;          // コード領域リーダー
 	std::vector<Byte>& memory_;    // メモリ領域
 	Stack<int>& stackMachine_;     // スタック領域0
 	Stack<Byte>& callStack_;       // スタック領域1
