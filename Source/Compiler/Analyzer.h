@@ -33,6 +33,7 @@ using Tokens = std::vector<Token>;
 // ƒ‚[ƒh‚ÌŒ^
 enum NodeType
 {
+	NODE_PROC,  // ˆ—
 	NODE_EXPR,  // ®
 	NODE_NFOR,  // for•¶
 	NODE_NIF,   // if•¶
@@ -91,9 +92,16 @@ struct NODE
 
 			struct  // Àˆø”
 			{
+				NODE* proc;
+				NODE* next;
+			} block;
+
+			struct  // Àˆø”
+			{
 				NODE* expr;
 				NODE* next;
 			} param;
+
 			struct  // ‰¼ˆø”
 			{
 				NODE* varDec;

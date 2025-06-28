@@ -1,12 +1,46 @@
 Cpp BNF renew
 
-expr
-equl
-add
-mul
-sign
+
+
+nfor = "(" assign ";" expr ";" expr ")" (block | proc ";")
+
+nif = "(" expr ")" (block | proc ";")
+
+block = "{" (proc ";")* "}"
+
+proc = "for" nfor | "if" nif | assign | varDec | ret
+
+assign = name "=" expr
+varDec = type name ("=" expr)? ("," name ("=" expr)? )* ";"
+
+params = param ("," param)*
+param = type name
+
+funcDef = type name "(" params? ")" block
+
+ret = "return" expr? ";"
+
+expr = lor
+lor = land ("||" land)*
+land = equl ("&&" equl)*
+equl = then ("==" then | "!=" then)*
+then = add ("<" add | ">" add | "<=" add | ">=" add)*
+add = mul ("+" mul | "-" mul)*
+mul = unary("*" unary | "/" unary)*
+unary = ("+" | "-")? postfix
+postfix = primary ("++" | "--")?
 primary = val | "(" expr ")"
 
-val = liter |
+val = liter | var | callFunc
 
-liter
+liter = integer
+
+callFunc = name "(" (expr ("," expr)*)? ")"
+
+var = name
+
+name = [a-zA-Z_] [a-zA-Z0-9_]*
+
+type = "int" | "void"
+
+integer = [0-9]+
