@@ -35,12 +35,27 @@ enum NodeType
 {
 	NODE_PROC,  // ˆ—
 	NODE_EXPR,  // Ž®
+	NODE_OR,  // ||
+	NODE_AND,  // &&
+	NODE_EQUAL,  // ==
+	NODE_NOTEQUAL,  // !=
+	NODE_LESSTHAN,  // <
+	NODE_GREATERTHEN,  // >
+	NODE_LESSEQUAL,  // <=
+	NODE_GREATEREQUAL,  // >=
+	NODE_ADD,  // +
+	NODE_SUB,  // -
+	NODE_MUL,  // *
+	NODE_DIV,  // /
 	NODE_NFOR,  // for•¶
 	NODE_NIF,   // if•¶
 	NODE_VARDEC,  // •Ï”éŒ¾
 	NODE_FUNCDEC,  // ŠÖ”éŒ¾
 	NODE_VALUE,  // ’l
+	NODE_INTEGER,  // ®”’l
 	NODE_CALLFUNC,  // ŠÖ”ŒÄ‚Ño‚µ
+	NODE_INCREMENT,  // ++
+	NODE_DECREMENT,  // --
 
 	NODE_CONT,               // "for" | "if" | type
 	NODE_NUMBER,             // ”Žš

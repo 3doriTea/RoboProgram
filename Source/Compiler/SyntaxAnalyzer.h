@@ -31,13 +31,41 @@ public:
 
 private:
 #pragma region スタック解決する関数
-	NODE* Global();
-	NODE* FuncDef();
+	NODE* _Expr();
+	NODE* _Lor();
+	NODE* _Land();
+	NODE* _Equal();
+	NODE* _Then();
+	NODE* _Add();
+	NODE* _Mul();
+	NODE* _Unary();
+	NODE* _Postfix();
+	NODE* _Primary();
+
+	NODE* _Val();
+	NODE* _Liter();
+	NODE* _Var();
+	NODE* _CallFunc();
+
+	NODE* _Name();
+	NODE* _Type();
+	NODE* _Integer();
 #pragma endregion
 
 
 #pragma region 消費とか
+	NODE* NewNode(const NODE& _node);
+	/// <summary>
+	/// 一致していたら進める
+	/// </summary>
+	/// <param name="_str">比較文字列</param>
+	/// <returns>一致している true / false</returns>
 	bool Consume(const std::string& _str);
+	/// <summary>
+	/// 取って捨てる
+	/// </summary>
+	/// <param name="_str"></param>
+	void Expect(const std::string& _str);
 #pragma endregion
 
 	SyntaxAnalyzer& Get() { return *this; }
