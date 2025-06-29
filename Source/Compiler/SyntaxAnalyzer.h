@@ -54,6 +54,20 @@ private:
 
 
 #pragma region 消費とか
+
+	/// <summary>
+	/// 次に進める
+	/// </summary>
+	/// <returns>現在のインデックス</returns>
+	int Advance();
+
+	/// <summary>
+	/// 覗き見する
+	/// </summary>
+	/// <param name="_offset">読み取り位置からのオフセット</param>
+	/// <returns>トークンのreadonly</returns>
+	const std::string& Peek(const int _offset = 0);
+
 	NODE* NewNode(const NODE& _node);
 	/// <summary>
 	/// 一致していたら進める
