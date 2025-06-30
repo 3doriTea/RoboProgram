@@ -11,11 +11,11 @@ void SyntaxAnalyzer::Analyze()
 
 NODE* SyntaxAnalyzer::_Global()
 {
-	NODE* node{ _FuncDef() };
+	NODE* node{ nullptr };
 
-	while (node != nullptr)
+	for (readIndex_ = 0; readIndex_ < in_.size(); readIndex_++)
 	{
-		node = NewNode({ -1, NODE_GLOBAL, node, _FuncDef() });
+		node = NewNode({ -1, NODE_GLOBAL, _FuncDef(), node });
 	}
 
 	return node;
@@ -106,7 +106,8 @@ NODE* SyntaxAnalyzer::_Add()
 {
 	NODE* node{ _Mul() };
 
-	while (true)
+	//while (true)
+	for( ; ; )
 	{
 		if (Consume("+"))
 		{
@@ -417,7 +418,10 @@ NODE* SyntaxAnalyzer::_Params()
 
 NODE* SyntaxAnalyzer::_FuncDef()
 {
-	
+	if (IsUnreadable(4))
+	{
+		return nullptr;
+	}
 
 	NODE* type{ _Type() };
 
@@ -543,6 +547,11 @@ NODE* SyntaxAnalyzer::_Assign()
 }
 
 #pragma endregion
+
+bool SyntaxAnalyzer::IsUnreadable(const size_t _size)
+{
+	return readIndex_ + _size > in_.size();
+}
 
 int SyntaxAnalyzer::Advance()
 {

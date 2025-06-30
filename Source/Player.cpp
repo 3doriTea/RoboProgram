@@ -241,7 +241,7 @@ int Player::GetReadLine() const
 
 void Player::SetState(const State _state)
 {
-	assert(0 <= _state < S_MAX
+	assert(0 <= _state && _state < S_MAX
 		&& "範囲外のステータスはセットできません。 @Player::SetState");
 
 	hImage_ = hStateImages[static_cast<int>(_state)];

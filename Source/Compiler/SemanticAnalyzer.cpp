@@ -9,7 +9,16 @@ void SemanticAnalyzer::Analyze()
 		Error("トークン木がないよ！");
 		return;
 	}
-	Read(&in_.first[2], 0);
+	for (auto& nodes : in_.first)
+	{
+		if (nodes.type_ == NODE_GLOBAL)
+		{
+			Read(&nodes, 0);
+			return;
+		}
+	}
+
+	Error("グローバルがないよ！");
 }
 
 void SemanticAnalyzer::Read(const NODE* n, const int _depth)
@@ -183,7 +192,7 @@ void SemanticAnalyzer::Read(const NODE* n, const int _depth)
 		printfDx("登録済み変数名: %s\n", in_.second[n->tokenIndex_].second.c_str());
 		break;
 	default:
-		break;
+		assert(false && "処理しきれていない");
 	}
 }
 

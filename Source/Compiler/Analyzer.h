@@ -83,11 +83,40 @@ enum NodeType
 // ノード
 struct NODE
 {  // total 32byte
+	NODE(const int _tokenIndex, const NodeType _type) :
+		NODE{ _tokenIndex, _type, nullptr, nullptr, nullptr, nullptr }
+	{}
+	NODE(const int _tokenIndex, const NodeType _type, NODE* _n1) :
+		NODE{ _tokenIndex, _type, _n1, nullptr, nullptr, nullptr }
+	{}
+	NODE(const int _tokenIndex, const NodeType _type, NODE* _n1, NODE* _n2) :
+		NODE{ _tokenIndex, _type, _n1, _n2, nullptr, nullptr }
+	{}
+	NODE(const int _tokenIndex, const NodeType _type, NODE* _n1, NODE* _n2, NODE* _n3) :
+		NODE{ _tokenIndex, _type, _n1, _n2, _n3, nullptr }
+	{}
+	NODE(const int _tokenIndex, const NodeType _type, NODE* _n1, NODE* _n2, NODE* _n3, NODE* _n4) :
+		tokenIndex_{ _tokenIndex },
+		type_{ _type },
+		node1{ _n1 },
+		node2{ _n2 },
+		node3{ _n3 },
+		node4{ _n4 }
+	{}
+
 	int tokenIndex_;  // トークンのインデックス
 	NodeType type_;  // ノードの種類
 	
 	union  // 32byte
 	{
+		struct
+		{
+			NODE* node1;
+			NODE* node2;
+			NODE* node3;
+			NODE* node4;
+		};
+
 		union  // 32byte
 		{
 			struct  // 関数宣言

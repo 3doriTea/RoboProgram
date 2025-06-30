@@ -78,6 +78,13 @@ private:
 #pragma region 消費とか
 
 	/// <summary>
+	/// 読み取り不可能か
+	/// </summary>
+	/// <param name="_size">要求サイズ</param>
+	/// <returns>読み取り不可能 true / false</returns>
+	bool IsUnreadable(const size_t _size);
+
+	/// <summary>
 	/// 次に進める
 	/// </summary>
 	/// <returns>現在のインデックス</returns>
