@@ -33,6 +33,8 @@ using Tokens = std::vector<Token>;
 // モードの型
 enum NodeType
 {
+	NODE_GLOBAL,
+
 	NODE_PROC,  // 処理
 	NODE_EXPR,  // 式
 	NODE_OR,  // ||
@@ -51,10 +53,10 @@ enum NodeType
 	NODE_NIF,   // if文
 	NODE_VARDEC,  // 変数宣言
 	NODE_FUNCDEC,  // 関数宣言
-	NODE_VALUE,  // 値
+	//NODE_VALUE,  // 値
 	NODE_INTEGER,  // 整数値
 
-	NODE_LITER_DIGIT,  // 整数リテラル
+	//NODE_LITER_DIGIT,  // 整数リテラル
 
 	NODE_CALLFUNC,  // 関数呼び出し
 	NODE_INCREMENT,  // ++
@@ -122,6 +124,12 @@ struct NODE
 				NODE* ls;  // left side
 				NODE* rs;  // right side
 			} expr;
+
+			struct  // グローバル空間
+			{
+				NODE* funcDef;
+				NODE* next;
+			} global;
 
 			struct  // 変数宣言
 			{

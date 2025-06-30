@@ -11,7 +11,14 @@ void SyntaxAnalyzer::Analyze()
 
 NODE* SyntaxAnalyzer::_Global()
 {
-	return _FuncDef();
+	NODE* node{ _FuncDef() };
+
+	while (node != nullptr)
+	{
+		node = NewNode({ -1, NODE_GLOBAL, node, _FuncDef() });
+	}
+
+	return node;
 }
 
 NODE* SyntaxAnalyzer::_Expr()
@@ -410,6 +417,8 @@ NODE* SyntaxAnalyzer::_Params()
 
 NODE* SyntaxAnalyzer::_FuncDef()
 {
+	
+
 	NODE* type{ _Type() };
 
 	if (type == nullptr)

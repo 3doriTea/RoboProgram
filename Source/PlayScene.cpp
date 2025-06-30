@@ -112,24 +112,14 @@ PlayScene::PlayScene() :
 						})
 					.Analyze();
 
-				SemanticAnalyzer{ nodes, nodes }
+				std::pair<Nodes&, Tokens&> nodeAndTokens{ nodes, tokens };
+
+				SemanticAnalyzer{ nodeAndTokens, nodes}
 					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
 						{
 							printfDx("文法エラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
 						})
 					.Analyze();
-
-
-				for (auto&& token : tokens)
-				{
-					printfDx("%s, ", token.second.c_str());
-				}
-
-				auto readNode = [&, nodes](NODE* _pNode)
-					{
-						
-					};
-
 			});
 
 	Timer::AddInterval(1.0f, [&, this]()

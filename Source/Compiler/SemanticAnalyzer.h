@@ -3,7 +3,7 @@
 
 class SemanticAnalyzer : public Analyzer<
 	SemanticAnalyzer,
-	Nodes,
+	std::pair<Nodes&, Tokens&>,
 	Nodes,
 	SOURCE_POS>
 {
