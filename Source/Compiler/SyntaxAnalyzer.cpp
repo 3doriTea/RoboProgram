@@ -5,7 +5,13 @@ void SyntaxAnalyzer::Analyze()
 {
 	for (readIndex_ = 0; readIndex_ < in_.size(); readIndex_++)
 	{
+		_Global();
 	}
+}
+
+NODE* SyntaxAnalyzer::_Global()
+{
+	return _FuncDef();
 }
 
 NODE* SyntaxAnalyzer::_Expr()
@@ -103,6 +109,10 @@ NODE* SyntaxAnalyzer::_Add()
 		{
 			node = NewNode({ -1, NODE_SUB, node, _Mul() });
 		}
+		else
+		{
+			return node;
+		}
 	}
 }
 
@@ -119,6 +129,10 @@ NODE* SyntaxAnalyzer::_Mul()
 		else if (Consume("/"))
 		{
 			node = NewNode({ -1, NODE_DIV, node, _Unary() });
+		}
+		else
+		{
+			return node;
 		}
 	}
 }
@@ -148,10 +162,8 @@ NODE* SyntaxAnalyzer::_Postfix()
 	{
 		node = NewNode({ -1, NODE_DECREMENT, node });
 	}
-	else
-	{
-		return node;
-	}
+
+	return node;
 }
 
 NODE* SyntaxAnalyzer::_Primary()
@@ -193,10 +205,10 @@ NODE* SyntaxAnalyzer::_Liter()
 	* }
 	*/
 
-	if (node == nullptr)
+	/*if (node == nullptr)
 	{
 		Error("不明なリテラルです。");
-	}
+	}*/
 
 	return node;
 }
@@ -215,7 +227,13 @@ NODE* SyntaxAnalyzer::_CallFunc()
 		return nullptr;  // "(" で始まらないなら関数呼び出しではない
 	}
 
-	NODE* node = NewNode({ -1, NODE_CALLFUNC, _Name(), _Args() });
+	NODE* name{ _Func() };
+
+	Expect("(");
+
+	NODE* args{ _Args() };
+
+	NODE* node = NewNode({ -1, NODE_CALLFUNC, name, args });
 
 	Expect(")");
 
@@ -224,6 +242,13 @@ NODE* SyntaxAnalyzer::_CallFunc()
 
 NODE* SyntaxAnalyzer::_Args()
 {
+	const std::string& token{ Peek() };
+
+	if (token == ")")
+	{
+		return nullptr;
+	}
+
 	NODE* expr{ _Expr() };
 	
 	NODE* next{ nullptr };
@@ -293,15 +318,21 @@ NODE* SyntaxAnalyzer::_Block()
 	}
 }
 
-NODE* SyntaxAnalyzer::Procs()
+NODE* SyntaxAnalyzer::Procs(int _callCount)
 {
+	if (_callCount > 1000)
+	{
+		Error("構文エラー");
+		return nullptr;
+	}
+
 	if (Consume("}"))  // 波かっこ閉じられてたならブロック終了
 	{
 		return nullptr;
 	}
 	else
 	{
-		return NewNode({ -1, NODE_PROC, Proc(), Procs() });
+		return NewNode({ -1, NODE_PROC, Proc(), Procs(++_callCount) });
 	}
 }
 
@@ -320,15 +351,30 @@ NODE* SyntaxAnalyzer::Proc()
 		NODE* node{ _VarDec() };
 		if (node != nullptr)  // 変数宣言
 		{
+			Expect(";");
 			return node;
 		}
 		node = _Return();
 		if (node != nullptr)  // 返却式
 		{
+			Expect(";");
 			return node;
 		}
-		return _Assign();  // 代入式
+		node = _CallFunc();
+		if (node != nullptr)  // 関数呼び出し
+		{
+			Expect(";");
+			return node;
+		}
+		node = _Assign();  // 代入式
+		Expect(";");
+		return node;
 	}
+}
+
+NODE* SyntaxAnalyzer::_Func()
+{
+	return NewNode({ -1, NODE_REGISTER_FUNC_NAME, _Name() });
 }
 
 NODE* SyntaxAnalyzer::_Return()
@@ -345,6 +391,12 @@ NODE* SyntaxAnalyzer::_Return()
 
 NODE* SyntaxAnalyzer::_Params()
 {
+	const std::string& token{ Peek() };
+	if (token == ")")
+	{
+		return nullptr;
+	}
+
 	NODE* varDec{ _VarDec() };
 	
 	NODE* next{ nullptr };
@@ -356,42 +408,23 @@ NODE* SyntaxAnalyzer::_Params()
 	return NewNode({ -1, NODE_PARAM, varDec, next });
 }
 
-//NODE* SyntaxAnalyzer::_Params()
-//{
-//	NODE* node{ NewNode({ -1, NODE_PARAMS, _Name(), nullptr }) };
-//
-//	NODE* param{ nullptr };
-//
-//	while (true)
-//	{
-//		if (Consume(")"))
-//		{
-//			break;
-//		}
-//		if (param == nullptr)
-//		{
-//			node->param.expr = _Expr();
-//		}
-//		else
-//		{
-//			param->param.next =
-//		}
-//	}
-//
-//	return nullptr;
-//}
-
 NODE* SyntaxAnalyzer::_FuncDef()
 {
 	NODE* type{ _Type() };
-	
-	assert(type != nullptr
-		&& "関数定義で不明な型が記述されている @SyntaxAnalyzer::_FuncDef");
+
+	if (type == nullptr)
+	{
+		Error("戻り値が不明な型");
+		return nullptr;
+	}
 
 	NODE* name{ _Name() };
 
-	assert(name != nullptr
-		&& "使用不可能な変数名が記述されている @SyntaxAnalyzer::_FuncDef");
+	if (name == nullptr)
+	{
+		Error("使用不可能な名前が使用されている");
+		return nullptr;
+	}
 
 	Expect("(");
 
@@ -401,8 +434,11 @@ NODE* SyntaxAnalyzer::_FuncDef()
 
 	NODE* block{ _Block() };
 
-	assert(block != nullptr
-		&& "処理ブロックが記述されていない @SyntaxAnalyzer::_FuncDef");
+	if (block == nullptr)
+	{
+		Error("処理ブロックが記述されていない");
+		return nullptr;
+	}
 
 	return NewNode({ -1, NODE_FUNCDEC, type, name, params, block });
 }
@@ -524,11 +560,18 @@ const std::string& SyntaxAnalyzer::Peek(const int _offset)
 NODE* SyntaxAnalyzer::NewNode(const NODE& _node)
 {
 	out_.push_back(_node);
-	return &(*out_.end());
+	return &(out_.data()[out_.size() - 1]);
 }
 
 bool SyntaxAnalyzer::Consume(const std::string& _str)
 {
+	if (readIndex_ >= in_.size())
+	{
+		Error("エラー");
+		readIndex_++;
+		return true;
+	}
+
 	if (in_[readIndex_].second == _str)
 	{
 		readIndex_++;
@@ -545,11 +588,20 @@ void SyntaxAnalyzer::Expect(const std::string& _str)
 	}
 	else
 	{
-		Error("丸括弧が閉じられていない");
+		std::string message{ _str};
+		message += " が抜けているよ";
+		Error(message.c_str());
 	}
 }
 
 void SyntaxAnalyzer::Error(const char* _message)
 {
-	ErrorFull(_message, in_[readIndex_].first);
+	if (readIndex_ < 0 || in_.size() <= readIndex_)
+	{
+		ErrorFull(_message, { -1, -1 });
+	}
+	else
+	{
+		ErrorFull(_message, in_[readIndex_].first);
+	}
 }

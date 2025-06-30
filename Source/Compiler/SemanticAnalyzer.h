@@ -15,6 +15,8 @@ public:
 	void Analyze() override;
 
 private:
+	void Read(const NODE* n, const int _depth);
+
 	SemanticAnalyzer& Get() { return *this; }
 	/// <summary>
 	/// ƒGƒ‰[ˆ—

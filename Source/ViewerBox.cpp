@@ -20,7 +20,7 @@ void ViewerBox::Draw()
 
 void ViewerBox::ReadLine(const int _line)
 {
-	assert(-1 <= _line && _line <= lineTexts_.size()
+	assert(-1 <= _line && _line <= textLines_.size()
 		&& "読み取り場所が範囲外です @ViewerBox::ReadLine");
 	readingLine_ = _line;
 }
@@ -38,4 +38,6 @@ ViewerBox& ViewerBox::AddMarkLine(const int _line, const BackgroundColor _backgr
 		&& "マークラインが重複しています @ViewerBox::AddMarkLine");
 
 	lineMarks_.insert({ _line, { _backgroundColor, _textColor }});
+
+	return *this;
 }

@@ -213,6 +213,7 @@
     <ClCompile Include="Source\Coin.cpp" />
     <ClCompile Include="Source\Compiler\LexicalAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\ProtoAnalyzer.cpp" />
+    <ClCompile Include="Source\Compiler\SemanticAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\SyntaxAnalyzer.cpp" />
     <ClCompile Include="Source\Flag.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />

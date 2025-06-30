@@ -14,6 +14,7 @@
 #include "Compiler/ProtoAnalyzer.h"
 #include "Compiler/LexicalAnalyzer.h"
 #include "Compiler/SyntaxAnalyzer.h"
+#include "Compiler/SemanticAnalyzer.h"
 
 #include "ByteCodeDefine.h"
 
@@ -96,25 +97,39 @@ PlayScene::PlayScene() :
 				LexicalAnalyzer{ sourceLines, tokens }
 					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
 						{
-							printfDx("(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+							printfDx("トークンエラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
 						})
 					.Analyze();
 
 				Nodes nodes{};
 
+				clsDx();
+
 				SyntaxAnalyzer{ tokens, nodes }
 					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
 						{
-							printfDx("(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+							printfDx("構文エラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
 						})
 					.Analyze();
+
+				SemanticAnalyzer{ nodes, nodes }
+					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
+						{
+							printfDx("文法エラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+						})
+					.Analyze();
+
 
 				for (auto&& token : tokens)
 				{
 					printfDx("%s, ", token.second.c_str());
 				}
 
-				// 構文解析をする
+				auto readNode = [&, nodes](NODE* _pNode)
+					{
+						
+					};
+
 			});
 
 	Timer::AddInterval(1.0f, [&, this]()

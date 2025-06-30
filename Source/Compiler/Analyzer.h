@@ -71,12 +71,11 @@ enum NodeType
 
 	NODE_PARAM,  // ‰¼ˆø”
 
-	NODE_CONT,               // "for" | "if" | type
-	NODE_NUMBER,             // ”Žš
+	//NODE_NUMBER,             // ”Žš
 	NODE_REGISTER_FUNC_NAME, // “o˜^‚³‚ê‚Ä‚¢‚éŠÖ”
 	NODE_REGISTER_VAR_NAME,  // (“o˜^‚³‚ê‚Ä‚¢‚é•Ï”–¼)
-	NODE_BOOL,               // true | false
-	NODE_REGISTER_TYPE_NAME, // (“o˜^‚³‚ê‚Ä‚¢‚éŒ^–¼)
+	//NODE_BOOL,               // true | false
+	//NODE_REGISTER_TYPE_NAME, // (“o˜^‚³‚ê‚Ä‚¢‚éŒ^–¼)
 };
 
 // ƒm[ƒh

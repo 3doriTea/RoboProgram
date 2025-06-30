@@ -51,7 +51,7 @@ public:
 		const TextColor _textColor);
 	// TODO: ViewerBox& AddMarkChar(const int _line, const int _column, const ColorCode _color);
 
-	RectInt GetDrawRect() const { return drawRect_; }
+	inline RectInt GetDrawRect() const { return rect_.ToInt(); }
 
 private:
 	int readingLine_;  // 見ている行数
@@ -61,7 +61,6 @@ private:
 	BackgroundColor defaultBackgroundColor_;  // デフォルトの背景色
 	TextColor defaultTextColor_;              // デフォルトのテキスト色
 
-	RectInt drawRect_;
 	std::vector<std::string> textLines_;
 	std::map<int, std::pair<BackgroundColor, ColorCode>> lineMarks_;
 };

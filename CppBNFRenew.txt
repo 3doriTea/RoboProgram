@@ -1,6 +1,6 @@
 Cpp BNF renew
 
-
+global = funcDef
 
 nfor = "(" assign ";" expr ";" expr ")" (block | proc ";")
 

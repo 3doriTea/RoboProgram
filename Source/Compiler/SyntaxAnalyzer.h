@@ -31,6 +31,8 @@ public:
 
 private:
 #pragma region スタック解決する関数
+	NODE* _Global();
+
 	NODE* _Expr();
 	NODE* _Lor();
 	NODE* _Land();
@@ -53,8 +55,10 @@ private:
 	NODE* _NIf();
 	NODE* _Block();
 
-	NODE* Procs();
+	NODE* Procs(int _callCount = 0);
 	NODE* Proc();
+
+	NODE* _Func();
 
 	NODE* _Return();
 
