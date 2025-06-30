@@ -53,9 +53,23 @@ enum NodeType
 	NODE_FUNCDEC,  // 関数宣言
 	NODE_VALUE,  // 値
 	NODE_INTEGER,  // 整数値
+
+	NODE_LITER_DIGIT,  // 整数リテラル
+
 	NODE_CALLFUNC,  // 関数呼び出し
 	NODE_INCREMENT,  // ++
 	NODE_DECREMENT,  // --
+
+	NODE_NAME,  // 名
+	NODE_TYPE,  // 型
+
+	NODE_RET,  // return
+
+	NODE_ARG,  // 実引数
+
+	NODE_ASSIGN,  // 代入式
+
+	NODE_PARAM,  // 仮引数
 
 	NODE_CONT,               // "for" | "if" | type
 	NODE_NUMBER,             // 数字
@@ -71,24 +85,35 @@ struct NODE
 	int tokenIndex_;  // トークンのインデックス
 	NodeType type_;  // ノードの種類
 	
-	union  // 24byte
+	union  // 32byte
 	{
-		union  // 24byte
+		union  // 32byte
 		{
+			struct  // 関数宣言
+			{
+				NODE* type;
+				NODE* name;
+				NODE* param;
+				NODE* proc;  // 処理
+			} fancDec;
+
 			struct  // 反復処理
 			{
 				NODE* init;  // 初期化処理
 				NODE* expr;  // 継続条件
 				NODE* updt;  // 更新処理
-
+				NODE* proc;  // 処理
 			} nfor;
+		};
 
-			struct  // 関数宣言
+		union  // 24byte
+		{
+			struct  // 代入式
 			{
-				NODE* type;
 				NODE* name;
-				NODE* argu;
-			} fancDec;
+				NODE* expr;
+				NODE* next;
+			} assigns;
 		};
 
 		union  // 16byte
@@ -99,43 +124,49 @@ struct NODE
 				NODE* rs;  // right side
 			} expr;
 
+			struct  // 変数宣言
+			{
+				NODE* type;
+				NODE* assigns;
+			} varDec;
+
 			struct  // 関数呼出し
 			{
 				NODE* name;
-				NODE* param;
+				NODE* args;
 			} callFunc;
 
-			struct  // 実引数
+			struct  // 処理
 			{
 				NODE* proc;
 				NODE* next;
-			} block;
+			} proc;
 
 			struct  // 実引数
 			{
 				NODE* expr;
 				NODE* next;
-			} param;
+			} arg;
 
 			struct  // 仮引数
 			{
 				NODE* varDec;
 				NODE* next;
-			} argu;
+			} param;
 
-			struct  // 変数宣言
+			struct  // 条件分岐
 			{
-				NODE* type;
-				NODE* name;
-			} varDec;
+				NODE* expr;
+				NODE* proc;
+			} nif;
 		};
 
 		union  // 8byte
 		{
-			struct  // 条件分岐
+			struct  // 返却文
 			{
 				NODE* expr;
-			} nif;
+			} ret;
 
 			struct  // 変数
 			{

@@ -32,9 +32,7 @@ PlayScene::PlayScene() :
 	CodeBox* pCodeBox{ new CodeBox{} };
 
 	ViewerBox* pViewerBox{ new ViewerBox{} };
-
-
-	pViewerBox->SetPosition();
+	//pViewerBox->SetPosition();
 
 	pPlayer_ = pStage->GetPlayer();
 	assert(pPlayer_ != nullptr

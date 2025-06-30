@@ -47,9 +47,27 @@ private:
 	NODE* _Var();
 	NODE* _CallFunc();
 
+	NODE* _Args();
+	
+	NODE* _NFor();
+	NODE* _NIf();
+	NODE* _Block();
+
+	NODE* Procs();
+	NODE* Proc();
+
+	NODE* _Return();
+
+	NODE* _Params();
+
+	NODE* _FuncDef();
+
 	NODE* _Name();
 	NODE* _Type();
 	NODE* _Integer();
+
+	NODE* _VarDec();
+	NODE* _Assign();
 #pragma endregion
 
 
