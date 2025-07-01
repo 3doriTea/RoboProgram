@@ -287,6 +287,15 @@ std::string SemanticAnalyzer::ReadName(const NODE* n)
 	return in_.second[n->tokenIndex_].second;
 }
 
+int SemanticAnalyzer::ReadIntegier(const NODE* n)
+{
+	assert(n != nullptr && "nullptr‚¾‚Á‚½I @SemanticAnalyzer::ReadName");
+
+	std::string str{ in_.second[n->tokenIndex_].second };
+
+	return std::stoi(str);
+}
+
 void SemanticAnalyzer::ReadParam(const NODE* n, ByteCodes& bc)
 {
 	// TODO: intŒ^‚¾‚Æ‰¼Šm’è‚µ‚Ä‚¢‚é
@@ -315,10 +324,14 @@ void SemanticAnalyzer::ReadExpr(const NODE* n, ByteCodes& bc)
 	switch (n->type_)
 	{
 	case NODE_REGISTER_VAR_NAME:
+		ReadVar
+		ReadName(n->var.name);
 		break;
 	case NODE_REGISTER_FUNC_NAME:
+		ReadName(n->func.name);
 		break;
 	case NODE_INTEGER:
+		ReadIntegier(n);
 		break;
 	default:
 		break;

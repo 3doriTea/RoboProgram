@@ -70,6 +70,7 @@ private:
 	void ReadFuncDec(const NODE* n);
 	std::string ReadName(const NODE* n);
 	std::string ReadType(const NODE* n);
+	int ReadIntegier(const NODE* n);
 	void ReadParam(const NODE* n, ByteCodes& bc);
 	void ReadProcs(const NODE* n, ByteCodes& bc);
 
