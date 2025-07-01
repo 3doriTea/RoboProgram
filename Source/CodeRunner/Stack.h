@@ -40,8 +40,8 @@ inline void Stack<ValueT>::Clear()
 template<typename ValueT>
 inline ValueT Stack<ValueT>::Pop()
 {
-	ValueT byte = *(listCollection_.end());
-	listCollection_.erase(listCollection_.end());
+	ValueT byte = (*listCollection_.begin());
+	listCollection_.erase(listCollection_.begin());
 	
 	return byte;
 }
@@ -49,5 +49,5 @@ inline ValueT Stack<ValueT>::Pop()
 template<typename ValueT>
 inline void Stack<ValueT>::Push(const ValueT _value)
 {
-	listCollection_.push_back(_value);
+	listCollection_.push_front(_value);
 }

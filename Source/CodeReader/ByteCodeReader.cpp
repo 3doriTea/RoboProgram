@@ -41,6 +41,15 @@ Byte ByteCodeReader::Pop()
 	return byte;
 }
 
+Byte ByteCodeReader::SafePeek() const
+{
+	if (IsEndOfCode())
+	{
+		return 0xFF;
+	}
+	return byteCode_[current_];
+}
+
 void ByteCodeReader::Seek(const size_t _index)
 {
 	// TODO: 範囲内かチェックする

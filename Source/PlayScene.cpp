@@ -58,6 +58,9 @@ PlayScene::PlayScene() :
 		.OnUpdateSource([&, this, pCodeBox, pViewerBox](
 			const std::vector<std::string>& _newSource)
 			{
+				bool isError{ false };
+				std::string errorMessage{};
+				SOURCE_POS errorPosition{};
 				//printfDx("ソースファイルに変更があった\n");
  				//pCodeBox->SetSourceLines(_newSource);
 				pViewerBox->SetTextLines(_newSource);
@@ -65,7 +68,7 @@ PlayScene::PlayScene() :
 				pPlayer_->SetByteCode(
 					{
 						{ -1, BCD_CALL },
-						{ -1, 2 },
+						{ -1, 1 },
 						{ -1, BCD_HALT },
 						{ 3, BCD_ACT },
 						{ 3, BCD_ACT_RUN },
@@ -91,35 +94,87 @@ PlayScene::PlayScene() :
 
 				Tokens tokens{};
 
-				clsDx();
-
 				// 字句解析をする
 				LexicalAnalyzer{ sourceLines, tokens }
 					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
 						{
-							printfDx("トークンエラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+							errorMessage = std::string{ "トークンエラー " };
+							if (_srcPos.line >= 0)
+							{
+								errorMessage += std::to_string(_srcPos.line) + "行 ";
+							}
+							if (_srcPos.column >= 0)
+							{
+								errorMessage += std::to_string(_srcPos.column) + "文字目 ";
+							}
+							errorMessage += _msg;
+							errorPosition = _srcPos;
+							// printfDx("トークンエラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+							isError = true;
 						})
 					.Analyze();
 
-				Nodes nodes{};
+				if (isError)  // エラーなら止める
+				{
+					pPlayer_->SetError(errorMessage, errorPosition);
+					return;
+				}
 
-				clsDx();
+				Nodes nodes{};
 
 				SyntaxAnalyzer{ tokens, nodes }
 					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
 						{
-							printfDx("構文エラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+							errorMessage = std::string{ "構文エラー " };
+							if (_srcPos.line >= 0)
+							{
+								errorMessage += std::to_string(_srcPos.line) + "行 ";
+							}
+							if (_srcPos.column >= 0)
+							{
+								errorMessage += std::to_string(_srcPos.column) + "文字目 ";
+							}
+							errorMessage += _msg;
+							errorPosition = _srcPos;
+							//printfDx("構文エラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+							isError = true;
 						})
 					.Analyze();
+
+				if (isError)  // エラーなら止める
+				{
+					pPlayer_->SetError(errorMessage, errorPosition);
+					return;
+				}
 
 				std::pair<Nodes&, Tokens&> nodeAndTokens{ nodes, tokens };
 
-				SemanticAnalyzer{ nodeAndTokens, nodes}
+				ByteCodes byteCodes{};
+
+				SemanticAnalyzer{ nodeAndTokens, byteCodes }
 					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
 						{
-							printfDx("文法エラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+							errorMessage = std::string{ "文法エラー " };
+							if (_srcPos.line >= 0)
+							{
+								errorMessage += std::to_string(_srcPos.line) + "行 ";
+							}
+							if (_srcPos.column >= 0)
+							{
+								errorMessage += std::to_string(_srcPos.column) + "文字目 ";
+							}
+							errorMessage += _msg;
+							errorPosition = _srcPos;
+							//printfDx("文法エラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
+							isError = true;
 						})
 					.Analyze();
+
+				if (isError)  // エラーなら止める
+				{
+					pPlayer_->SetError(errorMessage, errorPosition);
+					return;
+				}
 			});
 
 	Timer::AddInterval(1.0f, [&, this]()

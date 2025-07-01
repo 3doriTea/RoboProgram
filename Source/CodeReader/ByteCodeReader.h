@@ -35,6 +35,12 @@ public:
 	/// </summary>
 	/// <returns>現在見ている</returns>
 	Byte Pop();
+	
+	/// <summary>
+	/// 何もせず現在見ているコードを見る
+	/// </summary>
+	/// <returns>バイトコード</returns>
+	Byte SafePeek() const;
 
 	/// <summary>
 	/// 現在のインデックスを取得

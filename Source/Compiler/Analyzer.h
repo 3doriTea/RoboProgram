@@ -204,6 +204,11 @@ struct NODE
 				NODE* expr;
 			} ret;
 
+			struct  // 登録済み関数名
+			{
+				NODE* name;
+			} func;
+
 			struct  // 変数
 			{
 				NODE* name;
@@ -218,7 +223,7 @@ struct NODE
 };
 
 // 構文ノード
-using Nodes = std::vector<NODE>;
+using Nodes = std::vector<NODE*>;
 
 // バイトコード
 using ByteCode = std::pair<SOURCE_POS, Byte>;

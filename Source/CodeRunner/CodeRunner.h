@@ -33,12 +33,14 @@ public:
 	bool TryReadNext();
 	void Reset();
 
+	inline Byte PeekCurrent() const { return bcr_.SafePeek(); }
+
 	/// <summary>
 	/// アクションメッセージを受け取ったとき
 	/// </summary>
 	/// <param name="_callback">void(const ActionMessage)</param>
 	/// <returns></returns>
-	inline CodeRunner& OnActionMessage(const std::function<void(const ActionMessage)>& _callback) { onActionMessage_ = _callback; }
+	inline CodeRunner& OnActionMessage(const std::function<void(const ActionMessage)>& _callback) { onActionMessage_ = _callback; return *this; }
 	inline int GetReadByteCodeIndex() const { return static_cast<int>(bcr_.GetCurrentIndex()); }
 private:
 	const int REGISTER_SIZE;  // レジスタのサイズ

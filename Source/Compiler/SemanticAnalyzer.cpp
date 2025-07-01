@@ -2,6 +2,14 @@
 #include <cassert>
 #include <DxLib.h>
 
+static const size_t DEBUG_STR_SIZE{ 64 };
+
+char debugString[DEBUG_STR_SIZE]{};
+
+#define PRINTF(...) \
+::sprintf_s<64>(debugString, __VA_ARGS__); \
+OutputDebugString(debugString);
+
 void SemanticAnalyzer::Analyze()
 {
 	if (in_.first.size() <= 0)
@@ -11,9 +19,9 @@ void SemanticAnalyzer::Analyze()
 	}
 	for (auto& nodes : in_.first)
 	{
-		if (nodes.type_ == NODE_GLOBAL)
+		if (nodes->type_ == NODE_GLOBAL)
 		{
-			Read(&nodes, 0);
+			Read(nodes, 0);
 			return;
 		}
 	}
@@ -30,166 +38,187 @@ void SemanticAnalyzer::Read(const NODE* n, const int _depth)
 	switch (n->type_)
 	{
 	case NODE_PROC:
-		printfDx("プロセス\n");
+		PRINTF("プロセス\n");
 		Read(n->proc.proc, d);
-		Read(n->proc.next, d);
+		if (n->proc.next != nullptr)  // 次のプロセスがあるなら
+		{
+			Read(n->proc.next, d);
+		}
 		break;// 処理
 	case NODE_EXPR:
-		printfDx("式\n");
+		PRINTF("式\n");
 		Read(n->expr.ls, d);
 		Read(n->expr.rs, d);
 		break;// 式
 	case NODE_OR:
 		Read(n->expr.rs, d);
-		printfDx("or\n");
+		PRINTF("or\n");
 		Read(n->expr.ls, d);
 		break;// ||
 	case NODE_AND:
 		Read(n->expr.rs, d);
-		printfDx("and\n");
+		PRINTF("and\n");
 		Read(n->expr.ls, d);
 		break;// &&
 	case NODE_EQUAL:
 		Read(n->expr.ls, d);
-		printfDx("==\n");
+		PRINTF("==\n");
 		Read(n->expr.rs, d);
 		break;// ==
 	case NODE_NOTEQUAL:
 		Read(n->expr.ls, d);
-		printfDx("!=\n");
+		PRINTF("!=\n");
 		Read(n->expr.rs, d);
 		break;// !=
 	case NODE_LESSTHAN:
 		Read(n->expr.ls, d);
-		printfDx("<\n");
+		PRINTF("<\n");
 		Read(n->expr.rs, d);
 		break;// <
 	case NODE_GREATERTHEN:
 		Read(n->expr.ls, d);
-		printfDx(">\n");
+		PRINTF(">\n");
 		Read(n->expr.rs, d);
 		break;// >
 	case NODE_LESSEQUAL:
 		Read(n->expr.ls, d);
-		printfDx("<=\n");
+		PRINTF("<=\n");
 		Read(n->expr.rs, d);
 		break;// <=
 	case NODE_GREATEREQUAL:
 		Read(n->expr.ls, d);
-		printfDx(">=\n");
+		PRINTF(">=\n");
 		Read(n->expr.rs, d);
 		break;// >=
 	case NODE_ADD:
 		Read(n->expr.ls, d);
-		printfDx("+\n");
+		PRINTF("+\n");
 		Read(n->expr.rs, d);
 		break;// +
 	case NODE_SUB:
 		Read(n->expr.ls, d);
-		printfDx("-\n");
+		PRINTF("-\n");
 		Read(n->expr.rs, d);
 		break;// -
 	case NODE_MUL:
 		Read(n->expr.ls, d);
-		printfDx("*\n");
+		PRINTF("*\n");
 		Read(n->expr.rs, d);
 		break;// *
 	case NODE_DIV:
 		Read(n->expr.ls, d);
-		printfDx("/\n");
+		PRINTF("/\n");
 		Read(n->expr.rs, d);
 		break;// /
 	case NODE_NFOR:
-		printfDx("for\n");
+		PRINTF("for\n");
 		Read(n->nfor.init, d);
 		Read(n->nfor.expr, d);
 		Read(n->nfor.updt, d);
 		Read(n->nfor.proc, d);
 		break;// for文
 	case NODE_NIF:
-		printfDx("if\n");
+		PRINTF("if\n");
 		Read(n->nif.expr, d);
 		Read(n->nif.proc, d);
 		break;// if文
 	case NODE_VARDEC:
-		printfDx("変数宣言\n");
+		PRINTF("変数宣言\n");
 		Read(n->varDec.type, d);
 		Read(n->varDec.assigns, d);
 		break;// 変数宣言
 	case NODE_FUNCDEC:
-		printfDx("関数定義\n");
+		PRINTF("関数定義\n");
 		Read(n->fancDec.type, d);
 		Read(n->fancDec.name, d);
-		Read(n->fancDec.param, d);
+		if (n->fancDec.param != nullptr)  // パラメータがあるなら
+		{
+			Read(n->fancDec.param, d);
+		}
+		Read(n->fancDec.proc, d);
 		break;// 関数宣言
 	//case NODE_VALUE:
-		//printfDx("値:%s\n", in_.second[n->tokenIndex_].second.c_str());
+		//PRINTF("値:%s\n", in_.second[n->tokenIndex_].second.c_str());
 		
 		//break;// 値
 	case NODE_INTEGER:
-		printfDx("%s\n", in_.second[n->tokenIndex_].second.c_str());
+		PRINTF("%s\n", in_.second[n->tokenIndex_].second.c_str());
 		break;// 整数値
 	//case NODE_LITER_DIGIT:
-	//	printfDx("\n");
+	//	PRINTF("\n");
 	//	break;// 整数リテラル
 	case NODE_CALLFUNC:
-		printfDx("関数呼び出し:\n");
+		PRINTF("関数呼び出し:\n");
 		Read(n->callFunc.name, d);
-		Read(n->callFunc.args, d);
+		if (n->callFunc.args != nullptr)  // 引数があるなら
+		{
+			Read(n->callFunc.args, d);
+		}
 		break;// 関数呼び出し
 	case NODE_INCREMENT:
-		printfDx("インクリメント:\n");
+		PRINTF("インクリメント:\n");
 		Read(n->expr.ls, d);
 		break;// ++
 	case NODE_DECREMENT:
-		printfDx("デクリメント:\n");
+		PRINTF("デクリメント:\n");
 		Read(n->expr.ls, d); 
 		break;// --
 	case NODE_NAME:
-		printfDx("名前:%s\n", in_.second[n->tokenIndex_].second.c_str());
+		PRINTF("名前:%s\n", in_.second[n->tokenIndex_].second.c_str());
 		break;// 名
 	case NODE_TYPE:
-		printfDx("型:%s\n", in_.second[n->tokenIndex_].second.c_str());
+		PRINTF("型:%s\n", in_.second[n->tokenIndex_].second.c_str());
 		break;// 型
 	case NODE_RET:
-		printfDx("返却:\n");
+		PRINTF("返却:\n");
 		Read(n->ret.expr, d);
 		break;// return
 	case NODE_ARG:
-		printfDx("実引数:\n");
+		PRINTF("実引数:\n");
 		Read(n->arg.expr, d);
 		if (n->arg.next != nullptr)
 		{
-			printfDx(",\n");
+			PRINTF(",\n");
 			Read(n->arg.next, d);
 		}
 
 		break;// 実引数
 	case NODE_ASSIGN:
-		printfDx("代入:\n");
+		PRINTF("代入:\n");
 		Read(n->assigns.name, d);
-		printfDx("=:\n");
+		PRINTF("=:\n");
 		Read(n->assigns.expr, d);
 		if (n->assigns.next != nullptr)
 		{
-			printfDx(",\n");
+			PRINTF(",\n");
 			Read(n->assigns.next, d);
 		}
 		break;// 代入式
 	case NODE_PARAM:
-		printfDx("仮引数\n");
+		PRINTF("仮引数\n");
 		Read(n->param.varDec, d);
 		if (n->param.next != nullptr)
 		{
-			printfDx(",\n");
+			PRINTF(",\n");
 			Read(n->param.next, d);
 		}
 		break;// 仮引数
 	case NODE_REGISTER_FUNC_NAME:
-		printfDx("登録済み関数名: %s\n", in_.second[n->tokenIndex_].second.c_str());
+		PRINTF("登録済み関数名:\n");
+		Read(n->func.name, d);
 		break;
 	case NODE_REGISTER_VAR_NAME:
-		printfDx("登録済み変数名: %s\n", in_.second[n->tokenIndex_].second.c_str());
+		PRINTF("登録済み変数名:\n");
+		Read(n->var.name, d);
+		break;
+	case NODE_GLOBAL:
+		PRINTF("グローバル\n");
+		Read(n->global.funcDef, d);
+		if (n->global.next != nullptr)
+		{
+			PRINTF(",\n");
+			Read(n->global.next, d);
+		}
 		break;
 	default:
 		assert(false && "処理しきれていない");

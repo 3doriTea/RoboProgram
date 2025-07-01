@@ -111,7 +111,7 @@ NODE* SyntaxAnalyzer::_Add()
 	{
 		if (Consume("+"))
 		{
-			node = NewNode({ -1, NODE_AND, node, _Mul() });
+			node = NewNode({ -1, NODE_ADD, node, _Mul() });
 		}
 		else if (Consume("-"))
 		{
@@ -577,8 +577,12 @@ const std::string& SyntaxAnalyzer::Peek(const int _offset)
 
 NODE* SyntaxAnalyzer::NewNode(const NODE& _node)
 {
-	out_.push_back(_node);
-	return &(out_.data()[out_.size() - 1]);
+	//out_.push_back(_node);
+	//return &(out_.data()[out_.size() - 1]);
+
+	NODE* pNode{ new NODE{ _node } };
+	out_.push_back(pNode);
+	return pNode;
 }
 
 bool SyntaxAnalyzer::Consume(const std::string& _str)

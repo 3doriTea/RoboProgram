@@ -4,6 +4,7 @@
 #include "Robot.h"
 #include "Utility/Timer.h"
 
+struct SOURCE_POS;
 
 class Player : public Object2D
 {
@@ -12,7 +13,7 @@ private:
 	{
 		S_READY,
 		S_RUN,
-
+		S_ERROR,
 		S_MAX,
 	};
 
@@ -34,6 +35,7 @@ public:
 	/// <returns>â°ïù(pixel)</returns>
 	int GetWidth() const;
 
+	void SetError(const std::string& _message, const SOURCE_POS& _srcPos);
 	void SetByteCode(const std::vector<std::pair<int, Byte>>& _byteCode);
 
 	int GetReadLine() const;

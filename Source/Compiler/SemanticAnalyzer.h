@@ -4,7 +4,7 @@
 class SemanticAnalyzer : public Analyzer<
 	SemanticAnalyzer,
 	std::pair<Nodes&, Tokens&>,
-	Nodes,
+	ByteCodes,
 	SOURCE_POS>
 {
 public:

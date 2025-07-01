@@ -29,8 +29,20 @@ Robot::Robot(
 	velocity_{ _velocity },
 	prevPushedSpace_{ _prevPushedSpace },
 	codeRunner_{ bcr_, memory_, stackMachine_, callStack_, register_, REGISTER_SIZE },
-	bcr_{ _byteCode }
+	bcr_{ _byteCode },
+	toJump_{ false }
 {
+	codeRunner_.OnActionMessage([&, this](const ActionMessage _msg)
+		{
+			if (_msg == ActionMessage::Run)
+			{
+				Run();
+			}
+			else if (_msg == ActionMessage::Jump)
+			{
+				Jump();
+			}
+		});
 }
 
 Robot::~Robot()

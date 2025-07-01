@@ -6,6 +6,7 @@
 #include "IO/Input.h"
 #include "PlayScene.h"
 #include "Screen.h"
+#include "Compiler/Analyzer.h"
 
 
 namespace
@@ -14,6 +15,7 @@ namespace
 	static const char PLAYER_IMAGE_FILE[]{ "Data/Image/Player.png" };
 	static const char PLAYER_READY_IMAGE_FILE[]{ "Data/Image/Player-ready.png" };
 	static const char PLAYER_RUNNING_IMAGE_FILE[]{ "Data/Image/Player-running.png" };
+	static const char PLAYER_ERROR_IMAGE_FILE[]{ "Data/Image/Player-error.png" };
 	static const float MOVE_SPEED{ 5 };
 	static const float JUMP_HEIGHT{ 80 };
 	static const float GRAVITY{ 0.05 };
@@ -44,22 +46,11 @@ Player::Player(const Vector2& _position) :
 	hStateImages[S_RUN] = LoadGraph(PLAYER_RUNNING_IMAGE_FILE);
 	assert(hStateImages[S_RUN] > 0
 		&& "PlayerのRunイメージ読み込みに失敗 @Player::Player");
+	hStateImages[S_ERROR] = LoadGraph(PLAYER_ERROR_IMAGE_FILE);
+	assert(hStateImages[S_ERROR] > 0
+		&& "PlayerのErrorイメージ読み込みに失敗 @Player::Player");
 
 	SetState(S_READY);
-
-	/*hImage_ = LoadGraph(PLAYER_IMAGE_FILE);
-	assert(hImage_ > 0
-		&& "Playerのイメージ読み込みに失敗 @Player::Player");*/
-
-	/*SetByteCode(
-		{
-			{ 0, 0x00 },
-			{ 1, 0x00 },
-			{ 2, 0xCB },
-			{ 2, 0x01 },
-			{ 3, 0x00 },
-			{ 4, 0x00 },
-		});*/
 }
 
 Player::~Player()
@@ -76,14 +67,21 @@ void Player::Update()
 		if (Input::IsMouseDown(MOUSE_INPUT_LEFT))
 		{
 			State current = GetState();
-			if (current == S_READY)
+			switch (current)
 			{
+			case Player::S_READY:
 				SetState(S_RUN);
-			}
-			else
-			{
+				break;
+			case Player::S_RUN:
 				SetState(S_READY);
 				GetScene<PlayScene>()->OpenSrcFile();
+				break;
+			case Player::S_ERROR:
+				printfDx("コードにエラーがあるため、実行できません。\n");
+				break;
+			case Player::S_MAX:
+			default:
+				break;
 			}
 		}
 	}
@@ -217,9 +215,18 @@ int Player::GetWidth() const
 	return IMAGE_WIDTH;
 }
 
+void Player::SetError(const std::string& _message, const SOURCE_POS& _srcPos)
+{
+	SetState(S_ERROR);
+}
+
 void Player::SetByteCode(const std::vector<std::pair<int, Byte>>& _byteCode)
 {
 	robot_.Reset();
+	if (currentState_ == S_ERROR)
+	{
+		SetState(S_READY);
+	}
 
 	byteCodeAndLines_ = _byteCode;
 	byteCode_.clear();
@@ -252,6 +259,7 @@ void Player::SetState(const State _state)
 	{
 	case S_READY:
 		Timer::Remove(hBeatTimer_);
+		hBeatTimer_ = nullptr;
 		break;
 	case S_RUN:
 		prevIsSucceedTryRead = false;
@@ -275,6 +283,14 @@ void Player::SetState(const State _state)
 					}
 				}
 			});
+		break;
+	case S_ERROR:
+		prevIsSucceedTryRead = false;
+		sleepCount_ = 0;
+		robot_.Reset();
+
+		Timer::Remove(hBeatTimer_);
+		hBeatTimer_ = nullptr;
 		break;
 	default:
 		break;

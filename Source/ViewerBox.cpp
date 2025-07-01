@@ -2,7 +2,16 @@
 #include <cassert>
 
 
-ViewerBox::ViewerBox()
+static const ColorCode COLOR_BLACK{ 0x000000 };  // デフォルトの黒
+
+ViewerBox::ViewerBox() :
+	readingLine_{ -1 },
+	frameWidth_{ 0 },
+	frameColor_{ COLOR_BLACK },
+	defaultBackgroundColor_{ COLOR_BLACK },
+	defaultTextColor_{ COLOR_BLACK },
+	textLines_{},
+	lineMarks_{}
 {
 }
 

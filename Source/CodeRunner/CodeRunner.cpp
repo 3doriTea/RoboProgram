@@ -1,5 +1,6 @@
 #include "CodeRunner.h"
 #include <cassert>
+#include <DxLib.h>
 
 
 CodeRunner::CodeRunner(
@@ -24,6 +25,8 @@ CodeRunner::~CodeRunner()
 
 bool CodeRunner::TryReadNext()
 {
+	printfDx("read %d: 0x%02x\n", bcr_.GetCurrentIndex(), bcr_.SafePeek());
+
 	if (bcr_.IsEndOfCode())
 	{
 		return false;  // 終了地点なら失敗
@@ -136,6 +139,11 @@ bool CodeRunner::TryReadNext()
 		Byte destRegSize{ bcr_.Pop() };
 		int tmp{ stackMachine_.Pop() };
 		::memcpy(&(register_.data()[destRegAddr]), &tmp, destRegSize);
+	}
+	else
+	{
+		//assert(false && "未定義のバイトコード");
+		printfDx("未定義のバイトコード%d:0x%02x\n", bcr_.GetCurrentIndex(), bcr_.SafePeek());
 	}
 
 	return true;
