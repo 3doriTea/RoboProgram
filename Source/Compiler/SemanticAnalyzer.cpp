@@ -1,6 +1,7 @@
 #include "SemanticAnalyzer.h"
 #include <cassert>
 #include <DxLib.h>
+#include "../ByteCodeDefine.h"
 
 static const size_t DEBUG_STR_SIZE{ 64 };
 
@@ -27,6 +28,34 @@ void SemanticAnalyzer::Analyze()
 	}
 
 	Error("グローバルがないよ！");
+}
+
+int SemanticAnalyzer::NewMemory(std::string name, int size)
+{
+	assert(size == 4 && "4byte以外の型サイズは未実装です。");
+
+	std::vector<bool> used(maxMemorySize / 4, false);
+
+	int offset = 0;
+	for (auto& mem : memory)
+	{
+		used[mem.second.offset / 4] = true;
+		offset++;
+	}
+
+	for (int i = 0; i < used.size(); i++)
+	{
+		// 使われていない場所発見
+		if (used[i] == false)
+		{
+			memory.insert({ name, UseMemory{ offset * 4, 4 }});
+		}
+	}
+}
+
+int SemanticAnalyzer::GetMemory(const std::string& name)
+{
+	return memory[name].offset;
 }
 
 void SemanticAnalyzer::Read(const NODE* n, const int _depth)
@@ -91,6 +120,7 @@ void SemanticAnalyzer::Read(const NODE* n, const int _depth)
 		Read(n->expr.rs, d);
 		break;// >=
 	case NODE_ADD:
+		
 		Read(n->expr.ls, d);
 		PRINTF("+\n");
 		Read(n->expr.rs, d);
@@ -129,13 +159,16 @@ void SemanticAnalyzer::Read(const NODE* n, const int _depth)
 		break;// 変数宣言
 	case NODE_FUNCDEC:
 		PRINTF("関数定義\n");
-		Read(n->fancDec.type, d);
-		Read(n->fancDec.name, d);
-		if (n->fancDec.param != nullptr)  // パラメータがあるなら
+		
+
+
+		Read(n->funcDec.type, d);
+		Read(n->funcDec.name, d);
+		if (n->funcDec.param != nullptr)  // パラメータがあるなら
 		{
-			Read(n->fancDec.param, d);
+			Read(n->funcDec.param, d);
 		}
-		Read(n->fancDec.proc, d);
+		Read(n->funcDec.proc, d);
 		break;// 関数宣言
 	//case NODE_VALUE:
 		//PRINTF("値:%s\n", in_.second[n->tokenIndex_].second.c_str());
@@ -225,6 +258,77 @@ void SemanticAnalyzer::Read(const NODE* n, const int _depth)
 	}
 }
 
+void SemanticAnalyzer::ReadFuncDec(const NODE* n)
+{
+	std::string funcName = ReadName(n->funcDec.name);
+	funcGroup.insert({ funcName, {} });
+
+	FuncData& data{ funcGroup[funcName] };
+	ByteCodes& bc{ data.byteCodes };
+
+	n->funcDec.param
+}
+
+std::string SemanticAnalyzer::ReadName(const NODE* n)
+{
+	assert(n != nullptr && "nullptrだった！ @SemanticAnalyzer::ReadName");
+	
+	assert(0 <= n->tokenIndex_ && n->tokenIndex_ <= in_.second.size()
+		&& "tokenIndex_が範囲外だった @SemanticAnalyzer::ReadName");
+	
+	return in_.second[n->tokenIndex_].second;
+}
+
+void SemanticAnalyzer::ReadParam(const NODE* n, ByteCodes& bc)
+{
+	// TODO: int型だと仮確定している
+	// スタックから取り出し、4byte分レジスタに格納する
+	bc.push_back({ {}, BCD_POPW });
+	bc.push_back({ {}, 4 });
+
+
+	std::string varName = ReadName(n->param.varDec->varDec.assigns->assigns.name);
+
+	int addr = NewMemory(varName, 4);
+	MemorySet(addr, 4, bc);
+
+
+	//n->param.varDec->varDec.type
+}
+
+void SemanticAnalyzer::ReadProcs(const NODE* n, ByteCodes& bc)
+{
+	//n->
+}
+
+void SemanticAnalyzer::ReadExpr(const NODE* n, ByteCodes& bc)
+{
+	
+}
+
+void SemanticAnalyzer::MemorySet(const int _addr, const int _size, ByteCodes& bc)
+{
+	// メモリの _addr からレジスタの _size バイト分を書き込む
+	for (int i = 0; i < _size; i++)
+	{
+		bc.push_back({ {}, BCD_DSET });  // 命令
+		bc.push_back({ {}, _addr + i });  // セット先-メモリ
+		bc.push_back({ {}, i });  // レジスタ指定
+	}
+}
+
+void SemanticAnalyzer::MemoryGet(const int _addr, const int _size, ByteCodes& bc)
+{
+	// メモリの _addr からレジスタに _size バイト分を読み込む
+	for (int i = 0; i < _size; i++)
+	{
+		bc.push_back({ {}, BCD_DGET });   // 命令
+		bc.push_back({ {}, _addr + i });  // ゲット先-メモリ
+		bc.push_back({ {}, i });  // レジスタ指定
+	}
+}
+
 void SemanticAnalyzer::Error(const char* _message)
 {
+	ErrorFull(_message, {});
 }

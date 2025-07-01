@@ -16,6 +16,10 @@ using ColumnCount = int;
 /// </summary>
 struct SOURCE_POS
 {
+	SOURCE_POS() :
+		line{ -1 },
+		column{ -1 }
+	{}
 	LineCount line;
 	ColumnCount column;
 };
@@ -125,7 +129,7 @@ struct NODE
 				NODE* name;
 				NODE* param;
 				NODE* proc;  // ˆ—
-			} fancDec;
+			} funcDec;
 
 			struct  // ”½•œˆ—
 			{
