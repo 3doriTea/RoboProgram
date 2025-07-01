@@ -49,8 +49,16 @@ int SemanticAnalyzer::NewMemory(std::string name, int size)
 		if (used[i] == false)
 		{
 			memory.insert({ name, UseMemory{ offset * 4, 4 }});
+			return i * 4;
 		}
 	}
+	// もし空き場所ないなら
+
+	memory.insert({ name, UseMemory{ offset * 4, 4 } });
+	int add = maxMemorySize;
+	maxMemorySize += size;
+
+	return add;
 }
 
 int SemanticAnalyzer::GetMemory(const std::string& name)
@@ -266,7 +274,7 @@ void SemanticAnalyzer::ReadFuncDec(const NODE* n)
 	FuncData& data{ funcGroup[funcName] };
 	ByteCodes& bc{ data.byteCodes };
 
-	n->funcDec.param
+	//n->funcDec.param
 }
 
 std::string SemanticAnalyzer::ReadName(const NODE* n)
@@ -303,7 +311,29 @@ void SemanticAnalyzer::ReadProcs(const NODE* n, ByteCodes& bc)
 
 void SemanticAnalyzer::ReadExpr(const NODE* n, ByteCodes& bc)
 {
-	
+	// オペランド(被演算子)だったら
+	switch (n->type_)
+	{
+	case NODE_REGISTER_VAR_NAME:
+		break;
+	case NODE_REGISTER_FUNC_NAME:
+		break;
+	case NODE_INTEGER:
+		break;
+	default:
+		break;
+	}
+
+
+	switch (n->type_)
+	{
+	case NODE_ADD:
+
+		break;
+	default:
+		assert(false && "計算できない演算子");
+		break;
+	}
 }
 
 void SemanticAnalyzer::MemorySet(const int _addr, const int _size, ByteCodes& bc)
@@ -312,8 +342,8 @@ void SemanticAnalyzer::MemorySet(const int _addr, const int _size, ByteCodes& bc
 	for (int i = 0; i < _size; i++)
 	{
 		bc.push_back({ {}, BCD_DSET });  // 命令
-		bc.push_back({ {}, _addr + i });  // セット先-メモリ
-		bc.push_back({ {}, i });  // レジスタ指定
+		bc.push_back({ {}, static_cast<Byte>(_addr + i) });  // セット先-メモリ
+		bc.push_back({ {}, static_cast<Byte>(i) });  // レジスタ指定
 	}
 }
 
@@ -323,8 +353,8 @@ void SemanticAnalyzer::MemoryGet(const int _addr, const int _size, ByteCodes& bc
 	for (int i = 0; i < _size; i++)
 	{
 		bc.push_back({ {}, BCD_DGET });   // 命令
-		bc.push_back({ {}, _addr + i });  // ゲット先-メモリ
-		bc.push_back({ {}, i });  // レジスタ指定
+		bc.push_back({ {}, static_cast<Byte>(_addr + i) });  // ゲット先-メモリ
+		bc.push_back({ {}, static_cast<Byte>(i) });  // レジスタ指定
 	}
 }
 

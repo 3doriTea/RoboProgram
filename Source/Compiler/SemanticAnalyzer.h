@@ -23,6 +23,9 @@ private:
 
 	struct UseMemory
 	{
+		UseMemory() :
+			UseMemory{ -1, 0 }
+		{}
 		UseMemory(const int _offset, const int _size) :
 			offset{ _offset },
 			size{ _size }

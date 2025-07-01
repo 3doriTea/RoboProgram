@@ -17,8 +17,13 @@ using ColumnCount = int;
 struct SOURCE_POS
 {
 	SOURCE_POS() :
-		line{ -1 },
-		column{ -1 }
+		SOURCE_POS{ -1, -1 }
+	{}
+	SOURCE_POS(
+		const LineCount _line,
+		const ColumnCount _column) :
+		line{ _line },
+		column{ _column }
 	{}
 	LineCount line;
 	ColumnCount column;
