@@ -13,6 +13,10 @@ OutputDebugString(debugString);
 
 void SemanticAnalyzer::Analyze()
 {
+	out_.clear();
+
+
+
 	if (in_.first.size() <= 0)
 	{
 		Error("トークン木がないよ！");
@@ -22,7 +26,7 @@ void SemanticAnalyzer::Analyze()
 	{
 		if (nodes->type_ == NODE_GLOBAL)
 		{
-			Read(nodes, 0);
+			ReadGlobal(nodes, 0);
 			return;
 		}
 	}
@@ -185,7 +189,7 @@ void SemanticAnalyzer::Read(const NODE* n, const int _depth, int position)
 		break;// 変数宣言
 	case NODE_FUNCDEC:
 		PRINTF("関数定義\n");		
-		ReadFuncDec(n, position);
+		//ReadFuncDec(n, position);
 		break;// 関数宣言
 	//case NODE_VALUE:
 		//PRINTF("値:%s\n", in_.second[n->tokenIndex_].second.c_str());
@@ -275,14 +279,29 @@ void SemanticAnalyzer::Read(const NODE* n, const int _depth, int position)
 	}
 }
 
-void SemanticAnalyzer::ReadFuncDec(const NODE* n, int position)
+void SemanticAnalyzer::ReadFuncDec(const NODE* n, ByteCodes& bc, int position)
 {
+	//std::string funcName = ReadFuncName(n->funcDec.name, bc);
 	std::string funcName = ReadName(n->funcDec.name);
 	funcGroup.insert({ funcName, {} });
 
 	FuncData& data{ funcGroup[funcName] };
-	ByteCodes& bc{ data.byteCodes };
-	bc.offset = position;
+	ByteCodes& funcBlock{ data.byteCodes };
+	data.index = position;
+	bc.offset = data.index;
+
+	if (n->funcDec.param != nullptr)  // パラメータがあるなら
+	{
+		ReadParam(n->funcDec.param, bc);
+	}
+
+	ReadProcs(n->funcDec.proc, funcBlock, data.index);
+
+
+	for (auto&& byteCode : funcBlock)
+	{
+		bc.push_back(byteCode);
+	}
 }
 
 std::string SemanticAnalyzer::ReadName(const NODE* n)
@@ -295,6 +314,13 @@ std::string SemanticAnalyzer::ReadName(const NODE* n)
 		&& "tokenIndex_が範囲外だった @SemanticAnalyzer::ReadName");
 
 	return in_.second[n->tokenIndex_].second;
+}
+
+std::string SemanticAnalyzer::ReadFuncName(const NODE* n, ByteCodes& bc)
+{
+	assert(n->type_ == NODE_REGISTER_FUNC_NAME);
+
+	return ReadName(n->func.name);
 }
 
 int SemanticAnalyzer::ReadType(const NODE* n)
@@ -364,19 +390,26 @@ void SemanticAnalyzer::ReadProcs(const NODE* n, ByteCodes& bc, int begin)
 	switch (n->proc.proc->type_)
 	{
 	case NODE_NFOR:
-		ReadNFor(n->proc.proc, bc, -1);
+		ReadNFor(n->proc.proc, bc, begin);
 		break;
 	case NODE_NIF:
-		ReadNIf(n->proc.proc, bc, -1);
+		ReadNIf(n->proc.proc, bc, begin);
 		break;
 	case NODE_ASSIGN:
-		ReadAssign(n->proc.proc, bc, -1);
+		ReadAssign(n->proc.proc, bc, begin);
 		break;
 	case NODE_VARDEC:
 		ReadVarDec(n->proc.proc, bc);
 		break;
 	case NODE_RET:
 		ReadRet(n->proc.proc, bc);
+		break;
+	case NODE_CALLFUNC:
+		ReadCallFunc(n->proc.proc, bc);
+		break;
+	case NODE_PROC:
+		assert(false && "PROC");
+		ReadProcs(n->proc.proc, bc, begin);
 		break;
 	default:
 		assert(false && "例外処理が呼ばれた");
@@ -387,6 +420,25 @@ void SemanticAnalyzer::ReadProcs(const NODE* n, ByteCodes& bc, int begin)
 	if (n->proc.next != nullptr)  // 次の処理があるなら
 	{
 		ReadProcs(n->proc.next, bc, begin);
+	}
+}
+
+void SemanticAnalyzer::ReadGlobal(const NODE* n, int begin)
+{
+	assert(n->type_ == NODE_GLOBAL);
+
+	ByteCodes globalBlock{};
+
+	ReadFuncDec(n->global.funcDef, globalBlock, begin);
+
+	for (auto&& byteCode : globalBlock)
+	{
+		out_.push_back(byteCode);
+	}
+
+	if (n->global.next != nullptr)
+	{
+		ReadGlobal(n->global.next, begin);
 	}
 }
 
@@ -431,9 +483,12 @@ void SemanticAnalyzer::ReadNFor(const NODE* n, ByteCodes& bc, int blockBegin)
 	bc.push_back({ {}, BCD_CFJP });
 	bc.push_back({ {}, 0 });
 
-	assert(-bc.size() >= INT8_MIN);
+	signed char dest{ static_cast<signed char>(bc.size()) };
+	dest = -dest;
 
-	bc.push_back({ {}, -bc.size() });
+	assert(dest >= INT8_MIN);
+
+	bc.push_back({ {}, static_cast<Byte>(dest) });
 }
 
 void SemanticAnalyzer::ReadNIf(const NODE* n, ByteCodes& bc, int blockBegin)
@@ -466,11 +521,11 @@ void SemanticAnalyzer::ReadExpr(const NODE* n, ByteCodes& bc)
 	switch (n->type_)
 	{
 	case NODE_REGISTER_VAR_NAME:
-		ReadVar(n->var, bc);  // 変数を参照する
-		break;
-	case NODE_REGISTER_FUNC_NAME:
-		ReadCallFunc(n->func, bc);
-		break;
+		ReadVar(n, bc);  // 変数を参照する
+		return;
+	case NODE_CALLFUNC:
+		ReadCallFunc(n, bc);
+		return;
 	case NODE_INTEGER:
 	{
 		int val{ ReadInteger(n) };
@@ -478,7 +533,7 @@ void SemanticAnalyzer::ReadExpr(const NODE* n, ByteCodes& bc)
 		bc.push_back({ {}, BCD_PUSW });
 		bc.push_back({ {}, 0 });
 		bc.push_back({ {}, 4 });
-		break;
+		return;
 	}
 	default:
 		break;
@@ -594,7 +649,7 @@ void SemanticAnalyzer::ReadAssign(const NODE* n, ByteCodes& bc, const int typeSi
 		// TODO: int型だと仮確定している
 		// スタックから取り出し、4byte分レジスタに格納する
 		bc.push_back({ {}, BCD_POPW });
-		bc.push_back({ {}, typeSize });
+		bc.push_back({ {}, static_cast<Byte>(typeSize) });
 		MemorySet(addr, typeSize, bc);
 	}
 
@@ -611,11 +666,28 @@ void SemanticAnalyzer::ReadVar(const NODE* n, ByteCodes& bc)
 
 	std::string varName{ ReadName(n->var.name) };
 
+	if (varName == "true")
+	{
+		RegSet(1, bc, 0);
+		bc.push_back({ {}, BCD_PUSW });
+		bc.push_back({ {}, 0 });
+		bc.push_back({ {}, 4 });
+		return;
+	}
+	else if (varName == "false")
+	{
+		RegSet(0, bc, 0);
+		bc.push_back({ {}, BCD_PUSW });
+		bc.push_back({ {}, 0 });
+		bc.push_back({ {}, 4 });
+		return;
+	}
+
 	int addr{ GetMemory(varName) };
 
 	if (addr < 0)
 	{
-		Error("宣言されていない変数が参照されました。");
+		Error(std::string{ "宣言されていない変数「" } + varName + "」が参照されました。");
 		return;
 	}
 
@@ -672,7 +744,41 @@ void SemanticAnalyzer::ReadVarDec(const NODE* n, ByteCodes& bc, bool allowInit, 
 
 void SemanticAnalyzer::ReadCallFunc(const NODE* n, ByteCodes& bc)
 {
-	std::string funcName = ReadName(n->callFunc.name);
+	std::string funcName = ReadFuncName(n->callFunc.name, bc);
+
+#pragma region ロボ専用コード
+
+	if (funcName == "Run")
+	{
+		bc.push_back({ {}, BCD_ACT });
+		bc.push_back({ {}, BCD_ACT_RUN });
+		return;
+	}
+	else if (funcName == "Jump")
+	{
+		bc.push_back({ {}, BCD_ACT });
+		bc.push_back({ {}, BCD_ACT_JUMP });
+		return;
+	}
+	else if (funcName == "Skip")
+	{
+		bc.push_back({ {}, BCD_NOP });
+		return;
+	}
+	else if (funcName == "Stop")
+	{
+		bc.push_back({ {}, BCD_HALT });
+		return;
+	}
+	else if (funcName == "IsOnGround")
+	{
+		bc.push_back({ {}, BCD_GACT });
+		bc.push_back({ {}, BCD_GACT_ISGROUND });
+		return;
+	}
+
+#pragma endregion
+
 	if (funcGroup.count(funcName) != 1)
 	{
 		Error(std::string("関数:") + funcName + "は未定義です。");
@@ -686,7 +792,7 @@ void SemanticAnalyzer::ReadCallFunc(const NODE* n, ByteCodes& bc)
 	}
 
 	// NOTE: 関数呼び出しの位置ずれていたらここが原因
-	int current{ bc.offset + bc.size() };
+	int current{ static_cast<int>(bc.offset + bc.size()) };
 	int diff{ funcGroup[funcName].index - current };  // 呼び出し関数の相対位置を求める
 
 	assert(INT8_MIN <= diff && diff <= INT8_MAX

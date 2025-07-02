@@ -17,6 +17,7 @@ private:
 			byteCodes{}
 		{}
 
+		int retTypeSize;
 		int index;
 		ByteCodes byteCodes;
 	};
@@ -70,8 +71,11 @@ private:
 	void RegSet(const Byte value, ByteCodes& bc, int offset = 0);
 
 	void Read(const NODE* n, const int _depth, int position = 0);
-	void ReadFuncDec(const NODE* n, int position);
+	void ReadFuncDec(const NODE* n, ByteCodes& bc, int position);
 	std::string ReadName(const NODE* n);
+
+	std::string ReadFuncName(const NODE* n, ByteCodes& bc);
+
 	/// <summary>
 	/// Œ^‚ðŽæ“¾ = Œ^‚ÌƒTƒCƒY ‚ðŽæ“¾
 	/// </summary>
@@ -81,6 +85,8 @@ private:
 	int ReadInteger(const NODE* n);
 	void ReadParam(const NODE* n, ByteCodes& bc);
 	void ReadProcs(const NODE* n, ByteCodes& bc, int begin);
+
+	void ReadGlobal(const NODE* n, int begin);
 
 	void ReadRet(const NODE* n, ByteCodes& bc);
 

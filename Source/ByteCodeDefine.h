@@ -11,6 +11,8 @@ enum ByteCodeDefine : Byte
 	BCD_HALT = 0x76,  // ()
 	// アクションする
 	BCD_ACT = 0xCB,  // (アクション番号)
+
+	BCD_GACT = 0xCC,
 #pragma endregion
 	
 #pragma region コード領域
@@ -72,4 +74,9 @@ enum ByteCodeDefine_ACT : Byte
 	BCD_ACT_NONE = 0x00,  // 何もしない
 	BCD_ACT_RUN = 0x01,  // 走る
 	BCD_ACT_JUMP = 0x02,  // ジャンプ
+};
+
+enum ByteCodeDefine_GACT : Byte
+{
+	BCD_GACT_ISGROUND = 0x01,
 };
