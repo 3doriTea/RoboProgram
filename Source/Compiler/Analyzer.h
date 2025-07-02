@@ -138,10 +138,10 @@ struct NODE
 
 			struct  // 反復処理
 			{
-				NODE* init;  // 初期化処理
-				NODE* expr;  // 継続条件
-				NODE* updt;  // 更新処理
-				NODE* proc;  // 処理
+				NODE* init;  // assign 初期化処理
+				NODE* expr;  // expr 継続条件
+				NODE* updt;  // expr 更新処理
+				NODE* proc;  // proc 処理
 			} nfor;
 		};
 
@@ -236,7 +236,14 @@ using Nodes = std::vector<NODE*>;
 
 // バイトコード
 using ByteCode = std::pair<SOURCE_POS, Byte>;
-using ByteCodes = std::vector<ByteCode>;
+
+struct ByteCodes : public std::vector<ByteCode>
+{
+	using std::vector<ByteCode>::vector;
+	int offset;  // バイトコード群の絶対オフセット
+};
+
+//ByteCodes;
 
 /// <summary>
 /// 解析機

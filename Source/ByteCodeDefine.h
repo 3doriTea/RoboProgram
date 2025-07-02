@@ -15,11 +15,15 @@ enum ByteCodeDefine : Byte
 	
 #pragma region コード領域
 	// 関数呼び出し
-	BCD_CALL = 0xCD,  // (関数-相対コードアドレス)
+	BCD_CALL = 0xCD,  // (関数-相対コードアドレス) 2バイト目基準
 	// 関数返却
 	BCD_RET = 0xC9,  // () スタックマシンに返却値を入れてある
 	// ジャンプ
 	//BCD_JP = 0xC3,  // (ジャンプ先-絶対コードアドレス)
+	// 条件 false のときジャンプ
+	BCD_CFJP,  // (比較-レジスタアドレス, ジャンプ先-相対コードアドレス) 3バイト目基準
+	// 条件 true のときジャンプ
+	BCD_CTJP,  // (比較-レジスタアドレス, ジャンプ先-相対コードアドレス) 3バイト目基準
 #pragma endregion
 
 #pragma region データ領域
@@ -29,10 +33,15 @@ enum ByteCodeDefine : Byte
 	BCD_DGET,  // (ゲット元-絶対データアドレス, コピー先絶対レジスタアドレス)
 #pragma endregion
 
+#pragma region レジスタを操作するやつ
+	BCD_RSET = 0x3A,  // (セット先-レジスタアドレス, セットする即値)
+#pragma endregion
+
 #pragma region スタック領域
 	// スタックマシンにプッシュする
 	BCD_PUS = 0xC5,  // (コピー元レジスタ)
 	BCD_PUSW,        // (コピー元レジスタ, レジスタの使用サイズ)
+
 
 	// スタックマシンでトップ2つを加算、スタックマシンに入れる
 	BCD_ADD = 0x6B,
@@ -42,6 +51,15 @@ enum ByteCodeDefine : Byte
 	BCD_MUL,
 	// スタックマシンでトップ2つを除算、スタックマシンに入れる
 	BCD_DIV,
+
+	BCD_AND,
+	BCD_OR,
+	BCD_EQUAL,
+	BCD_NOTEQUAL,
+	BCD_LESSTHAN,  // <
+	BCD_GREATERTHEN,  // >
+	BCD_LESSEQUAL,  // <=
+	BCD_GREATEREQUAL,  // >=
 
 	// スタックマシンにポップする
 	BCD_POP = 0xC1,  // (出力先レジスタ)

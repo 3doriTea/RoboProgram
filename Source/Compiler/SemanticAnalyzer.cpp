@@ -66,10 +66,28 @@ int SemanticAnalyzer::GetMemory(const std::string& name)
 	return memory[name].offset;
 }
 
-void SemanticAnalyzer::Read(const NODE* n, const int _depth)
+void SemanticAnalyzer::RegSet(const int value, ByteCodes& bc, int offset)
+{
+	Byte* val{ reinterpret_cast<Byte*>(value) };
+	for (int i = 0; i < sizeof(int); i++)
+	{
+		bc.push_back({ {}, BCD_RSET });
+		bc.push_back({ {}, static_cast<Byte>(offset + i) });
+		bc.push_back({ {}, val[i] });
+	}
+}
+
+void SemanticAnalyzer::RegSet(const Byte value, ByteCodes& bc, int offset)
+{
+	bc.push_back({ {}, BCD_RSET });
+	bc.push_back({ {}, static_cast<Byte>(offset) });
+	bc.push_back({ {}, value });
+}
+
+void SemanticAnalyzer::Read(const NODE* n, const int _depth, int position)
 {
 	assert(n != nullptr
-		&& "どこかでnullった！");
+		&& "どこかで null った！");
 
 	int d = _depth + 1;
 	switch (n->type_)
@@ -166,17 +184,8 @@ void SemanticAnalyzer::Read(const NODE* n, const int _depth)
 		Read(n->varDec.assigns, d);
 		break;// 変数宣言
 	case NODE_FUNCDEC:
-		PRINTF("関数定義\n");
-		
-
-
-		Read(n->funcDec.type, d);
-		Read(n->funcDec.name, d);
-		if (n->funcDec.param != nullptr)  // パラメータがあるなら
-		{
-			Read(n->funcDec.param, d);
-		}
-		Read(n->funcDec.proc, d);
+		PRINTF("関数定義\n");		
+		ReadFuncDec(n, position);
 		break;// 関数宣言
 	//case NODE_VALUE:
 		//PRINTF("値:%s\n", in_.second[n->tokenIndex_].second.c_str());
@@ -266,28 +275,48 @@ void SemanticAnalyzer::Read(const NODE* n, const int _depth)
 	}
 }
 
-void SemanticAnalyzer::ReadFuncDec(const NODE* n)
+void SemanticAnalyzer::ReadFuncDec(const NODE* n, int position)
 {
 	std::string funcName = ReadName(n->funcDec.name);
 	funcGroup.insert({ funcName, {} });
 
 	FuncData& data{ funcGroup[funcName] };
 	ByteCodes& bc{ data.byteCodes };
-
-	//n->funcDec.param
+	bc.offset = position;
 }
 
 std::string SemanticAnalyzer::ReadName(const NODE* n)
 {
+	assert(n->type_ == NODE_NAME);
+
 	assert(n != nullptr && "nullptrだった！ @SemanticAnalyzer::ReadName");
 	
 	assert(0 <= n->tokenIndex_ && n->tokenIndex_ <= in_.second.size()
 		&& "tokenIndex_が範囲外だった @SemanticAnalyzer::ReadName");
-	
+
 	return in_.second[n->tokenIndex_].second;
 }
 
-int SemanticAnalyzer::ReadIntegier(const NODE* n)
+int SemanticAnalyzer::ReadType(const NODE* n)
+{
+	assert(n->type_ == NODE_TYPE);
+
+	assert(n != nullptr && "nullptrだった！ @SemanticAnalyzer::ReadType");
+
+	assert(0 <= n->tokenIndex_ && n->tokenIndex_ <= in_.second.size()
+		&& "tokenIndex_が範囲外だった @SemanticAnalyzer::ReadType");
+
+	std::string typeName{ in_.second[n->tokenIndex_].second };
+
+	if (typeName == "void")
+		return 0;
+	else if (typeName == "int")
+		return 4;
+	else
+		return -1;
+}
+
+int SemanticAnalyzer::ReadInteger(const NODE* n)
 {
 	assert(n != nullptr && "nullptrだった！ @SemanticAnalyzer::ReadName");
 
@@ -298,55 +327,378 @@ int SemanticAnalyzer::ReadIntegier(const NODE* n)
 
 void SemanticAnalyzer::ReadParam(const NODE* n, ByteCodes& bc)
 {
+	assert(n->type_ == NODE_PARAM);
+
+	std::string varName = ReadName(n->param.varDec->varDec.assigns->assigns.name);
+
+	int typeSize{ ReadType(n->param.varDec->varDec.type) };
+
+	if (typeSize == 0)  // 型のサイズが 0 なら void 指定されている
+	{
+		Error("関数の仮引数に void型は使用できません。");
+		return;
+	}
+
+	assert(typeSize == 4 && "未対応の型サイズ:4byte以外の型が指定された");
+
 	// TODO: int型だと仮確定している
 	// スタックから取り出し、4byte分レジスタに格納する
 	bc.push_back({ {}, BCD_POPW });
 	bc.push_back({ {}, 4 });
 
-
-	std::string varName = ReadName(n->param.varDec->varDec.assigns->assigns.name);
-
 	int addr = NewMemory(varName, 4);
 	MemorySet(addr, 4, bc);
 
-
-	//n->param.varDec->varDec.type
+	// MEMO: 実引数とは逆で、仮引数は前から順に処理していく
+	if (n->param.next != nullptr)
+	{
+		ReadParam(n->param.next, bc);
+	}
 }
 
-void SemanticAnalyzer::ReadProcs(const NODE* n, ByteCodes& bc)
+void SemanticAnalyzer::ReadProcs(const NODE* n, ByteCodes& bc, int begin)
 {
-	//n->
+	assert(n->type_ == NODE_PROC);
+
+	// 処理は以下の分岐
+	switch (n->proc.proc->type_)
+	{
+	case NODE_NFOR:
+		ReadNFor(n->proc.proc, bc, -1);
+		break;
+	case NODE_NIF:
+		ReadNIf(n->proc.proc, bc, -1);
+		break;
+	case NODE_ASSIGN:
+		ReadAssign(n->proc.proc, bc, -1);
+		break;
+	case NODE_VARDEC:
+		ReadVarDec(n->proc.proc, bc);
+		break;
+	case NODE_RET:
+		ReadRet(n->proc.proc, bc);
+		break;
+	default:
+		assert(false && "例外処理が呼ばれた");
+		break;
+	}
+
+	// MEMO: 逐次的に処理していく
+	if (n->proc.next != nullptr)  // 次の処理があるなら
+	{
+		ReadProcs(n->proc.next, bc, begin);
+	}
+}
+
+void SemanticAnalyzer::ReadRet(const NODE* n, ByteCodes& bc)
+{
+	assert(n->type_ == NODE_RET);
+
+	// 戻り値の式を処理する、処理後はスタックにプッシュされているため、そのまま返却する
+	ReadExpr(n->ret.expr, bc);
+}
+
+void SemanticAnalyzer::ReadArg(const NODE* n, ByteCodes& bc)
+{
+	assert(n->type_ == NODE_ARG);
+
+	// MEMO: 引数の後ろを優先してスタックにプッシュしていくことで、読み取るときは前から読み取れる
+	if (n->arg.next != nullptr)
+	{
+		ReadArg(n->arg.next, bc);
+	}
+
+	ReadExpr(n->arg.expr, bc);  // 式を書いてもらう
+}
+
+void SemanticAnalyzer::ReadNFor(const NODE* n, ByteCodes& bc, int blockBegin)
+{
+	assert(n->type_ == NODE_NFOR);
+
+	ReadAssign(n->nfor.init, bc, -1);
+
+	ByteCodes forBlock{};
+	ReadProcs(n->nfor.proc, forBlock, blockBegin + bc.size());
+
+	ReadExpr(n->nfor.expr, forBlock);
+
+	// ifの条件処理書き終えたら ifのブロック書く
+	for (auto&& byteCode : forBlock)
+	{
+		bc.push_back(byteCode);
+	}
+
+	bc.push_back({ {}, BCD_CFJP });
+	bc.push_back({ {}, 0 });
+
+	assert(-bc.size() >= INT8_MIN);
+
+	bc.push_back({ {}, -bc.size() });
+}
+
+void SemanticAnalyzer::ReadNIf(const NODE* n, ByteCodes& bc, int blockBegin)
+{
+	assert(n->type_ == NODE_NIF);
+
+	ReadExpr(n->nif.expr, bc);
+
+	ByteCodes ifBlock{};
+	ReadProcs(n->nif.proc, ifBlock, blockBegin + bc.size());
+
+	// TODO: ifのところのジャンプミスっていたらここが原因
+	bc.push_back({ {}, BCD_CFJP });  // falseのときジャンプ
+	bc.push_back({ {}, 0 });  // 0番レジスタ を参照
+
+	assert(ifBlock.size() <= INT8_MAX);
+
+	bc.push_back({ {}, static_cast<Byte>(ifBlock.size()) });  // ブロックプロセス分先にジャンプ
+
+	// ifの条件処理書き終えたら ifのブロック書く
+	for (auto&& byteCode : ifBlock)
+	{
+		bc.push_back(byteCode);
+	}
 }
 
 void SemanticAnalyzer::ReadExpr(const NODE* n, ByteCodes& bc)
 {
-	// オペランド(被演算子)だったら
+	// オペランド(被演算子) だったら
 	switch (n->type_)
 	{
 	case NODE_REGISTER_VAR_NAME:
-		ReadVar
-		ReadName(n->var.name);
+		ReadVar(n->var, bc);  // 変数を参照する
 		break;
 	case NODE_REGISTER_FUNC_NAME:
-		ReadName(n->func.name);
+		ReadCallFunc(n->func, bc);
 		break;
 	case NODE_INTEGER:
-		ReadIntegier(n);
+	{
+		int val{ ReadInteger(n) };
+		RegSet(val, bc, 0);
+		bc.push_back({ {}, BCD_PUSW });
+		bc.push_back({ {}, 0 });
+		bc.push_back({ {}, 4 });
 		break;
+	}
 	default:
 		break;
 	}
 
-
+	// オペレータ(演算子) だったら
 	switch (n->type_)
 	{
 	case NODE_ADD:
-
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_ADD });
+		break;
+	case NODE_SUB:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_SUB });
+		break;
+	case NODE_MUL:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_MUL });
+		break;
+	case NODE_DIV:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_DIV });
+		break;
+	case NODE_AND:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_AND });
+		break;
+	case NODE_OR:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_OR });
+		break;
+	case NODE_EQUAL:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_EQUAL });
+		break;
+	case NODE_NOTEQUAL:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_NOTEQUAL });
+		break;
+	case NODE_LESSTHAN:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_LESSTHAN });
+		break;
+	case NODE_GREATERTHEN:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_GREATERTHEN });
+		break;
+	case NODE_LESSEQUAL:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_LESSEQUAL });
+		break;
+	case NODE_GREATEREQUAL:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_GREATEREQUAL });
+		break;
+	case NODE_INCREMENT:
+		ReadExpr(n->expr.ls, bc);
+		ReadExpr(n->expr.rs, bc);
+		bc.push_back({ {}, BCD_GREATEREQUAL });
 		break;
 	default:
 		assert(false && "計算できない演算子");
 		break;
 	}
+}
+
+void SemanticAnalyzer::ReadAssign(const NODE* n, ByteCodes& bc, const int typeSize)
+{
+	// TODO: 型サイズ4byte以外になる場合、連続した宣言時に型サイズも引数で渡す必要がある
+	assert(n->type_ == NODE_ASSIGN);
+
+	// TODO: もしここ今くいかないなら name の前に何かかんでいるかも
+	std::string varName = ReadName(n->assigns.name);
+	int addr{ -1 };
+
+	if (typeSize > 0)  // サイズが 0 以上 = 確定している
+	{
+		addr = NewMemory(varName, typeSize);
+	
+		assert(addr >= 0 && "メモリの確保ができなかった。");
+	}
+	else  // サイズが 0 =	 不確定 = 変数参照してあげる
+	{
+		addr = GetMemory(varName);
+
+		if (addr < 0)
+		{
+			Error("宣言されていない変数が参照されました。");
+			return;
+		}
+	}
+
+
+	// 代入式があるなら処理する
+	if (n->assigns.expr != nullptr)
+	{
+		// 式を処理、処理後はスタックに値が残っている
+		ReadExpr(n->assigns.expr, bc);
+
+		// TODO: int型だと仮確定している
+		// スタックから取り出し、4byte分レジスタに格納する
+		bc.push_back({ {}, BCD_POPW });
+		bc.push_back({ {}, typeSize });
+		MemorySet(addr, typeSize, bc);
+	}
+
+	// 連続宣言があるなら処理する
+	if (n->assigns.next)
+	{
+		ReadAssign(n->assigns.next, bc, typeSize);
+	}
+}
+
+void SemanticAnalyzer::ReadVar(const NODE* n, ByteCodes& bc)
+{
+	assert(n->type_ == NODE_REGISTER_VAR_NAME);
+
+	std::string varName{ ReadName(n->var.name) };
+
+	int addr{ GetMemory(varName) };
+
+	if (addr < 0)
+	{
+		Error("宣言されていない変数が参照されました。");
+		return;
+	}
+
+	// TODO: 型サイズが4だと仮確定している
+
+	//bc.push_back({ {}, BCD_DGET });
+	MemoryGet(addr, 4, bc);  // メモリからレジスタに書き写す
+
+	// レジスタからスタックにプッシュする
+	bc.push_back({ {}, BCD_PUSW });
+	bc.push_back({ {}, 0 });
+	bc.push_back({ {}, 4 });
+}
+
+void SemanticAnalyzer::ReadVarDec(const NODE* n, ByteCodes& bc, bool allowInit, bool consecutive)
+{
+	// TODO: 型サイズ4byte以外になる場合、連続した宣言時に型サイズも引数で渡す必要がある
+	assert(n->type_ == NODE_VARDEC);
+
+
+	if (allowInit == false)
+	{
+		// 初期化許可されていないのに式が入っている
+		if (n->varDec.assigns->assigns.expr != nullptr)
+		{
+			Error("初期化できません。");
+			return;
+		}
+	}
+
+	if (consecutive == false)
+	{
+		// 連続した変数宣言が許可されていないのに、連続している
+		if (n->varDec.assigns->assigns.next != nullptr)
+		{
+			Error("連続で変数宣言はできません。");
+			return;
+		}
+	}
+
+
+	int typeSize{ ReadType(n->param.varDec->varDec.type) };
+
+	if (typeSize == 0)  // 型のサイズが 0 なら void 指定されている
+	{
+		Error("変数宣言として void型は使用できません。");
+		return;
+	}
+
+	assert(typeSize == 4 && "未対応の型サイズ:4byte以外の型が指定された");
+
+	ReadAssign(n->varDec.assigns, bc, typeSize);  // 変数、代入とかを処理
+}
+
+void SemanticAnalyzer::ReadCallFunc(const NODE* n, ByteCodes& bc)
+{
+	std::string funcName = ReadName(n->callFunc.name);
+	if (funcGroup.count(funcName) != 1)
+	{
+		Error(std::string("関数:") + funcName + "は未定義です。");
+		return;
+	}
+
+	if (funcGroup[funcName].index < 0)
+	{
+		Error(std::string("関数:") + funcName + "は未実装です。");
+		return;
+	}
+
+	// NOTE: 関数呼び出しの位置ずれていたらここが原因
+	int current{ bc.offset + bc.size() };
+	int diff{ funcGroup[funcName].index - current };  // 呼び出し関数の相対位置を求める
+
+	assert(INT8_MIN <= diff && diff <= INT8_MAX
+		&& "関数の位置が8bitで表せる範囲外になってしまった");
+
+	// 関数の位置は決まった
+
+	// 実引数をセットする
+	ReadArg(n->callFunc.args, bc);
+
+	bc.push_back({ {}, BCD_CALL });
+	bc.push_back({ {}, static_cast<Byte>(diff) });
 }
 
 void SemanticAnalyzer::MemorySet(const int _addr, const int _size, ByteCodes& bc)
@@ -371,7 +723,22 @@ void SemanticAnalyzer::MemoryGet(const int _addr, const int _size, ByteCodes& bc
 	}
 }
 
+//void SemanticAnalyzer::StackPush(const int _regOffset, const int _size, ByteCodes& bc)
+//{
+//	for (int i = 0; i < _size; i++)
+//	{
+//		bc.push_back({ {}, BCD_PUSW });  // 命令
+//		bc.push_back({ {}, _regOffset + i });
+//		bc.push_back({ {}, _size });
+//	}
+//}
+
 void SemanticAnalyzer::Error(const char* _message)
 {
 	ErrorFull(_message, {});
+}
+
+void SemanticAnalyzer::Error(const std::string& _message)
+{
+	Error(_message.c_str());
 }

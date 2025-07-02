@@ -66,15 +66,56 @@ private:
 	/// <returns></returns>
 	int GetMemory(const std::string& name);
 
-	void Read(const NODE* n, const int _depth);
-	void ReadFuncDec(const NODE* n);
+	void RegSet(const int value, ByteCodes& bc, int offset = 0);
+	void RegSet(const Byte value, ByteCodes& bc, int offset = 0);
+
+	void Read(const NODE* n, const int _depth, int position = 0);
+	void ReadFuncDec(const NODE* n, int position);
 	std::string ReadName(const NODE* n);
-	std::string ReadType(const NODE* n);
-	int ReadIntegier(const NODE* n);
+	/// <summary>
+	/// 型を取得 = 型のサイズ を取得
+	/// </summary>
+	/// <param name="n"></param>
+	/// <returns>型の byte サイズ</returns>
+	int ReadType(const NODE* n);
+	int ReadInteger(const NODE* n);
 	void ReadParam(const NODE* n, ByteCodes& bc);
-	void ReadProcs(const NODE* n, ByteCodes& bc);
+	void ReadProcs(const NODE* n, ByteCodes& bc, int begin);
+
+	void ReadRet(const NODE* n, ByteCodes& bc);
+
+	void ReadArg(const NODE* n, ByteCodes& bc);
+
+	void ReadNFor(const NODE* n, ByteCodes& bc, int position);
+
+	void ReadNIf(const NODE* n, ByteCodes& bc, int position);
 
 	void ReadExpr(const NODE* n, ByteCodes& bc);
+
+	void ReadAssign(const NODE* n, ByteCodes& bc, const int typeSize);
+
+	/// <summary>
+	/// 変数の参照し、スタックに追加
+	/// </summary>
+	/// <param name="n"></param>
+	/// <param name="bc"></param>
+	void ReadVar(const NODE* n, ByteCodes& bc);
+
+	/// <summary>
+	/// 変数を宣言し、メモリ確保する
+	/// </summary>
+	/// <param name="n"></param>
+	/// <param name="bc"></param>
+	/// <param name="allowInit">初期化代入可能 true / false</param>
+	/// <param name="consecutive ">連続宣言可能か true / false</param>
+	void ReadVarDec(const NODE* n, ByteCodes& bc, bool allowInit = false, bool consecutive = false);
+
+	/// <summary>
+	/// 関数を参照し、実行するコードを追記
+	/// </summary>
+	/// <param name="n"></param>
+	/// <param name="bc"></param>
+	void ReadCallFunc(const NODE* n, ByteCodes& bc);
 
 	/// <summary>
 	/// レジスタからメモリに値をセットする
@@ -92,6 +133,20 @@ private:
 	/// <param name="bc"></param>
 	void MemoryGet(const int _addr, const int _size, ByteCodes& bc);
 
+	/// <summary>
+	/// レジスタからスタックに値をプッシュする
+	/// </summary>
+	/// <param name="_regOffset"></param>
+	/// <param name="_size"></param>
+	/// <param name="bc"></param>
+	void StackPush(const int _regOffset, const int _size, ByteCodes& bc);
+	/// <summary>
+	/// スタックにレジスタから値をポップする
+	/// </summary>
+	/// <param name="_regOffset"></param>
+	/// <param name="_size"></param>
+	/// <param name="bc"></param>
+	void StackPop(const int _regOffset, const int _size, ByteCodes& bc);
 
 	SemanticAnalyzer& Get() { return *this; }
 	/// <summary>
@@ -99,6 +154,11 @@ private:
 	/// </summary>
 	/// <param name="_message">エラーメッセージ</param>
 	void Error(const char* _message) override;
+	/// <summary>
+	/// エラー処理
+	/// </summary>
+	/// <param name="_message">エラーメッセージ</param>
+	void Error(const std::string& _message);
 
 
 	int maxMemorySize{};
