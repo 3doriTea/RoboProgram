@@ -36,7 +36,7 @@ void Assembler::ToAssemble(const ByteCodes& bcs, std::string& outStr)
 
 	while (!bcr.IsEndOfCode())
 	{
-		ss << std::setw(3) << std::setfill(' ') << std::dec << -1;//bc.first.line;
+		ss << std::setw(3) << std::setfill(' ') << std::dec << bcr.GetCurrentIndex();//bc.first.line;
 		ss << ":";
 		Byte code{ bcr.Pop() };
 		switch (code)
@@ -97,7 +97,7 @@ void Assembler::ToAssemble(const ByteCodes& bcs, std::string& outStr)
 
 	while (!bcr.IsEndOfCode())
 	{
-		ss << std::setw(3) << std::setfill(' ') << std::dec << -1;//bc.first.line;
+		ss << std::setw(3) << std::setfill(' ') << std::dec << bcr.GetCurrentIndex();//bc.first.line;
 		ss << ":";
 		Byte code{ bcr.Pop() };
 		switch (code)

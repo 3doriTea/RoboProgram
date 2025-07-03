@@ -51,7 +51,15 @@ Robot::Robot(
 				case GetIOMessage::IsGrounded:
 					return isGrounded_ ? 1 : 0;
 				case GetIOMessage::GetOnTileNumber:
-					return;
+					{
+						Vector2Int tilePosition
+						{
+							pStage_->ToTilePosition(
+								rect_.pivot + rect_.size + Vector2{ 0, 30.0f })
+							.ToInt()
+						};
+						return pStage_->GetTile(tilePosition);
+					}
 				case GetIOMessage::CheckTile:  // ƒ^ƒCƒ‹Žæ“¾–¢ŽÀ‘•
 				default:
 					return 0;

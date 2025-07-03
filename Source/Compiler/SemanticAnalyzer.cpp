@@ -153,7 +153,6 @@ void SemanticAnalyzer::Read(const NODE* n, const int _depth, int position)
 		Read(n->expr.rs, d);
 		break;// >=
 	case NODE_ADD:
-		
 		Read(n->expr.ls, d);
 		PRINTF("+\n");
 		Read(n->expr.rs, d);
@@ -513,7 +512,7 @@ void SemanticAnalyzer::ReadNFor(const NODE* n, ByteCodes& bc, int blockBegin)
 		ReadExpr(n->nfor.updt, forBlock);
 	}
 
-	int destEndInt{ static_cast<int>(forBlock.size()) + 3 };
+	int destEndInt{ static_cast<int>(forBlock.size()) + 2 };
 
 	signed char destEnd{ static_cast<signed char>(destEndInt) };
 
