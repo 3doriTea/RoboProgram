@@ -62,6 +62,24 @@ bool CodeRunner::TryReadNext()
 			assert(false && "未定義: BCD_ACT_???");
 		}
 	}
+	else if (bcr_.Consume(BCD_AIO))
+	{
+		if (bcr_.Consume(BCD_AIO_CHECKTILE))
+		{
+			int result{ onGetIOMessage_(GetIOMessage::CheckTile) };
+			stackMachine_.Push(result);
+		}
+		else if (bcr_.Consume(BCD_AIO_ISGROUND))
+		{
+			int result{ onGetIOMessage_(GetIOMessage::IsGrounded) };
+			stackMachine_.Push(result);
+		}
+		else
+		{
+			// 未定義
+			assert(false && "未定義: BCD_AIO_???");
+		}
+	}
 	else if (bcr_.Consume(BCD_CALL))
 	{
 		signed char destAddr = static_cast<signed char>(bcr_.Pop());  // 関数スタートの相対位置
@@ -73,6 +91,40 @@ bool CodeRunner::TryReadNext()
 		Byte retAddr = callStack_.Pop();
 		bcr_.Seek(retAddr);
 	}
+
+	else if (bcr_.Consume(BCD_JMP))
+	{
+		signed char destAddr = static_cast<signed char>(bcr_.Pop());  // ジャンプ先の相対位置
+
+		bcr_.Seek(destAddr + bcr_.GetCurrentIndex());
+	}
+
+	else if (bcr_.Consume(BCD_CFJP))
+	{
+		Byte conRegAddr{ bcr_.Pop() };
+		signed char destAddr = static_cast<signed char>(bcr_.Pop());  // ジャンプ先の相対位置
+
+		Byte value{ register_[conRegAddr] };
+
+		if (!value)  // 条件が false のときジャンプ
+		{
+			bcr_.Seek(destAddr + bcr_.GetCurrentIndex());
+		}
+	}
+
+	else if (bcr_.Consume(BCD_CTJP))
+	{
+		Byte conRegAddr{ bcr_.Pop() };
+		signed char destAddr = static_cast<signed char>(bcr_.Pop());  // ジャンプ先の相対位置
+
+		Byte value{ register_[conRegAddr] };
+
+		if (value)  // 条件が true のときジャンプ
+		{
+			bcr_.Seek(destAddr + bcr_.GetCurrentIndex());
+		}
+	}
+
 	/*else if (bcr_.Consume(BCD_JP))
 	{
 		// ジャンプ処理
@@ -128,6 +180,56 @@ bool CodeRunner::TryReadNext()
 		stackMachine_.Push(a / b);
 	}
 #pragma endregion
+#pragma region 論理演算
+	else if (bcr_.Consume(BCD_AND))
+	{
+		int b{ stackMachine_.Pop() };
+		int a{ stackMachine_.Pop() };
+		stackMachine_.Push(a && b);
+	}
+	else if (bcr_.Consume(BCD_OR))
+	{
+		int b{ stackMachine_.Pop() };
+		int a{ stackMachine_.Pop() };
+		stackMachine_.Push(a || b);
+	}
+	else if (bcr_.Consume(BCD_EQUAL))
+	{
+		int b{ stackMachine_.Pop() };
+		int a{ stackMachine_.Pop() };
+		stackMachine_.Push(a == b);
+	}
+	else if (bcr_.Consume(BCD_NOTEQUAL))
+	{
+		int b{ stackMachine_.Pop() };
+		int a{ stackMachine_.Pop() };
+		stackMachine_.Push(a != b);
+	}
+	else if (bcr_.Consume(BCD_LESSTHAN))
+	{
+		int b{ stackMachine_.Pop() };
+		int a{ stackMachine_.Pop() };
+		stackMachine_.Push(a < b);
+	}
+	else if (bcr_.Consume(BCD_GREATERTHEN))
+	{
+		int b{ stackMachine_.Pop() };
+		int a{ stackMachine_.Pop() };
+		stackMachine_.Push(a > b);
+	}
+	else if (bcr_.Consume(BCD_LESSEQUAL))
+	{
+		int b{ stackMachine_.Pop() };
+		int a{ stackMachine_.Pop() };
+		stackMachine_.Push(a <= b);
+	}
+	else if (bcr_.Consume(BCD_GREATEREQUAL))
+	{
+		int b{ stackMachine_.Pop() };
+		int a{ stackMachine_.Pop() };
+		stackMachine_.Push(a >= b);
+	}
+#pragma endregion
 	else if (bcr_.Consume(BCD_POP))
 	{
 		Byte destRegAddr{ bcr_.Pop() };
@@ -139,6 +241,12 @@ bool CodeRunner::TryReadNext()
 		Byte destRegSize{ bcr_.Pop() };
 		int tmp{ stackMachine_.Pop() };
 		::memcpy(&(register_.data()[destRegAddr]), &tmp, destRegSize);
+	}
+	else if (bcr_.Consume(BCD_RSET))
+	{
+		Byte destRegAddr{ bcr_.Pop() };
+		Byte destValue{ bcr_.Pop() };
+		register_[destRegAddr] = destValue;
 	}
 	else
 	{
@@ -153,6 +261,7 @@ void CodeRunner::Reset()
 {
 	bcr_.Seek(0);
 	memory_.clear();
+	memory_.resize(256);  // 256 byteメモリ
 	stackMachine_.Clear();
 	callStack_.Clear();
 	register_.clear();

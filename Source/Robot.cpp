@@ -32,17 +32,29 @@ Robot::Robot(
 	bcr_{ _byteCode },
 	toJump_{ false }
 {
-	codeRunner_.OnActionMessage([&, this](const ActionMessage _msg)
-		{
-			if (_msg == ActionMessage::Run)
+	codeRunner_
+		.OnActionMessage([&, this](const ActionMessage _msg)
 			{
-				Run();
-			}
-			else if (_msg == ActionMessage::Jump)
+				if (_msg == ActionMessage::Run)
+				{
+					Run();
+				}
+				else if (_msg == ActionMessage::Jump)
+				{
+					Jump();
+				}
+			})
+		.OnGetIOMessage([&, this](const GetIOMessage _msg) -> int
 			{
-				Jump();
-			}
-		});
+				switch (_msg)
+				{
+				case GetIOMessage::IsGrounded:
+					return isGrounded_ ? 1 : 0;
+				case GetIOMessage::CheckTile:  // ƒ^ƒCƒ‹Žæ“¾–¢ŽÀ‘•
+				default:
+					return 0;
+				}
+			});
 }
 
 Robot::~Robot()

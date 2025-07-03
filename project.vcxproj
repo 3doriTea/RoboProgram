@@ -162,6 +162,7 @@
     <ClInclude Include="Source\CodeRunner\CodeRunner.h" />
     <ClInclude Include="Source\CodeRunner\Stack.h" />
     <ClInclude Include="Source\Compiler\Analyzer.h" />
+    <ClInclude Include="Source\Compiler\Assembler.h" />
     <ClInclude Include="Source\Compiler\LexicalAnalyzer.h" />
     <ClInclude Include="Source\Compiler\ProtoAnalyzer.h" />
     <ClInclude Include="Source\Compiler\SemanticAnalyzer.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="Source\CodeRunner\CodeRunner.cpp" />
     <ClCompile Include="Source\CodeRunner\Stack.cpp" />
     <ClCompile Include="Source\Coin.cpp" />
+    <ClCompile Include="Source\Compiler\Assembler.cpp" />
     <ClCompile Include="Source\Compiler\LexicalAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\ProtoAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\SemanticAnalyzer.cpp" />

@@ -6,7 +6,6 @@
 #include "IO/Input.h"
 #include "PlayScene.h"
 #include "Screen.h"
-#include "Compiler/Analyzer.h"
 
 
 namespace
@@ -220,7 +219,7 @@ void Player::SetError(const std::string& _message, const SOURCE_POS& _srcPos)
 	SetState(S_ERROR);
 }
 
-void Player::SetByteCode(const std::vector<std::pair<int, Byte>>& _byteCode)
+void Player::SetByteCode(const ByteCodes& _byteCode)
 {
 	robot_.Reset();
 	if (currentState_ == S_ERROR)
@@ -243,7 +242,7 @@ int Player::GetReadLine() const
 	{
 		return -1;
 	}
-	return byteCodeAndLines_[index].first;
+	return byteCodeAndLines_[index].first.line;
 }
 
 void Player::SetState(const State _state)

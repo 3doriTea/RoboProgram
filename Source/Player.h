@@ -3,6 +3,8 @@
 #include <vector>
 #include "Robot.h"
 #include "Utility/Timer.h"
+#include "Compiler/Analyzer.h"
+
 
 struct SOURCE_POS;
 
@@ -36,7 +38,7 @@ public:
 	int GetWidth() const;
 
 	void SetError(const std::string& _message, const SOURCE_POS& _srcPos);
-	void SetByteCode(const std::vector<std::pair<int, Byte>>& _byteCode);
+	void SetByteCode(const ByteCodes& _byteCode);
 
 	int GetReadLine() const;
 
@@ -65,6 +67,6 @@ private:
 	float moveSpeed;
 	float jumpV0;
 
-	std::vector<std::pair<int, Byte>> byteCodeAndLines_;
+	ByteCodes byteCodeAndLines_;
 	std::vector<Byte> byteCode_;
 };

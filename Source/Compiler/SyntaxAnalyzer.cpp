@@ -155,7 +155,7 @@ NODE* SyntaxAnalyzer::_Unary()
 	{
 		return NewNode({ -1, NODE_SUB, nullptr, _Postfix() });
 	}
-	return _Primary();
+	return _Postfix();
 }
 
 NODE* SyntaxAnalyzer::_Postfix()
@@ -283,8 +283,16 @@ NODE* SyntaxAnalyzer::_NFor()
 	NODE* expr{ _Expr() };  // 
 	
 	Expect(";");
+
+	NODE* updt{ nullptr };
 	
-	NODE* updt{ _Expr() };  // 
+	updt = _Assign();
+
+	if (updt == nullptr)  // ‘ã“üŽ®‚Å‚Í‚È‚¢
+	{
+		updt = _Expr();  //
+	}
+
 
 	Expect(")");
 
@@ -375,6 +383,12 @@ NODE* SyntaxAnalyzer::Proc()
 			return node;
 		}
 		node = _Assign();  // ‘ã“üŽ®
+		if (node != nullptr)
+		{
+			Expect(";");
+			return node;
+		}
+		node = _Expr();  // Ž®
 		Expect(";");
 		return node;
 	}
@@ -527,6 +541,11 @@ NODE* SyntaxAnalyzer::_VarDec()
 
 NODE* SyntaxAnalyzer::_Assign()
 {
+	if (Peek(1) != "=")
+	{
+		return nullptr;  // ‘ã“üŽ®‚Å‚Í‚È‚¢
+	}
+
 	NODE* name{ _Name() };
 
 	NODE* expr{ nullptr };

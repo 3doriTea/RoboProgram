@@ -105,6 +105,9 @@
     <ClCompile Include="Source\Compiler\SyntaxAnalyzer.cpp" />
     <ClCompile Include="Source\CodeRunner\CodeRunner.cpp" />
     <ClCompile Include="Source\CodeRunner\Stack.cpp" />
+    <ClCompile Include="Source\Compiler\SemanticAnalyzer.cpp" />
+    <ClCompile Include="Source\ViewerBox.cpp" />
+    <ClCompile Include="Source\Compiler\Assembler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -245,6 +248,9 @@
     <ClInclude Include="Source\Compiler\SyntaxAnalyzer.h" />
     <ClInclude Include="Source\CodeRunner\CodeRunner.h" />
     <ClInclude Include="Source\CodeRunner\Stack.h" />
+    <ClInclude Include="Source\Compiler\SemanticAnalyzer.h" />
+    <ClInclude Include="Source\ViewerBox.h" />
+    <ClInclude Include="Source\Compiler\Assembler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

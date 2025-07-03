@@ -86,6 +86,7 @@ void LexicalAnalyzer::Analyze()
 				{
 					if (line.second[columnCount_ + 1] == chr)
 					{
+						PopToken(token);
 						token.push_back(chr);
 						token.push_back(chr);
 						columnCount_++;

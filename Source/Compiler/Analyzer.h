@@ -227,6 +227,16 @@ struct NODE
 			{
 				NODE* liter;
 			} liter;
+
+			struct  // インクリメント
+			{
+				NODE* expr;
+			} increment;
+
+			struct  // デクリメント
+			{
+				NODE* expr;
+			} decrement;
 		};
 	};
 };

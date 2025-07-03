@@ -67,7 +67,7 @@ private:
 	/// <returns></returns>
 	int GetMemory(const std::string& name);
 
-	void RegSet(const int value, ByteCodes& bc, int offset = 0);
+	void RegSet(int value, ByteCodes& bc, int offset = 0);
 	void RegSet(const Byte value, ByteCodes& bc, int offset = 0);
 
 	void Read(const NODE* n, const int _depth, int position = 0);
@@ -98,7 +98,10 @@ private:
 
 	void ReadExpr(const NODE* n, ByteCodes& bc);
 
-	void ReadAssign(const NODE* n, ByteCodes& bc, const int typeSize);
+	void ReadAssign(const NODE* n, ByteCodes& bc, const int typeSize, const bool newDec = false);
+
+	void ReadIncrement(const NODE* n, ByteCodes& bc);
+	void ReadDecrement(const NODE* n, ByteCodes& bc);
 
 	/// <summary>
 	/// 変数の参照し、スタックに追加

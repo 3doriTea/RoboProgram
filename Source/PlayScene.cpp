@@ -16,7 +16,10 @@
 #include "Compiler/SyntaxAnalyzer.h"
 #include "Compiler/SemanticAnalyzer.h"
 
+#include <sstream>
+#include <iomanip>
 #include "ByteCodeDefine.h"
+#include "Compiler/Assembler.h"
 
 namespace
 {
@@ -58,6 +61,8 @@ PlayScene::PlayScene() :
 		.OnUpdateSource([&, this, pCodeBox, pViewerBox](
 			const std::vector<std::string>& _newSource)
 			{
+				//　コンパイル処理
+
 				bool isError{ false };
 				std::string errorMessage{};
 				SOURCE_POS errorPosition{};
@@ -65,7 +70,7 @@ PlayScene::PlayScene() :
  				//pCodeBox->SetSourceLines(_newSource);
 				pViewerBox->SetTextLines(_newSource);
 
-				pPlayer_->SetByteCode(
+				/*pPlayer_->SetByteCode(
 					{
 						{ -1, BCD_CALL },
 						{ -1, 1 },
@@ -73,7 +78,7 @@ PlayScene::PlayScene() :
 						{ 3, BCD_ACT },
 						{ 3, BCD_ACT_RUN },
 						{ 4, BCD_RET }
-					});
+					});*/
 
 				/*std::vector<std::pair<int, Byte>> byteCodeAndLines{};
 				ProtoAnalyzer* analyzer{ new ProtoAnalyzer{ _newSource, byteCodeAndLines } };
@@ -175,6 +180,23 @@ PlayScene::PlayScene() :
 					pPlayer_->SetError(errorMessage, errorPosition);
 					return;
 				}
+
+				for (auto& node : nodeAndTokens.first)
+				{
+					delete node;
+				}
+
+
+				std::string asTex{};
+				Assembler::ToAssemble(byteCodes, asTex);
+				OutputDebugString(asTex.c_str());
+
+
+				//std::string testout = test.str();
+				//const char* strtestout = testout.c_str();
+				//OutputDebugString(strtestout);
+
+				pPlayer_->SetByteCode(byteCodes);
 			});
 
 	Timer::AddInterval(1.0f, [&, this]()
