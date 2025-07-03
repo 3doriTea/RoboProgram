@@ -50,6 +50,8 @@ Robot::Robot(
 				{
 				case GetIOMessage::IsGrounded:
 					return isGrounded_ ? 1 : 0;
+				case GetIOMessage::GetOnTileNumber:
+					return;
 				case GetIOMessage::CheckTile:  // ƒ^ƒCƒ‹Žæ“¾–¢ŽÀ‘•
 				default:
 					return 0;

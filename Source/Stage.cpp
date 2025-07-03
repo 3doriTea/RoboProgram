@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Coin.h"
 #include "Flag.h"
+#include "Doc.h"
 
 
 namespace
@@ -16,8 +17,11 @@ namespace
 	{
 		"",
 		"Data/Image/tileGround1.png",
-		"",
-		"",
+		"",  // coin
+		"",  // player
+		"",  // flag
+		"",  // doc
+		"Data/Image/Tile1.png",  // tile1
 	};
 }
 
@@ -81,6 +85,16 @@ Stage::Stage()
 						static_cast<float>(y)* TILE_HEIGHT
 					}
 				};
+				break;
+			case TILE_DOC:
+				new Doc
+				{
+					{
+						static_cast<float>(x) * TILE_WIDTH,
+						static_cast<float>(y) * TILE_HEIGHT
+					}
+				};
+				break;
 			default:
 				break;
 			}
@@ -232,6 +246,23 @@ Vector2 Stage::ToTilePosition(const Vector2& worldPosition)
 		static_cast<float>(static_cast<int>(worldPosition.x / TILE_WIDTH)),
 		static_cast<float>(static_cast<int>(worldPosition.y / TILE_HEIGHT)),
 	};
+}
+const int Stage::GetTile(const Vector2Int& tilePosition) const
+{
+	int tileX{ tilePosition.x };
+	int tileY{ tilePosition.y };
+
+	// îÕàÕäOèúäO
+	if (tileY < 0 || map_.size() <= tileY)
+	{
+		return -1;
+	}
+	if (tileX < 0 || map_[tileY].size() <= tileX)
+	{
+		return -1;
+	}
+
+	return map_[tileY][tileX];
 }
 #pragma endregion
 

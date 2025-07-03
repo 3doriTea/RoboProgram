@@ -108,6 +108,7 @@
     <ClCompile Include="Source\Compiler\SemanticAnalyzer.cpp" />
     <ClCompile Include="Source\ViewerBox.cpp" />
     <ClCompile Include="Source\Compiler\Assembler.cpp" />
+    <ClCompile Include="Source\Doc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -251,6 +252,7 @@
     <ClInclude Include="Source\Compiler\SemanticAnalyzer.h" />
     <ClInclude Include="Source\ViewerBox.h" />
     <ClInclude Include="Source\Compiler\Assembler.h" />
+    <ClInclude Include="Source\Doc.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

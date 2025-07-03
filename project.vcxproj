@@ -167,6 +167,7 @@
     <ClInclude Include="Source\Compiler\ProtoAnalyzer.h" />
     <ClInclude Include="Source\Compiler\SemanticAnalyzer.h" />
     <ClInclude Include="Source\Compiler\SyntaxAnalyzer.h" />
+    <ClInclude Include="Source\Doc.h" />
     <ClInclude Include="Source\IO\Input.h" />
     <ClInclude Include="Source\IO\SourceObserver.h" />
     <ClInclude Include="Source\Object2D.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="Source\Compiler\ProtoAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\SemanticAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\SyntaxAnalyzer.cpp" />
+    <ClCompile Include="Source\Doc.cpp" />
     <ClCompile Include="Source\Flag.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />
     <ClCompile Include="Source\IO\SourceObserver.cpp" />

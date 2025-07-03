@@ -21,6 +21,7 @@ enum struct GetIOMessage
 {
 	IsGrounded,
 	CheckTile,
+	GetOnTileNumber,
 };
 
 /// <summary>

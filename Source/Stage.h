@@ -28,6 +28,8 @@ public:
 		TILE_COIN,
 		TILE_PLAYER,
 		TILE_FLAG,
+		TILE_DOC,
+		TILE_1,
 
 		TILE_MAX,
 	};
@@ -81,6 +83,7 @@ public:
 	/// <returns>É^ÉCÉãç¿ïW</returns>
 	Vector2 ToTilePosition(const Vector2& worldPosition);
 #pragma endregion
+	const int GetTile(const Vector2Int& tilePosition) const;
 
 	const Vector2Int GetPush(const Vector2Int& _point, const PushDir _dir) const;
 	const Vector2Int GetPush(const RectInt& _rect) const;
