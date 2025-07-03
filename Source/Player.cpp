@@ -20,7 +20,7 @@ namespace
 	static const float GRAVITY{ 0.05 };
 	static const int IMAGE_WIDTH{ 80 };
 	static const int IMAGE_HEIGHT{ 160 };
-	static const float ROBOT_STEP_TIME_SEC{ 0.07 };
+	static const float ROBOT_STEP_TIME_SEC{ 0.07 / 3.0f };
 	static const float ROBOT_BEAT_TIME_SEC{ 1 };
 }
 
