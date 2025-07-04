@@ -6,6 +6,7 @@
 #include "IO/Input.h"
 #include "PlayScene.h"
 #include "Screen.h"
+#include "ViewerBox.h"
 
 
 namespace
@@ -55,6 +56,13 @@ Player::Player(const Vector2& _position) :
 		&& "Player‚ÌDownƒCƒ[ƒW“Ç‚Ýž‚Ý‚ÉŽ¸”s @Player::Player");
 
 	SetState(S_READY);
+
+	pSrcCodeViewer_ = new ViewerBox{};
+	pSrcCodeViewer_
+		->SetDefaultBackgroundColor(0xffffff)
+		.SetDefaultTextColor(0x000000)
+		.SetFrameWidth(6)
+		.SetFrameColor(0x000000);
 }
 
 Player::~Player()

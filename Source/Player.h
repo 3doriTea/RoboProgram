@@ -4,6 +4,7 @@
 #include "Robot.h"
 #include "Utility/Timer.h"
 #include "Compiler/Analyzer.h"
+#include "ViewerBox.h"
 
 
 struct SOURCE_POS;
@@ -50,6 +51,8 @@ private:
 	void SetState(const State _state);
 
 private:
+	ViewerBox* pSrcCodeViewer_;
+
 	bool isShockDown_;
 
 	TimerHandle hBeatTimer_;
