@@ -16,6 +16,7 @@ private:
 		S_READY,
 		S_RUN,
 		S_ERROR,
+		S_DOWN,  // ‚â‚ê‚Ä‚¢‚é
 		S_MAX,
 	};
 
@@ -42,11 +43,15 @@ public:
 
 	int GetReadLine() const;
 
+	void ShockDown();
+
 private:
 	State GetState() const { return currentState_; }
 	void SetState(const State _state);
 
 private:
+	bool isShockDown_;
+
 	TimerHandle hBeatTimer_;
 
 	int sleepCount_;

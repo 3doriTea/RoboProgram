@@ -1,17 +1,13 @@
 #include "Background.h"
 #include <cassert>
 
-
-namespace
+Background::Background(const char* _imageFile)
 {
-	const char IMAGE_PATH[]{ "Data/Image/Background.png" };
-}
-
-Background::Background()
-{
-	hImage_ = LoadGraph(IMAGE_PATH);
+	hImage_ = LoadGraph(_imageFile);
 	assert(hImage_ >= 0
 		&& "”wŒi‰æ‘œ‚Ì“Ç‚İ‚İ‚É¸”s @Background::Background");
+
+	SetDrawOrder(100);
 }
 
 Background::~Background()

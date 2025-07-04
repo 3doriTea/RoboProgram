@@ -20,10 +20,12 @@
 #include <iomanip>
 #include "ByteCodeDefine.h"
 #include "Compiler/Assembler.h"
+#include "Fader.h"
 
 namespace
 {
 	static const char SRC_FILE_NAME[]{ "SourceCode.txt" };
+	static const char PLAY_IMAGE_PATH[]{ "Data/Image/Background.png" };
 }
 
 PlayScene::PlayScene() :
@@ -31,7 +33,12 @@ PlayScene::PlayScene() :
 {
 	Timer::Instance().Clear();  // 最初にタイマーをクリアする
 
-	new Background{};
+	(new Fader{ PLAY_IMAGE_PATH, 1.0f, true })->OnFinish([&, this]()
+		{
+			//SceneManager::ChangeScene("PLAY");
+		});
+
+	new Background{ PLAY_IMAGE_PATH };
 	Stage* pStage{ new Stage{} };
 	CodeBox* pCodeBox{ new CodeBox{} };
 
@@ -48,7 +55,6 @@ PlayScene::PlayScene() :
 		->OnCreateSource([&, this](
 			std::vector<std::string>& _newSource)
 			{
-				//printfDx("新規でソースが作られた\n");
 				_newSource =
 				{
 					u8"// 毎ビート呼ばれるよ！",
@@ -233,5 +239,6 @@ void PlayScene::Draw()
 
 void PlayScene::OpenSrcFile()
 {
+	//system(SRC_FILE_NAME);
 	ShellExecute(NULL, "open", SRC_FILE_NAME, "", "", SW_SHOW);
 }

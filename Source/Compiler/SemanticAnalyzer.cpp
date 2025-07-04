@@ -559,7 +559,7 @@ void SemanticAnalyzer::ReadNIf(const NODE* n, ByteCodes& bc, int blockBegin)
 	bc.push_back({ {}, 0 });
 	bc.push_back({ {}, 4 });
 
-	bc.push_back({ {}, BCD_CFJP });  // レジスタ0番がfalseのときジャンプ
+	bc.push_back({ {}, BCD_CFJP });  // レジスタ0番が falseのときジャンプ
 	bc.push_back({ {}, 0 });  // 0番レジスタ を参照
 
 	assert(ifBlock.size() <= INT8_MAX);
@@ -601,12 +601,32 @@ void SemanticAnalyzer::ReadExpr(const NODE* n, ByteCodes& bc)
 	switch (n->type_)
 	{
 	case NODE_ADD:
-		ReadExpr(n->expr.ls, bc);
+		if (n->expr.ls == nullptr)
+		{
+			RegSet(0, bc);
+			bc.push_back({ {}, BCD_PUSW });
+			bc.push_back({ {}, 0 });
+			bc.push_back({ {}, 4 });
+		}
+		else
+		{
+			ReadExpr(n->expr.ls, bc);
+		}
 		ReadExpr(n->expr.rs, bc);
 		bc.push_back({ {}, BCD_ADD });
 		break;
 	case NODE_SUB:
-		ReadExpr(n->expr.ls, bc);
+		if (n->expr.ls == nullptr)
+		{
+			RegSet(0, bc);
+			bc.push_back({ {}, BCD_PUSW });
+			bc.push_back({ {}, 0 });
+			bc.push_back({ {}, 4 });
+		}
+		else
+		{
+			ReadExpr(n->expr.ls, bc);
+		}
 		ReadExpr(n->expr.rs, bc);
 		bc.push_back({ {}, BCD_SUB });
 		break;
@@ -871,6 +891,12 @@ void SemanticAnalyzer::ReadCallFunc(const NODE* n, ByteCodes& bc)
 	{
 		bc.push_back({ {}, BCD_AIO });
 		bc.push_back({ {}, BCD_AIO_CHECKTILE });
+		return;
+	}
+	else if (funcName == "GetOnTileNumber")
+	{
+		bc.push_back({ {}, BCD_AIO });
+		bc.push_back({ {}, BCD_AIO_ONTILENUMBER });
 		return;
 	}
 

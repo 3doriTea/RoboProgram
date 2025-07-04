@@ -6,6 +6,7 @@
 #include "Coin.h"
 #include "Flag.h"
 #include "Doc.h"
+#include "Lightning.h"
 
 
 namespace
@@ -31,6 +32,11 @@ Stage::Stage()
 	assert(hImage > 0
 		&& "画像読み込みに失敗 @Stage::Stage");
 	hImages_.insert({ TILE_GROUND, hImage });
+
+	hImage = LoadGraph(TILE_FILES[TILE_1]);
+	assert(hImage > 0
+		&& "画像読み込みに失敗 @Stage::Stage");
+	hImages_.insert({ TILE_1, hImage });
 
 	CsvReader* csv{ new CsvReader{ "Data/map.csv" } };
 	
@@ -95,6 +101,15 @@ Stage::Stage()
 					}
 				};
 				break;
+			case TILE_LIGHTNING:
+				new Lightning
+				{
+					{
+						static_cast<float>(x) * TILE_WIDTH,
+						static_cast<float>(y) * TILE_HEIGHT
+					}
+				};
+				break;
 			default:
 				break;
 			}
@@ -104,6 +119,10 @@ Stage::Stage()
 
 Stage::~Stage()
 {
+	for (auto& hImage : hImages_)
+	{
+		DeleteGraph(hImage.second);
+	}
 }
 
 //void Stage::Update()
@@ -126,24 +145,11 @@ void Stage::Draw()
 			case TILE_GROUND:
 				DrawTile({ x, y }, TILE_GROUND);
 				break;
+			case TILE_1:
+				DrawTile({ x, y }, TILE_1);
+				break;
 			default:
 				break;
-
-			//case 8:
-			//	//DrawTile({ static_cast<float>(x), static_cast<float>(y) }, { 3, 0 });
-			//	break;
-			//case 3:
-			//	//DrawTile({ static_cast<float>(x), static_cast<float>(y) }, { 5, 1 });
-			//	break;
-			//case 2:
-			//	//DrawTile({ static_cast<float>(x), static_cast<float>(y) }, { 4, 1 });
-			//	break;
-			//case 1:
-			//	//DrawTile({ static_cast<float>(x), static_cast<float>(y) }, { 3, 1 });
-			//	break;
-			//case 0:
-			//default:
-			//	break;
 			}
 
 		}
@@ -219,6 +225,8 @@ bool Stage::IsWall(const Vector2& _position)
 	case TILE_PLAYER:  // プレイヤー
 	case TILE_COIN:  // コイン
 	case TILE_FLAG:  // チェックポイント
+	case TILE_DOC:  // チェックポイント
+	case TILE_LIGHTNING:  // 感電
 	case TILE_MAX:  // ?
 		return false;  // 壁でない
 	default:
@@ -261,6 +269,8 @@ const int Stage::GetTile(const Vector2Int& tilePosition) const
 	{
 		return -1;
 	}
+
+	printfDx("チェック %d,%d block:%d\n", tileX, tileY, map_[tileY][tileX]);
 
 	return map_[tileY][tileX];
 }

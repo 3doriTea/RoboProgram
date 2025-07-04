@@ -74,4 +74,5 @@ enum ByteCodeDefine_AIO : Byte
 {
 	BCD_AIO_ISGROUND = 0x01,
 	BCD_AIO_CHECKTILE = 0x02,
+	BCD_AIO_ONTILENUMBER = 0x03,
 };

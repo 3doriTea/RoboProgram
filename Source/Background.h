@@ -5,7 +5,7 @@
 class Background : public GameObject
 {
 public:
-	Background();
+	Background(const char* _imageFile);
 	~Background();
 
 	void Update() override;

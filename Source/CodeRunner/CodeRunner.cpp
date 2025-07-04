@@ -74,6 +74,11 @@ bool CodeRunner::TryReadNext()
 			int result{ onGetIOMessage_(GetIOMessage::IsGrounded) };
 			stackMachine_.Push(result);
 		}
+		else if (bcr_.Consume(BCD_AIO_ONTILENUMBER))
+		{
+			int result{ onGetIOMessage_(GetIOMessage::GetOnTileNumber) };
+			stackMachine_.Push(result);
+		}
 		else
 		{
 			// –¢’è‹`

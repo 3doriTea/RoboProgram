@@ -7,7 +7,7 @@
 
 namespace
 {
-	static const float RUNNING_TIME_SEC{ 0.1f }; // ‘–‚éŽžŠÔ •b
+	static const float RUNNING_TIME_SEC{ 0.3f }; // ‘–‚éŽžŠÔ •b
 }
 
 Robot::Robot(
@@ -55,10 +55,21 @@ Robot::Robot(
 						Vector2Int tilePosition
 						{
 							pStage_->ToTilePosition(
-								rect_.pivot + rect_.size + Vector2{ 0, 30.0f })
+								rect_.pivot + Vector2{ rect_.size.x / 2, rect_.size.y } + Vector2{ 0, 30.0f })
 							.ToInt()
 						};
-						return pStage_->GetTile(tilePosition);
+
+						int tile{ pStage_->GetTile(tilePosition) };
+						switch (tile)
+						{
+						case 6:
+							tile = 1;
+							break;
+						default:
+							tile = -1;
+							break;
+						}
+						return tile;
 					}
 				case GetIOMessage::CheckTile:  // ƒ^ƒCƒ‹Žæ“¾–¢ŽÀ‘•
 				default:

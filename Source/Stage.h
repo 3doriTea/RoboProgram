@@ -31,6 +31,8 @@ public:
 		TILE_DOC,
 		TILE_1,
 
+		TILE_LIGHTNING = 9,
+
 		TILE_MAX,
 	};
 public:

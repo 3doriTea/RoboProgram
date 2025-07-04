@@ -168,8 +168,10 @@
     <ClInclude Include="Source\Compiler\SemanticAnalyzer.h" />
     <ClInclude Include="Source\Compiler\SyntaxAnalyzer.h" />
     <ClInclude Include="Source\Doc.h" />
+    <ClInclude Include="Source\Fader.h" />
     <ClInclude Include="Source\IO\Input.h" />
     <ClInclude Include="Source\IO\SourceObserver.h" />
+    <ClInclude Include="Source\Lightning.h" />
     <ClInclude Include="Source\Object2D.h" />
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Rectan.h" />
@@ -180,6 +182,7 @@
     <ClInclude Include="Source\SceneFactory.h" />
     <ClInclude Include="Source\Stage.h" />
     <ClInclude Include="Source\StageObject.h" />
+    <ClInclude Include="Source\StartButton.h" />
     <ClInclude Include="Source\TitleScene.h" />
     <ClInclude Include="Source\Coin.h" />
     <ClInclude Include="Source\Flag.h" />
@@ -219,9 +222,11 @@
     <ClCompile Include="Source\Compiler\SemanticAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\SyntaxAnalyzer.cpp" />
     <ClCompile Include="Source\Doc.cpp" />
+    <ClCompile Include="Source\Fader.cpp" />
     <ClCompile Include="Source\Flag.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />
     <ClCompile Include="Source\IO\SourceObserver.cpp" />
+    <ClCompile Include="Source\Lightning.cpp" />
     <ClCompile Include="Source\Object2D.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\PlayScene.cpp" />
@@ -229,6 +234,7 @@
     <ClCompile Include="Source\SceneFactory.cpp" />
     <ClCompile Include="Source\Stage.cpp" />
     <ClCompile Include="Source\StageObject.cpp" />
+    <ClCompile Include="Source\StartButton.cpp" />
     <ClCompile Include="Source\TitleScene.cpp" />
     <ClCompile Include="Source\Utility\RectanUtility.cpp" />
     <ClCompile Include="Source\Utility\StringUtility.cpp" />

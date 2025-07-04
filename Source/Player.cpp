@@ -15,7 +15,8 @@ namespace
 	static const char PLAYER_READY_IMAGE_FILE[]{ "Data/Image/Player-ready.png" };
 	static const char PLAYER_RUNNING_IMAGE_FILE[]{ "Data/Image/Player-running.png" };
 	static const char PLAYER_ERROR_IMAGE_FILE[]{ "Data/Image/Player-error.png" };
-	static const float MOVE_SPEED{ 5 };
+	static const char PLAYER_DOWN_IMAGE_FILE[]{ "Data/Image/Player-down.png" };
+	static const float MOVE_SPEED{ 2 };
 	static const float JUMP_HEIGHT{ 80 };
 	static const float GRAVITY{ 0.05 };
 	static const int IMAGE_WIDTH{ 80 };
@@ -31,13 +32,14 @@ Player::Player(const Vector2& _position) :
 	moveSpeed{ MOVE_SPEED },
 	jumpV0{},
 	robot_{ rect_, moveSpeed, jumpV0, pStage_, isGrounded, velocity_, prevPushedSpace, byteCode_ },
-	hBeatTimer_{ 0 }
+	hBeatTimer_{ 0 },
+	isShockDown_{ false }
 {
 	jumpV0 = -std::sqrtf(2.0f * gravity * jumpHeight);
 
 	rect_.pivot = _position + Vector2(0, -50);
-	rect_.width = IMAGE_WIDTH;
-	rect_.height = IMAGE_HEIGHT;
+	rect_.width = 70;
+	rect_.height = 150;
 
 	hStateImages[S_READY] = LoadGraph(PLAYER_READY_IMAGE_FILE);
 	assert(hStateImages[S_READY] > 0
@@ -48,6 +50,9 @@ Player::Player(const Vector2& _position) :
 	hStateImages[S_ERROR] = LoadGraph(PLAYER_ERROR_IMAGE_FILE);
 	assert(hStateImages[S_ERROR] > 0
 		&& "PlayerのErrorイメージ読み込みに失敗 @Player::Player");
+	hStateImages[S_DOWN] = LoadGraph(PLAYER_DOWN_IMAGE_FILE);
+	assert(hStateImages[S_DOWN] > 0
+		&& "PlayerのDownイメージ読み込みに失敗 @Player::Player");
 
 	SetState(S_READY);
 }
@@ -77,7 +82,9 @@ void Player::Update()
 				break;
 			case Player::S_ERROR:
 				printfDx("コードにエラーがあるため、実行できません。\n");
+				GetScene<PlayScene>()->OpenSrcFile();
 				break;
+			case Player::S_DOWN:
 			case Player::S_MAX:
 			default:
 				break;
@@ -202,6 +209,32 @@ void Player::Update()
 void Player::Draw()
 {
 	Object2D::Draw();
+
+	//Vector2 tilePosition
+	//{
+	//	pStage_->ToTilePosition(
+	//		rect_.pivot + Vector2{ rect_.size.x / 2, rect_.size.y } + Vector2{ 0, 30.0f })
+	//};
+
+	//Rectan rectan{};
+	////rectan.pivot = rect_.pivot + Vector2{ 0, rect_.size.y };
+	//rectan.pivot = pStage_->ToWorldPosition(tilePosition);// rect_.pivot + Vector2{ 0, rect_.size.y };
+	//rectan.size = { IMAGE_SIZE, IMAGE_SIZE };
+
+	//Vector2 scroll{};
+	//if (pStage_ != nullptr)
+	//{
+	//	scroll = pStage_->GetScroll();
+	//}
+	//Rectan drawRect{};
+	//drawRect.x = rectan.x - scroll.x;
+	//drawRect.y = rectan.y - scroll.y;
+	//drawRect.size = rectan.size;
+
+	//DrawBox(
+	//	drawRect.pivot.x, drawRect.pivot.y,
+	//	drawRect.pivot.x + drawRect.size.x, drawRect.pivot.y + drawRect.size.y,
+	//	0xff0000, FALSE);
 }
 
 int Player::GetHeight() const
@@ -243,6 +276,11 @@ int Player::GetReadLine() const
 		return -1;
 	}
 	return byteCodeAndLines_[index].first.line;
+}
+
+void Player::ShockDown()
+{
+	SetState(S_DOWN);
 }
 
 void Player::SetState(const State _state)
@@ -288,6 +326,13 @@ void Player::SetState(const State _state)
 		sleepCount_ = 0;
 		robot_.Reset();
 
+		Timer::Remove(hBeatTimer_);
+		hBeatTimer_ = nullptr;
+		break;
+	case S_DOWN:
+		prevIsSucceedTryRead = false;
+		sleepCount_ = 0;
+		robot_.Reset();
 		Timer::Remove(hBeatTimer_);
 		hBeatTimer_ = nullptr;
 		break;

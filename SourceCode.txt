@@ -1,9 +1,9 @@
 void Update()
 {
-  int i = 0;
-  for (i = 0; i < 3; i = i + 1)
+  //if (GetOnTileNumber() != 1)
+  if (true)
   {
-    Run();
+    Jump();
   }
-  Jump();
+  Run();  Run();  Run();  Run();  Run();  Run();  Run();  Run();Run(); Run();Run();Run();Run();Run();
 }
