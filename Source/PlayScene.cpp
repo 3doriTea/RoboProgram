@@ -100,7 +100,7 @@ PlayScene::PlayScene() :
 		//.SetShowLineCount(7)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(false)
-		.SetPosition({ Screen::WIDTH, Screen::HEIGHT }, ViewerBox::Pivot::BottomRight);
+		.SetPosition({ Screen::WIDTH - 30, Screen::HEIGHT - 30 }, ViewerBox::Pivot::BottomRight);
 
 	//pCodeViewer->SetPosition();
 

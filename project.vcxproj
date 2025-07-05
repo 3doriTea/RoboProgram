@@ -170,7 +170,10 @@
     <ClInclude Include="Source\Compiler\SyntaxAnalyzer.h" />
     <ClInclude Include="Source\Doc.h" />
     <ClInclude Include="Source\Fader.h" />
+    <ClInclude Include="Source\IO\Common.h" />
+    <ClInclude Include="Source\IO\FileSaver.h" />
     <ClInclude Include="Source\IO\Input.h" />
+    <ClInclude Include="Source\IO\MemoryStream.h" />
     <ClInclude Include="Source\IO\SourceObserver.h" />
     <ClInclude Include="Source\Lightning.h" />
     <ClInclude Include="Source\Object2D.h" />
@@ -228,6 +231,7 @@
     <ClCompile Include="Source\Fader.cpp" />
     <ClCompile Include="Source\Flag.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />
+    <ClCompile Include="Source\IO\MemoryStream.cpp" />
     <ClCompile Include="Source\IO\SourceObserver.cpp" />
     <ClCompile Include="Source\Lightning.cpp" />
     <ClCompile Include="Source\Object2D.cpp" />

@@ -113,6 +113,7 @@
     <ClCompile Include="Source\Lightning.cpp" />
     <ClCompile Include="Source\StartButton.cpp" />
     <ClCompile Include="Source\BlockEffect.cpp" />
+    <ClCompile Include="Source\IO\MemoryStream.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -262,6 +263,9 @@
     <ClInclude Include="Source\StartButton.h" />
     <ClInclude Include="Source\BlockEffect.h" />
     <ClInclude Include="Source\Utility\Easings.h" />
+    <ClInclude Include="Source\IO\FileSaver.h" />
+    <ClInclude Include="Source\IO\Common.h" />
+    <ClInclude Include="Source\IO\MemoryStream.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
