@@ -46,12 +46,34 @@ public:
 
 	void ShockDown();
 
+	/// <summary>
+	/// ビューアをセットする
+	/// </summary>
+	/// <param name="_pSrcCodeViewer"></param>
+	/// <param name="_pByteCodeViewer"></param>
+	/// <param name="_pMemoryViewer"></param>
+	/// <param name="_pCallStackViewer"></param>
+	/// <param name="_pStackMachineViewer"></param>
+	/// <param name="_pRegisterViewer"></param>
+	void SetViewerBoxes(
+		ViewerBox* _pSrcCodeViewer,
+		ViewerBox* _pByteCodeViewer,
+		ViewerBox* _pMemoryViewer,
+		ViewerBox* _pCallStackViewer,
+		ViewerBox* _pStackMachineViewer,
+		ViewerBox* _pRegisterViewer);
+
 private:
 	State GetState() const { return currentState_; }
 	void SetState(const State _state);
 
 private:
 	ViewerBox* pSrcCodeViewer_;
+	ViewerBox* pByteCodeViewer_;
+	ViewerBox* pMemoryViewer_;
+	ViewerBox* pCallStackViewer_;
+	ViewerBox* pStackMachineViewer_;
+	ViewerBox* pRegisterViewer_;
 
 	bool isShockDown_;
 
@@ -77,4 +99,10 @@ private:
 
 	ByteCodes byteCodeAndLines_;
 	std::vector<Byte> byteCode_;
+
+	bool hasByteCodeViewer_{ true };
+	bool hasMemoryViewer_{ true };
+	bool hasCallStackViewer_{};
+	bool hasRegisterViewer_{};
+	bool hasStackMachineViewer_{};
 };

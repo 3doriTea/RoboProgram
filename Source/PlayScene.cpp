@@ -40,14 +40,80 @@ PlayScene::PlayScene() :
 
 	new Background{ PLAY_IMAGE_PATH };
 	Stage* pStage{ new Stage{} };
-	CodeBox* pCodeBox{ new CodeBox{} };
+	//CodeBox* pCodeBox{ new CodeBox{} };
 
-	ViewerBox* pViewerBox{ new ViewerBox{} };
-	//pViewerBox->SetPosition();
+	ViewerBox* pCodeViewer{ new ViewerBox{} };
+	pCodeViewer
+		->SetFrameWidth(5)
+		.SetIsScrollable(true)
+		.SetShowLineCount(7)
+		.SetTextBoxMargin(3)
+		.SetIsShowLineCountBar(true)
+		.SetPosition({ 200, 30 }, ViewerBox::Pivot::TopLeft);
+
+	//RectInt codeDrawRect{ pCodeViewer->GetDrawRect() };
+
+	ViewerBox* pByteViewer{ new ViewerBox{} };
+	pByteViewer
+		->SetFrameWidth(5)
+		.SetIsScrollable(true)
+		.SetShowLineCount(7)
+		.SetTextBoxMargin(3)
+		.SetIsShowLineCountBar(true);
+	
+	RectInt codeDrawRect{ pByteViewer->GetDrawRect() };
+
+	pByteViewer->SetPosition({ 100 - codeDrawRect.width - 7, 30 }, ViewerBox::Pivot::TopLeft);
+	
+	ViewerBox* pRegisterViewer{ new ViewerBox{} };
+	pRegisterViewer
+		->SetFrameWidth(5)
+		.SetIsScrollable(true)
+		.SetShowLineCount(7)
+		.SetTextBoxMargin(3)
+		.SetIsShowLineCountBar(true)
+		.SetPosition({ 990, 110 }, ViewerBox::Pivot::TopLeft);
+
+	ViewerBox* pStackViewer{ new ViewerBox{} };
+	pStackViewer
+		->SetFrameWidth(5)
+		.SetIsScrollable(true)
+		.SetShowLineCount(7)
+		.SetTextBoxMargin(3)
+		.SetIsShowLineCountBar(true)
+		.SetPosition({ 1030, 200 }, ViewerBox::Pivot::TopLeft);
+
+	ViewerBox* pCallStackViewer{ new ViewerBox{} };
+	pCallStackViewer
+		->SetFrameWidth(5)
+		.SetIsScrollable(true)
+		.SetShowLineCount(7)
+		.SetTextBoxMargin(3)
+		.SetIsShowLineCountBar(true)
+		.SetPosition({ 1130, 200 }, ViewerBox::Pivot::TopLeft);
+
+	ViewerBox* pMemoryViewer{ new ViewerBox{} };
+	pMemoryViewer
+		->SetFrameWidth(5)
+		.SetIsScrollable(true)
+		.SetShowLineCount(7)
+		.SetTextBoxMargin(3)
+		.SetIsShowLineCountBar(true)
+		.SetPosition({ 1030, 417 }, ViewerBox::Pivot::TopLeft);
+
+	//pCodeViewer->SetPosition();
 
 	pPlayer_ = pStage->GetPlayer();
 	assert(pPlayer_ != nullptr
 		&& "ステージからプレイヤーの取得に失敗 @PlayScene::PlayScene");
+
+	pPlayer_->SetViewerBoxes(
+		pCodeViewer,
+		pByteViewer,
+		pMemoryViewer,
+		pCallStackViewer,
+		pStackViewer,
+		pRegisterViewer);
 
 	using StringUtility::ToString;
 
@@ -64,7 +130,7 @@ PlayScene::PlayScene() :
 					u8"}",
 				};
 			})
-		.OnUpdateSource([&, this, pCodeBox, pViewerBox](
+		.OnUpdateSource([&, this, pCodeViewer](
 			const std::vector<std::string>& _newSource)
 			{
 				//　コンパイル処理
@@ -74,11 +140,7 @@ PlayScene::PlayScene() :
 				SOURCE_POS errorPosition{ -1, -1 };
 				//printfDx("ソースファイルに変更があった\n");
  				//pCodeBox->SetSourceLines(_newSource);
-				pViewerBox
-					->SetTextLines(_newSource)
-					.SetFrameWidth(5)
-					.SetShowLineCount(7)
-					.SetPosition({ 30, 30 }, ViewerBox::Pivot::TopLeft);
+				pCodeViewer->SetTextLines(_newSource);
 
 				/*pPlayer_->SetByteCode(
 					{

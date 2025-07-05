@@ -1,7 +1,9 @@
 #include "Player.h"
 #include "Stage.h"
 #include <cassert>
+#include <sstream>
 #include <cmath>
+#include <iomanip>
 #include "Utility/RectanUtility.h"
 #include "IO/Input.h"
 #include "PlayScene.h"
@@ -35,7 +37,12 @@ Player::Player(const Vector2& _position) :
 	robot_{ rect_, moveSpeed, jumpV0, pStage_, isGrounded, velocity_, prevPushedSpace, byteCode_ },
 	hBeatTimer_{ 0 },
 	isShockDown_{ false },
-	pSrcCodeViewer_{ nullptr }
+	pSrcCodeViewer_{ nullptr },
+	pByteCodeViewer_{ nullptr },
+	pMemoryViewer_{ nullptr },
+	pCallStackViewer_{ nullptr },
+	pStackMachineViewer_{ nullptr },
+	pRegisterViewer_{ nullptr }
 {
 	jumpV0 = -std::sqrtf(2.0f * gravity * jumpHeight);
 
@@ -265,10 +272,18 @@ void Player::SetByteCode(const ByteCodes& _byteCode)
 
 	byteCodeAndLines_ = _byteCode;
 	byteCode_.clear();
+	std::stringstream ss{};
+	std::vector<std::string> textLines{};
 	for (auto&& byteCodeAndLine : byteCodeAndLines_)
 	{
 		byteCode_.push_back(byteCodeAndLine.second);
+		ss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase << static_cast<int>(byteCodeAndLine.second);
+		textLines.push_back(ss.str());
+		ss.str("");
 	}
+
+	// バイトコードテキストセット
+	pByteCodeViewer_->SetTextLines(textLines);
 }
 
 int Player::GetReadLine() const
@@ -286,6 +301,22 @@ void Player::ShockDown()
 	SetState(S_DOWN);
 }
 
+void Player::SetViewerBoxes(
+	ViewerBox* _pSrcCodeViewer,
+	ViewerBox* _pByteCodeViewer,
+	ViewerBox* _pMemoryViewer,
+	ViewerBox* _pCallStackViewer,
+	ViewerBox* _pStackMachineViewer,
+	ViewerBox* _pRegisterViewer)
+{
+	pSrcCodeViewer_ = _pSrcCodeViewer;
+	pByteCodeViewer_ = _pByteCodeViewer;
+	pMemoryViewer_ = _pMemoryViewer;
+	pCallStackViewer_ = _pCallStackViewer;
+	pStackMachineViewer_ = _pStackMachineViewer;
+	pRegisterViewer_ = _pRegisterViewer;
+}
+
 void Player::SetState(const State _state)
 {
 	assert(0 <= _state && _state < S_MAX
@@ -293,6 +324,10 @@ void Player::SetState(const State _state)
 
 	hImage_ = hStateImages[static_cast<int>(_state)];
 	currentState_ = _state;
+	if (pSrcCodeViewer_ != nullptr)
+	{
+		pSrcCodeViewer_->ClearMarks();
+	}
 
 	// ステート別処理走らせる
 	switch (_state)
@@ -322,6 +357,94 @@ void Player::SetState(const State _state)
 						robot_.Reset();
 					}
 				}
+				robot_.GetMemoryRef([&, this](
+					const ByteCodeReader& _codeReader,
+					const std::vector<Byte>& _memory,
+					const Stack<int>& _stackMachine,
+					const Stack<int>& _callStack,
+					const std::vector<Byte>& _register)
+					{
+						// 見ている ソースコード && バイトコード 行数処理
+						int index{ static_cast<int>(_codeReader.GetCurrentIndex()) };
+						if (index < byteCodeAndLines_.size())
+						{
+							pByteCodeViewer_->ClearMarks();
+							pByteCodeViewer_->AddMarkLine(index, 0xff0000, 0xffffff);
+							pByteCodeViewer_->ReadLine(index);
+							
+
+							int readLine{ byteCodeAndLines_[index].first.line };  // 見ているLine
+							if (readLine > -1)
+							{
+								pSrcCodeViewer_->ClearMarks();
+								pSrcCodeViewer_->AddMarkLine(readLine, 0xff0000, 0xffffff);
+								pSrcCodeViewer_->ReadLine(readLine);
+							}
+						}
+
+
+						std::vector<std::string> textLines{};
+						std::stringstream ss{};
+
+						if (hasByteCodeViewer_)
+						{
+							pByteCodeViewer_->SetIsShow(true);
+						}
+						else
+						{
+							pByteCodeViewer_->SetIsShow(false);
+						}
+						if (hasMemoryViewer_)
+						{
+							ss.str("");
+							textLines.clear();
+
+							for (int i = 0; i < _memory.size(); i++)
+							{
+								ss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase << static_cast<int>(_memory[i]);
+								if ((i > 0 && i % 8 == 0) || i == _memory.size() - 1)
+								{
+									textLines.push_back(ss.str());
+									ss.str("");
+								}
+								else
+								{
+									ss << " ";
+								}
+							}
+
+							pMemoryViewer_->SetIsShow(true);
+						}
+						else
+						{
+							pMemoryViewer_->SetIsShow(false);
+						}
+						if (hasCallStackViewer_)
+						{
+							pCallStackViewer_->SetIsShow(true);
+						}
+						else
+						{
+							pCallStackViewer_->SetIsShow(false);
+						}
+						if (hasRegisterViewer_)
+						{
+							pRegisterViewer_->SetIsShow(true);
+						}
+						else
+						{
+							pRegisterViewer_->SetIsShow(false);
+						}
+						if (hasStackMachineViewer_)
+						{
+							pStackMachineViewer_->SetIsShow(true);
+						}
+						else
+						{
+							pStackMachineViewer_->SetIsShow(false);
+						}
+						
+					});
 			});
 		break;
 	case S_ERROR:

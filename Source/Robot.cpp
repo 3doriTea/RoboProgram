@@ -3,6 +3,7 @@
 #include "Stage.h"
 #include "ByteCodeDefine.h"
 #include <cassert>
+#include "BlockEffect.h"
 
 
 namespace
@@ -51,26 +52,29 @@ Robot::Robot(
 				case GetIOMessage::IsGrounded:
 					return isGrounded_ ? 1 : 0;
 				case GetIOMessage::GetOnTileNumber:
+				{
+					Vector2 rectWorld
 					{
-						Vector2Int tilePosition
-						{
-							pStage_->ToTilePosition(
-								rect_.pivot + Vector2{ rect_.size.x / 2, rect_.size.y } + Vector2{ 0, 30.0f })
-							.ToInt()
-						};
+						rect_.pivot + Vector2{ rect_.size.x / 2, rect_.size.y } + Vector2{ 0, 30.0f }
+					};
+					Vector2Int tilePosition
+					{
+						pStage_->ToTilePosition(rectWorld).ToInt()
+					};
+					new BlockEffect{ tilePosition, 0xF601FF };
 
-						int tile{ pStage_->GetTile(tilePosition) };
-						switch (tile)
-						{
-						case 6:
-							tile = 1;
-							break;
-						default:
-							tile = -1;
-							break;
-						}
-						return tile;
+					int tile{ pStage_->GetTile(tilePosition) };
+					switch (tile)
+					{
+					case 6:
+						tile = 1;
+						break;
+					default:
+						tile = -1;
+						break;
 					}
+					return tile;
+				}
 				case GetIOMessage::CheckTile:  // ƒ^ƒCƒ‹Žæ“¾–¢ŽÀ‘•
 				default:
 					return 0;
@@ -200,7 +204,7 @@ void Robot::SetDir(const bool _isLeft)
 	isLeftDir_ = _isLeft;
 }
 
-inline void Robot::GetMemoryRef(
+void Robot::GetMemoryRef(
 	const std::function<void(
 		const ByteCodeReader& _codeReader,
 		const std::vector<Byte>& _memory,

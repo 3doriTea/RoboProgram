@@ -38,7 +38,7 @@ ViewerBox::~ViewerBox()
 
 void ViewerBox::Update()
 {
-	if (isShow_ == false)
+	if (isShow_ == false && isScrollable_ == false)
 	{
 		return;
 	}
@@ -115,14 +115,14 @@ void ViewerBox::Draw()
 		}
 
 		DrawBox(
-			rect_.x, rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine),
-			rect_.x + rect_.width, rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine + 1),
+			rect_.x + textBoxMargin_, rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine),
+			rect_.x + rect_.width - textBoxMargin_, rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine + 1),
 			bgColor, TRUE);
 		if (isShowLineCountBar_)
 		{
 			DrawFormatString(
-				rect_.x,
-				rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine),
+				rect_.x + textBoxMargin_,
+				rect_.y + textBoxMargin_ + (lineSize_ + lineMarginSize_) * (l - beginLine),
 				textColor,
 				"%2d:%s",
 				l,
@@ -131,8 +131,8 @@ void ViewerBox::Draw()
 		else
 		{
 			DrawFormatString(
-				rect_.x,
-				rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine),
+				rect_.x + textBoxMargin_,
+				rect_.y + textBoxMargin_ + (lineSize_ + lineMarginSize_) * (l - beginLine),
 				textColor,
 				"%s",
 				textLines_[l].c_str());
@@ -150,9 +150,14 @@ ViewerBox& ViewerBox::SetTextLines(const std::vector<std::string>& _textLines)
 
 ViewerBox& ViewerBox::ReadLine(const int _line)
 {
-	assert(_line <= textLines_.size()
-		&& "“Ç‚ÝŽæ‚èêŠ‚ª”ÍˆÍŠO‚Å‚· @ViewerBox::ReadLine");
-	readingLine_ = _line;
+	if (_line >= textLines_.size())
+	{
+		readingLine_ = -1;
+	}
+	else
+	{
+		readingLine_ = _line;
+	}
 
 	return Recalculate();
 }
@@ -201,7 +206,7 @@ ViewerBox& ViewerBox::Recalculate()
 	{
 		str += textLines_[l];
 		
-		if (maxCount >= textLines_[l].size())
+		if (maxCount <= textLines_[l].size())
 		{
 			maxCount = textLines_[l].size();
 			maxCountLine = l;
@@ -227,9 +232,11 @@ ViewerBox& ViewerBox::Recalculate()
 	{
 		rect_.width = textBoxSize_.x;
 	}
+	rect_.width += textBoxMargin_ * 2;
 
 	rect_.height = (lineSize_ + lineMarginSize_);
 	rect_.height *= (showLineCount_ == 0) ? textLines_.size() : showLineCount_;
+	rect_.height += textBoxMargin_ * 2;
 
 	return *this;
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "StageObject.h"
 
-class Flag : StageObject
+class Flag : public StageObject
 {
 public:
 	Flag(const Vector2& _position);

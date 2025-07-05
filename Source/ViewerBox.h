@@ -42,12 +42,14 @@ public:
 
 	ViewerBox& SetIsShowLineCountBar(const bool _isShowing)            { isShowLineCountBar_ = _isShowing; return Recalculate(); }
 	ViewerBox& SetShowLineCount(const int _width)                      { showLineCount_ = _width; return Recalculate(); }
+	ViewerBox& SetTextBoxMargin(const int _margin)                     { textBoxMargin_ = _margin; return Recalculate(); }
 	ViewerBox& SetFrameWidth(const int _width)                         { frameWidth_ = _width; return Recalculate(); }
 	ViewerBox& SetFrameColor(const BackgroundColor _color)             { frameColor_ = _color; return Recalculate(); }
 	ViewerBox& SetDefaultBackgroundColor(const BackgroundColor _color) { defaultBackgroundColor_ = _color; return Recalculate(); }
 	ViewerBox& SetDefaultTextColor(const TextColor _color)             { defaultTextColor_ = _color; return Recalculate(); }
+	ViewerBox& SetIsShow(const bool _isShowing)                        { isShow_ = _isShowing; return Recalculate(); }
+	ViewerBox& SetIsScrollable(const bool _isScrollable)               { isScrollable_ = _isScrollable; return Recalculate(); }
 	ViewerBox& SetTextLines(const std::vector<std::string>& _textLines);
-
 
 	ViewerBox& ClearMarks();
 
@@ -67,6 +69,7 @@ public:
 private:
 	bool isShow_;  // 表示するか
 	bool isShowLineCountBar_;  // 行数表示があるか
+	bool isScrollable_;  // スクロール可能か
 
 	int showLineCount_;  // 表示する最大の行数 0 以下で全て表示
 	int readingLine_;  // 見ている行数

@@ -247,6 +247,15 @@ Vector2 Stage::ToWorldPosition(const Vector2& tilePosition)
 	};
 }
 
+Vector2 Stage::ToWorldPosition(const Vector2Int& tilePosition)
+{
+	return
+	{
+		static_cast<float>(tilePosition.x * TILE_WIDTH),
+		static_cast<float>(tilePosition.y * TILE_HEIGHT),
+	};
+}
+
 Vector2 Stage::ToTilePosition(const Vector2& worldPosition)
 {
 	return

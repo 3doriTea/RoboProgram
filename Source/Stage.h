@@ -78,6 +78,7 @@ public:
 		/// <param name="tilePosition">タイル座標</param>
 		/// <returns>ワールド座標</returns>
 	Vector2 ToWorldPosition(const Vector2& tilePosition);
+	Vector2 ToWorldPosition(const Vector2Int& tilePosition);
 	/// <summary>
 	/// タイル座標をワールド座標に変換する
 	/// </summary>

@@ -25,8 +25,6 @@ CodeRunner::~CodeRunner()
 
 bool CodeRunner::TryReadNext()
 {
-	printfDx("read %d: 0x%02x\n", bcr_.GetCurrentIndex(), bcr_.SafePeek());
-
 	if (bcr_.IsEndOfCode())
 	{
 		return false;  // èIóπínì_Ç»ÇÁé∏îs

@@ -34,7 +34,7 @@ public:
 	void ChangeDir();
 	void SetDir(const bool _isLeft);
 
-	inline void GetMemoryRef(const std::function<void(
+	void GetMemoryRef(const std::function<void(
 			const ByteCodeReader& _codeReader,
 			const std::vector<Byte>& _memory,
 			const Stack<int>& _stackMachine,

@@ -109,6 +109,10 @@
     <ClCompile Include="Source\ViewerBox.cpp" />
     <ClCompile Include="Source\Compiler\Assembler.cpp" />
     <ClCompile Include="Source\Doc.cpp" />
+    <ClCompile Include="Source\Fader.cpp" />
+    <ClCompile Include="Source\Lightning.cpp" />
+    <ClCompile Include="Source\StartButton.cpp" />
+    <ClCompile Include="Source\BlockEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -253,6 +257,11 @@
     <ClInclude Include="Source\ViewerBox.h" />
     <ClInclude Include="Source\Compiler\Assembler.h" />
     <ClInclude Include="Source\Doc.h" />
+    <ClInclude Include="Source\Fader.h" />
+    <ClInclude Include="Source\Lightning.h" />
+    <ClInclude Include="Source\StartButton.h" />
+    <ClInclude Include="Source\BlockEffect.h" />
+    <ClInclude Include="Source\Utility\Easings.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

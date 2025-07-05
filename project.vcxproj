@@ -155,6 +155,7 @@
     <ClInclude Include="Library\SceneManager.h" />
     <ClInclude Include="Library\Time.h" />
     <ClInclude Include="Source\Background.h" />
+    <ClInclude Include="Source\BlockEffect.h" />
     <ClInclude Include="Source\BootScene.h" />
     <ClInclude Include="Source\ByteCodeDefine.h" />
     <ClInclude Include="Source\CodeBox.h" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Source\TitleScene.h" />
     <ClInclude Include="Source\Coin.h" />
     <ClInclude Include="Source\Flag.h" />
+    <ClInclude Include="Source\Utility\Easings.h" />
     <ClInclude Include="Source\Utility\RectanUtility.h" />
     <ClInclude Include="Source\Utility\StringUtility.h" />
     <ClInclude Include="Source\Utility\Timer.h" />
@@ -210,6 +212,7 @@
     <ClCompile Include="Library\SceneManager.cpp" />
     <ClCompile Include="Library\Time.cpp" />
     <ClCompile Include="Source\Background.cpp" />
+    <ClCompile Include="Source\BlockEffect.cpp" />
     <ClCompile Include="Source\BootScene.cpp" />
     <ClCompile Include="Source\CodeBox.cpp" />
     <ClCompile Include="Source\CodeReader\ByteCodeReader.cpp" />
