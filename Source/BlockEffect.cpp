@@ -8,7 +8,7 @@ namespace
 {
 	static const int TILE_WIDTH{ 80 };
 	static const int TILE_HEIGHT{ 80 };
-	static const float EFFECT_TIME{ 2.0f };
+	static const float EFFECT_TIME{ 1.0f };
 	static const int FRAME_WIDTH{ 10 };  // エフェクトの枠
 }
 
@@ -37,7 +37,7 @@ void BlockEffect::Update()
 
 void BlockEffect::Draw()
 {
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>((1.0f - timeLeft_ / EFFECT_TIME) * UINT8_MAX));
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(Ease::InBounce(timeLeft_ / EFFECT_TIME) * UINT8_MAX));
 
 	Rectan drawRect{ GetRect() };
 	for (int i = 0; i < FRAME_WIDTH; i++)

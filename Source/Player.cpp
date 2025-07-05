@@ -412,7 +412,7 @@ void Player::SetState(const State _state)
 									ss << " ";
 								}
 							}
-
+							pMemoryViewer_->SetTextLines(textLines);
 							pMemoryViewer_->SetIsShow(true);
 						}
 						else

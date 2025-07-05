@@ -164,7 +164,7 @@ ViewerBox& ViewerBox::ReadLine(const int _line)
 
 ViewerBox& ViewerBox::SetPosition(const Vector2Int _position, const Pivot _pivotType)
 {
-	rect_.pivot = _position;
+	position_ = _position;
 	pivotType_ = _pivotType;
 
 	return Recalculate();
@@ -214,7 +214,7 @@ ViewerBox& ViewerBox::Recalculate()
 
 		if (l != textLines_.size() - 1)
 		{
-			str += "\n";
+			str += "-\n";
 		}
 	}
 
@@ -237,6 +237,19 @@ ViewerBox& ViewerBox::Recalculate()
 	rect_.height = (lineSize_ + lineMarginSize_);
 	rect_.height *= (showLineCount_ == 0) ? textLines_.size() : showLineCount_;
 	rect_.height += textBoxMargin_ * 2;
+
+	switch (pivotType_)
+	{
+	case Pivot::TopLeft:
+		rect_.pivot = position_;
+		break;
+	case Pivot::BottomRight:
+		rect_.pivot = position_;
+		rect_.pivot -= rect_.size;
+		break;
+	default:
+		break;
+	}
 
 	return *this;
 }

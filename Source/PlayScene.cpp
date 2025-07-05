@@ -4,6 +4,7 @@
 #include "Utility/Timer.h"
 #include "Utility/StringUtility.h"
 #include "IO/SourceObserver.h"
+#include "Screen.h"
 
 #include "Background.h"
 #include "Stage.h"
@@ -46,7 +47,7 @@ PlayScene::PlayScene() :
 	pCodeViewer
 		->SetFrameWidth(5)
 		.SetIsScrollable(true)
-		.SetShowLineCount(7)
+		.SetShowLineCount(10)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(true)
 		.SetPosition({ 200, 30 }, ViewerBox::Pivot::TopLeft);
@@ -57,7 +58,7 @@ PlayScene::PlayScene() :
 	pByteViewer
 		->SetFrameWidth(5)
 		.SetIsScrollable(true)
-		.SetShowLineCount(7)
+		.SetShowLineCount(10)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(true);
 	
@@ -95,11 +96,11 @@ PlayScene::PlayScene() :
 	ViewerBox* pMemoryViewer{ new ViewerBox{} };
 	pMemoryViewer
 		->SetFrameWidth(5)
-		.SetIsScrollable(true)
-		.SetShowLineCount(7)
+		.SetIsScrollable(false)
+		//.SetShowLineCount(7)
 		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(true)
-		.SetPosition({ 1030, 417 }, ViewerBox::Pivot::TopLeft);
+		.SetIsShowLineCountBar(false)
+		.SetPosition({ Screen::WIDTH, Screen::HEIGHT }, ViewerBox::Pivot::BottomRight);
 
 	//pCodeViewer->SetPosition();
 

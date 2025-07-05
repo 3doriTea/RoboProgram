@@ -19,6 +19,7 @@ public:
 		BottomCenter,
 		RightCenter,
 		TopLeft,  // 左上
+		BottomRight,  // 右下
 	};
 public:
 	ViewerBox();
@@ -85,6 +86,7 @@ private:
 	BackgroundColor defaultBackgroundColor_;  // デフォルトの背景色
 	TextColor defaultTextColor_;              // デフォルトのテキスト色
 
+	Vector2 position_;  // 指定座標
 	Pivot pivotType_;
 	std::vector<std::string> textLines_;
 	std::map<int, Mark> lineMarks_;
