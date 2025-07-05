@@ -52,6 +52,8 @@ public:
 	void Analyze() override;
 
 private:
+	SOURCE_POS GetSrcPos(const NODE* n);
+
 	/// <summary>
 	/// メモリ領域を確保する
 	/// </summary>
@@ -67,8 +69,10 @@ private:
 	/// <returns></returns>
 	int GetMemory(const std::string& name);
 
-	void RegSet(int value, ByteCodes& bc, int offset = 0);
-	void RegSet(const Byte value, ByteCodes& bc, int offset = 0);
+	void WriteFuncCall(const SOURCE_POS srcPos, ByteCodes& bc, int dest);
+
+	void RegSet(const SOURCE_POS srcPos, int value, ByteCodes& bc, int offset = 0);
+	void RegSet(const SOURCE_POS srcPos, const Byte value, ByteCodes& bc, int offset = 0);
 
 	void Read(const NODE* n, const int _depth, int position = 0);
 	void ReadFuncDec(const NODE* n, ByteCodes& bc, int position);
@@ -86,7 +90,7 @@ private:
 	void ReadParam(const NODE* n, ByteCodes& bc);
 	void ReadProcs(const NODE* n, ByteCodes& bc, int begin);
 
-	void ReadGlobal(const NODE* n, int begin);
+	void ReadGlobal(const NODE* n, int begin, ByteCodes& bc, int& updateIndex, bool& isFoundUpdate);
 
 	void ReadRet(const NODE* n, ByteCodes& bc);
 
@@ -132,7 +136,7 @@ private:
 	/// <param name="_addr"></param>
 	/// <param name="_size"></param>
 	/// <param name="bc"></param>
-	void MemorySet(const int _addr, const int _size, ByteCodes& bc);
+	void MemorySet(const SOURCE_POS srcPos, const int _addr, const int _size, ByteCodes& bc);
 
 	/// <summary>
 	/// メモリからレジスタに値をセットする
@@ -140,7 +144,7 @@ private:
 	/// <param name="_addr"></param>
 	/// <param name="_size"></param>
 	/// <param name="bc"></param>
-	void MemoryGet(const int _addr, const int _size, ByteCodes& bc);
+	void MemoryGet(const SOURCE_POS srcPos, const int _addr, const int _size, ByteCodes& bc);
 
 	/// <summary>
 	/// レジスタからスタックに値をプッシュする
@@ -148,26 +152,28 @@ private:
 	/// <param name="_regOffset"></param>
 	/// <param name="_size"></param>
 	/// <param name="bc"></param>
-	void StackPush(const int _regOffset, const int _size, ByteCodes& bc);
+	void StackPush(const SOURCE_POS srcPos, const int _regOffset, const int _size, ByteCodes& bc);
 	/// <summary>
 	/// スタックにレジスタから値をポップする
 	/// </summary>
 	/// <param name="_regOffset"></param>
 	/// <param name="_size"></param>
 	/// <param name="bc"></param>
-	void StackPop(const int _regOffset, const int _size, ByteCodes& bc);
+	void StackPop(const SOURCE_POS srcPos, const int _regOffset, const int _size, ByteCodes& bc);
 
 	SemanticAnalyzer& Get() { return *this; }
 	/// <summary>
 	/// エラー処理
 	/// </summary>
 	/// <param name="_message">エラーメッセージ</param>
-	void Error(const char* _message) override;
+	//void Error(const char* _message) override;
+
+	void Error(const NODE* n, const char* _message);
 	/// <summary>
 	/// エラー処理
 	/// </summary>
 	/// <param name="_message">エラーメッセージ</param>
-	void Error(const std::string& _message);
+	void Error(const NODE* n, const std::string& _message);
 
 
 	int maxMemorySize{};

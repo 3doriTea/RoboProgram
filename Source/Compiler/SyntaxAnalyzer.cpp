@@ -11,14 +11,12 @@ void SyntaxAnalyzer::Analyze()
 
 NODE* SyntaxAnalyzer::_Global()
 {
-	NODE* node{ nullptr };
-
-	for (readIndex_ = 0; readIndex_ < in_.size(); readIndex_++)
+	if (readIndex_ >= in_.size())
 	{
-		node = NewNode({ -1, NODE_GLOBAL, _FuncDef(), node });
+		return nullptr;
 	}
 
-	return node;
+	return NewNode({ GetIdx(), NODE_GLOBAL, _FuncDef(), _Global() });
 }
 
 NODE* SyntaxAnalyzer::_Expr()
@@ -36,7 +34,7 @@ NODE* SyntaxAnalyzer::_Lor()
 	{
 		if (Consume("||"))
 		{
-			node = NewNode({ -1, NODE_OR, node, _Land() });
+			node = NewNode({ GetIdx(), NODE_OR, node, _Land() });
 		}
 		else
 		{
@@ -53,7 +51,7 @@ NODE* SyntaxAnalyzer::_Land()
 	{
 		if (Consume("&&"))
 		{
-			node = NewNode({ -1, NODE_AND, node, _Equal() });
+			node = NewNode({ GetIdx(), NODE_AND, node, _Equal() });
 		}
 		else
 		{
@@ -70,11 +68,11 @@ NODE* SyntaxAnalyzer::_Equal()
 	{
 		if (Consume("=="))
 		{
-			node = NewNode({ -1, NODE_EQUAL, node, _Then() });
+			node = NewNode({ GetIdx(), NODE_EQUAL, node, _Then() });
 		}
 		else if (Consume("!="))
 		{
-			node = NewNode({ -1, NODE_NOTEQUAL, node, _Then() });
+			node = NewNode({ GetIdx(), NODE_NOTEQUAL, node, _Then() });
 		}
 		else
 		{
@@ -90,13 +88,13 @@ NODE* SyntaxAnalyzer::_Then()
 	while (true)
 	{
 		if (Consume("<"))
-			node = NewNode({ -1, NODE_LESSTHAN, node, _Add() });
+			node = NewNode({ GetIdx(), NODE_LESSTHAN, node, _Add() });
 		else if (Consume(">"))
-			node = NewNode({ -1, NODE_GREATERTHEN, node, _Add() });
+			node = NewNode({ GetIdx(), NODE_GREATERTHEN, node, _Add() });
 		else if (Consume("<="))
-			node = NewNode({ -1, NODE_LESSEQUAL, node, _Add() });
+			node = NewNode({ GetIdx(), NODE_LESSEQUAL, node, _Add() });
 		else if (Consume(">="))
-			node = NewNode({ -1, NODE_GREATEREQUAL, node, _Add() });
+			node = NewNode({ GetIdx(), NODE_GREATEREQUAL, node, _Add() });
 		else
 			return node;
 	}
@@ -111,11 +109,11 @@ NODE* SyntaxAnalyzer::_Add()
 	{
 		if (Consume("+"))
 		{
-			node = NewNode({ -1, NODE_ADD, node, _Mul() });
+			node = NewNode({ GetIdx(), NODE_ADD, node, _Mul() });
 		}
 		else if (Consume("-"))
 		{
-			node = NewNode({ -1, NODE_SUB, node, _Mul() });
+			node = NewNode({ GetIdx(), NODE_SUB, node, _Mul() });
 		}
 		else
 		{
@@ -132,11 +130,11 @@ NODE* SyntaxAnalyzer::_Mul()
 	{
 		if (Consume("*"))
 		{
-			node = NewNode({ -1, NODE_MUL, node, _Unary() });
+			node = NewNode({ GetIdx(), NODE_MUL, node, _Unary() });
 		}
 		else if (Consume("/"))
 		{
-			node = NewNode({ -1, NODE_DIV, node, _Unary() });
+			node = NewNode({ GetIdx(), NODE_DIV, node, _Unary() });
 		}
 		else
 		{
@@ -153,7 +151,7 @@ NODE* SyntaxAnalyzer::_Unary()
 	}
 	if (Consume("-"))
 	{
-		return NewNode({ -1, NODE_SUB, nullptr, _Postfix() });
+		return NewNode({ GetIdx(), NODE_SUB, nullptr, _Postfix() });
 	}
 	return _Postfix();
 }
@@ -164,11 +162,11 @@ NODE* SyntaxAnalyzer::_Postfix()
 
 	if (Consume("++"))
 	{
-		node = NewNode({ -1, NODE_INCREMENT, node });
+		node = NewNode({ GetIdx(), NODE_INCREMENT, node });
 	}
 	else if (Consume("--"))
 	{
-		node = NewNode({ -1, NODE_DECREMENT, node });
+		node = NewNode({ GetIdx(), NODE_DECREMENT, node });
 	}
 
 	return node;
@@ -223,7 +221,7 @@ NODE* SyntaxAnalyzer::_Liter()
 
 NODE* SyntaxAnalyzer::_Var()
 {
-	return NewNode({ -1, NODE_REGISTER_VAR_NAME, _Name() });
+	return NewNode({ GetIdx(), NODE_REGISTER_VAR_NAME, _Name() });
 }
 
 NODE* SyntaxAnalyzer::_CallFunc()
@@ -241,7 +239,7 @@ NODE* SyntaxAnalyzer::_CallFunc()
 
 	NODE* args{ _Args() };
 
-	NODE* node = NewNode({ -1, NODE_CALLFUNC, name, args });
+	NODE* node = NewNode({ GetIdx(), NODE_CALLFUNC, name, args });
 
 	Expect(")");
 
@@ -265,7 +263,7 @@ NODE* SyntaxAnalyzer::_Args()
 		next = _Args();
 	}
 
-	return NewNode({ -1, NODE_ARG, expr, next });
+	return NewNode({ GetIdx(), NODE_ARG, expr, next });
 }
 
 NODE* SyntaxAnalyzer::_NFor()
@@ -302,7 +300,7 @@ NODE* SyntaxAnalyzer::_NFor()
 		proc = Procs();
 	}
 
-	return NewNode({ -1, NODE_NFOR, init, expr, updt, proc });
+	return NewNode({ GetIdx(), NODE_NFOR, init, expr, updt, proc });
 }
 
 NODE* SyntaxAnalyzer::_NIf()
@@ -319,7 +317,7 @@ NODE* SyntaxAnalyzer::_NIf()
 		proc = Procs();
 	}
 
-	return NewNode({ -1, NODE_NIF, expr, proc });
+	return NewNode({ GetIdx(), NODE_NIF, expr, proc });
 }
 
 NODE* SyntaxAnalyzer::_Block()
@@ -348,7 +346,7 @@ NODE* SyntaxAnalyzer::Procs(int _callCount)
 	}
 	else
 	{
-		return NewNode({ -1, NODE_PROC, Proc(), Procs(++_callCount) });
+		return NewNode({ GetIdx(), NODE_PROC, Proc(), Procs(++_callCount) });
 	}
 }
 
@@ -396,14 +394,14 @@ NODE* SyntaxAnalyzer::Proc()
 
 NODE* SyntaxAnalyzer::_Func()
 {
-	return NewNode({ -1, NODE_REGISTER_FUNC_NAME, _Name() });
+	return NewNode({ GetIdx(), NODE_REGISTER_FUNC_NAME, _Name() });
 }
 
 NODE* SyntaxAnalyzer::_Return()
 {
 	if (Consume("return"))
 	{
-		return NewNode({ -1, NODE_RET, _Expr() });
+		return NewNode({ GetIdx(), NODE_RET, _Expr() });
 	}
 	else  // return が書かれていないならreturnではない
 	{
@@ -427,7 +425,7 @@ NODE* SyntaxAnalyzer::_Params()
 		next = _Params();
 	}
 
-	return NewNode({ -1, NODE_PARAM, varDec, next });
+	return NewNode({ GetIdx(), NODE_PARAM, varDec, next });
 }
 
 NODE* SyntaxAnalyzer::_FuncDef()
@@ -461,13 +459,13 @@ NODE* SyntaxAnalyzer::_FuncDef()
 
 	NODE* block{ _Block() };
 
-	if (block == nullptr)
+	/*if (block == nullptr)
 	{
 		Error("処理ブロックが記述されていない");
 		return nullptr;
-	}
+	}*/
 
-	return NewNode({ -1, NODE_FUNCDEC, type, name, params, block });
+	return NewNode({ GetIdx(), NODE_FUNCDEC, type, name, params, block });
 }
 
 NODE* SyntaxAnalyzer::_Name()
@@ -536,7 +534,7 @@ NODE* SyntaxAnalyzer::_VarDec()
 
 	NODE* assign = _Assign();
 
-	return NewNode({ -1, NODE_VARDEC, type, assign });
+	return NewNode({ GetIdx(), NODE_VARDEC, type, assign });
 }
 
 NODE* SyntaxAnalyzer::_Assign()
@@ -562,7 +560,7 @@ NODE* SyntaxAnalyzer::_Assign()
 		next = _Assign();
 	}
 
-	return NewNode({ -1, NODE_ASSIGN, name, expr, next });
+	return NewNode({ GetIdx(), NODE_ASSIGN, name, expr, next });
 }
 
 #pragma endregion
@@ -639,7 +637,7 @@ void SyntaxAnalyzer::Error(const char* _message)
 {
 	if (readIndex_ < 0 || in_.size() <= readIndex_)
 	{
-		ErrorFull(_message, { -1, -1 });
+		ErrorFull(_message, { GetIdx(), -1 });
 	}
 	else
 	{

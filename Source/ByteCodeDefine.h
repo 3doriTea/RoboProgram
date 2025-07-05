@@ -16,7 +16,7 @@ enum ByteCodeDefine : Byte
 #pragma endregion
 #pragma region コード領域
 	// 関数呼び出し
-	BCD_CALL = 0xCD,  // (関数-相対コードアドレス) 2バイト目基準
+	BCD_CALL = 0xCD,  // (関数-相対コードアドレス*4byte) 5バイト目基準
 	// 関数返却
 	BCD_RET = 0xC9,  // () スタックマシンに返却値を入れてある
 	// ジャンプ

@@ -1,22 +1,28 @@
 #include "ViewerBox.h"
 #include <cassert>
+#include "Utility/RectanUtility.h"
 
 
-static const ColorCode COLOR_BLACK{ 0xffffff };  // デフォルトの黒
-static const int TEXT_BOX_MARGIN{ 4 };
-static const int TEXT_LINE_MARGIN{ 4 };
-static const ColorCode START_FRAME_COLOR{ 0x000000 };
-static const ColorCode START_DEFAULT_BACKGROUND_COLOR{ 0xffffff };
-static const ColorCode START_DEFAULT_BACKGROUND_COLOR{ 0xffffff };
+namespace
+{
+	static const ColorCode COLOR_BLACK{ 0x000000 };  // デフォルトの黒
+	static const ColorCode COLOR_WHITE{ 0xffffff };  // デフォルトの白
+	
+	static const int TEXT_BOX_MARGIN{ 4 };
+	static const int TEXT_LINE_MARGIN{ 4 };
+	static const ColorCode START_FRAME_COLOR{ COLOR_BLACK };
+	static const ColorCode START_DEFAULT_BACKGROUND_COLOR{ COLOR_WHITE };
+	static const ColorCode START_DEFAULT_TEXT_COLOR{ COLOR_BLACK };
+}
 
 ViewerBox::ViewerBox() :
 	pivotType_{ Pivot::TopLeft },
 	readingLine_{ -1 },
 	frameWidth_{ 0 },
-	frameColor_{ COLOR_BLACK },
-	defaultBackgroundColor_{ COLOR_BLACK },
-	defaultTextColor_{ COLOR_BLACK },
-	maxShowLine_{ 0 },
+	frameColor_{ START_FRAME_COLOR },
+	defaultBackgroundColor_{ START_DEFAULT_BACKGROUND_COLOR },
+	defaultTextColor_{ START_DEFAULT_TEXT_COLOR },
+	showLineCount_{ 0 },
 	lineMarginSize_{ TEXT_LINE_MARGIN },
 	textBoxMargin_{ TEXT_BOX_MARGIN },
 	textLines_{},
@@ -32,12 +38,45 @@ ViewerBox::~ViewerBox()
 
 void ViewerBox::Update()
 {
+	if (isShow_ == false)
+	{
+		return;
+	}
+
+	Vector2Int mousePos{};
+	GetMousePoint(&mousePos.x, &mousePos.y);
+	if (RectanUtility::IsHit(rect_, Vector2{ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) }))
+	{
+		int volume{ GetMouseWheelRotVol() };
+		readingLine_ += -volume;
+		if (readingLine_ < 0)
+		{
+			readingLine_ = 0;
+		}
+		else if (readingLine_ >= textLines_.size())
+		{
+			readingLine_ = textLines_.size() - 1;
+		}
+	}
 }
 
 void ViewerBox::Draw()
 {
+	if (isShow_ == false)
+	{
+		return;
+	}
+
 	//printfDx("%d\n", defaultBackgroundColor_);
-	DrawBox(
+	DrawBox(  // 枠表示
+		rect_.x - frameWidth_,
+		rect_.y - frameWidth_,
+		rect_.x + rect_.width + frameWidth_,
+		rect_.y + rect_.height + frameWidth_,
+		frameColor_,
+		TRUE);
+
+	DrawBox(  // 背景表示
 		rect_.x,
 		rect_.y,
 		rect_.x + rect_.width,
@@ -48,14 +87,20 @@ void ViewerBox::Draw()
 	int beginLine = 0;
 	int endLine = textLines_.size();
 
-	/*if (maxShowLine_ > 0)
+	if (showLineCount_ > 0)
 	{
-		
-	}*/
+		int topLineCount{ showLineCount_ / 2 };
+		beginLine = readingLine_ - topLineCount;
+		if (beginLine < 0)
+		{
+			beginLine = 0;
+		}
+		endLine = beginLine + showLineCount_;
+	}
 
 	for (int l = beginLine; l < endLine; l++)
 	{
-		if (l < 0 && endLine <= l)
+		if (l < 0 || textLines_.size() <= l)
 		{
 			continue;  // 範囲外なら
 		}
@@ -69,58 +114,55 @@ void ViewerBox::Draw()
 			textColor = lineMarks_[l].second;
 		}
 
-		/*DrawBox(
+		DrawBox(
 			rect_.x, rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine),
 			rect_.x + rect_.width, rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine + 1),
-			bgColor, TRUE);*/
-		/*DrawFormatString(
-			rect_.x,
-			rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine),
-			textColor,
-			"%s",
-			textLines_[l].c_str());*/
+			bgColor, TRUE);
+		if (isShowLineCountBar_)
+		{
+			DrawFormatString(
+				rect_.x,
+				rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine),
+				textColor,
+				"%2d:%s",
+				l,
+				textLines_[l].c_str());
+		}
+		else
+		{
+			DrawFormatString(
+				rect_.x,
+				rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine),
+				textColor,
+				"%s",
+				textLines_[l].c_str());
+		}
 	}
 }
 
 ViewerBox& ViewerBox::SetTextLines(const std::vector<std::string>& _textLines)
 {
 	textLines_ = _textLines;
-	std::string str{};
-
-	for (int l = 0; l < textLines_.size(); l++)
-	{
-		str += textLines_[l];
-		if (l != textLines_.size() - 1)
-		{
-			str += "\n";
-		}
-	}
-
-	GetDrawFormatStringSize(&textBoxSize_.x, &textBoxSize_.y, &lineCount_, "%s", str.c_str());
-	lineSize_ = GetFontSize();
-
-	rect_.width = textBoxSize_.x;
-	rect_.height = textLines_.size() * (lineSize_ + lineMarginSize_);
+	Recalculate();
 
 	return *this;
 }
 
-void ViewerBox::ReadLine(const int _line)
+ViewerBox& ViewerBox::ReadLine(const int _line)
 {
-	assert(-1 <= _line && _line <= textLines_.size()
+	assert(_line <= textLines_.size()
 		&& "読み取り場所が範囲外です @ViewerBox::ReadLine");
 	readingLine_ = _line;
+
+	return Recalculate();
 }
 
-void ViewerBox::Focus(const int _line)
-{
-	readingLine_ = _line;
-}
-
-void ViewerBox::SetPosition(const Vector2Int _position, const Pivot _pivotType)
+ViewerBox& ViewerBox::SetPosition(const Vector2Int _position, const Pivot _pivotType)
 {
 	rect_.pivot = _position;
 	pivotType_ = _pivotType;
+
+	return Recalculate();
 }
 
 ViewerBox& ViewerBox::ClearMarks()
@@ -136,6 +178,58 @@ ViewerBox& ViewerBox::AddMarkLine(const int _line, const BackgroundColor _backgr
 		&& "マークラインが重複しています @ViewerBox::AddMarkLine");
 
 	lineMarks_.insert({ _line, { _backgroundColor, _textColor }});
+
+	return Recalculate();
+}
+
+ViewerBox& ViewerBox::Recalculate()
+{
+	if (textLines_.size() <= 0)  // もしテキストが 0 表示しない！
+	{
+		rect_.size = { 0, 0 };
+		isShow_ = false;
+		return *this;
+	}
+	
+	isShow_ = true;
+
+	std::string str{};
+	int maxCount{};  // 最大文字数
+	int maxCountLine{};  // 最大文字数のライン
+
+	for (int l = 0; l < textLines_.size(); l++)
+	{
+		str += textLines_[l];
+		
+		if (maxCount >= textLines_[l].size())
+		{
+			maxCount = textLines_[l].size();
+			maxCountLine = l;
+		}
+
+		if (l != textLines_.size() - 1)
+		{
+			str += "\n";
+		}
+	}
+
+	GetDrawFormatStringSize(&textBoxSize_.x, &textBoxSize_.y, &lineCount_, "%s", str.c_str());
+	lineSize_ = GetFontSize();
+
+	if (isShowLineCountBar_)
+	{
+		rect_.width = GetDrawFormatStringWidth(
+			"%s:%s",
+			std::to_string(textLines_.size()).c_str(),
+			textLines_[maxCountLine].c_str());
+	}
+	else
+	{
+		rect_.width = textBoxSize_.x;
+	}
+
+	rect_.height = (lineSize_ + lineMarginSize_);
+	rect_.height *= (showLineCount_ == 0) ? textLines_.size() : showLineCount_;
 
 	return *this;
 }

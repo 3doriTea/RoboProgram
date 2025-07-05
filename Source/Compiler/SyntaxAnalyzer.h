@@ -109,6 +109,8 @@ private:
 	/// </summary>
 	/// <param name="_str"></param>
 	void Expect(const std::string& _str);
+
+	inline const int GetIdx() const { return readIndex_ - 1; }
 #pragma endregion
 
 	SyntaxAnalyzer& Get() { return *this; }

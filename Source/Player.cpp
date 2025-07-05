@@ -34,7 +34,8 @@ Player::Player(const Vector2& _position) :
 	jumpV0{},
 	robot_{ rect_, moveSpeed, jumpV0, pStage_, isGrounded, velocity_, prevPushedSpace, byteCode_ },
 	hBeatTimer_{ 0 },
-	isShockDown_{ false }
+	isShockDown_{ false },
+	pSrcCodeViewer_{ nullptr }
 {
 	jumpV0 = -std::sqrtf(2.0f * gravity * jumpHeight);
 
@@ -56,13 +57,6 @@ Player::Player(const Vector2& _position) :
 		&& "Player‚ÌDownƒCƒ[ƒW“Ç‚Ýž‚Ý‚ÉŽ¸”s @Player::Player");
 
 	SetState(S_READY);
-
-	pSrcCodeViewer_ = new ViewerBox{};
-	pSrcCodeViewer_
-		->SetDefaultBackgroundColor(0xffffff)
-		.SetDefaultTextColor(0x000000)
-		.SetFrameWidth(6)
-		.SetFrameColor(0x000000);
 }
 
 Player::~Player()
@@ -258,6 +252,7 @@ int Player::GetWidth() const
 void Player::SetError(const std::string& _message, const SOURCE_POS& _srcPos)
 {
 	SetState(S_ERROR);
+	printfDx("%s\n", _message.c_str());
 }
 
 void Player::SetByteCode(const ByteCodes& _byteCode)

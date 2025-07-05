@@ -1,11 +1,26 @@
-void Update()
+void TestMove()
 {
-  //if (GetOnTileNumber() != 1)
-int a = 10;
+  if (GetOnTileNumber() != 1)
+  {
+    Jump();
+    Run();  Run();  Run();  Run();  Run();  Run();  Run();  Run();Run(); Run();Run();Run();Run();Run();
+  }
+}
+
+void MyMove()
+{
+  int a = 10;
   Jump();
   if (a - 10)
   {
     Jump();
   }
   Run();  Run();  Run();  Run();  Run();  Run();  Run();  Run();Run(); Run();Run();Run();Run();Run();
+  TestMove();
+}
+
+void Update()
+{
+  //if (GetOnTileNumber() != 1)
+  MyMove();
 }

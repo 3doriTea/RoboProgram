@@ -71,10 +71,14 @@ PlayScene::PlayScene() :
 
 				bool isError{ false };
 				std::string errorMessage{};
-				SOURCE_POS errorPosition{};
+				SOURCE_POS errorPosition{ -1, -1 };
 				//printfDx("ソースファイルに変更があった\n");
  				//pCodeBox->SetSourceLines(_newSource);
-				pViewerBox->SetTextLines(_newSource);
+				pViewerBox
+					->SetTextLines(_newSource)
+					.SetFrameWidth(5)
+					.SetShowLineCount(7)
+					.SetPosition({ 30, 30 }, ViewerBox::Pivot::TopLeft);
 
 				/*pPlayer_->SetByteCode(
 					{

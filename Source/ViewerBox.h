@@ -12,6 +12,7 @@ using Mark = std::pair<BackgroundColor, ColorCode>;
 
 class ViewerBox : public Object2D
 {
+public:
 	enum struct Pivot
 	{
 		Center,
@@ -30,22 +31,23 @@ public:
 	/// 現在見ている行数を指定する
 	/// </summary>
 	/// <param name="_line">-1で何も見ていない</param>
-	void ReadLine(const int _line = -1);
-
-	void Focus(const int _line);
+	ViewerBox& ReadLine(const int _line = -1);
 
 	/// <summary>
 	/// ボックスの位置を決める
 	/// </summary>
 	/// <param name="_position">位置</param>
 	/// <param name="pivotType">位置指定するボックスの基準</param>
-	void SetPosition(const Vector2Int _position, const Pivot _pivotType);
+	ViewerBox& SetPosition(const Vector2Int _position, const Pivot _pivotType);
 
-	ViewerBox& SetFrameWidth(const int _width)                         { frameWidth_ = _width; return *this; }
-	ViewerBox& SetFrameColor(const BackgroundColor _color)             { frameColor_ = _color; return *this; }
-	ViewerBox& SetDefaultBackgroundColor(const BackgroundColor _color) { defaultBackgroundColor_ = _color; return *this; }
-	ViewerBox& SetDefaultTextColor(const TextColor _color)             { defaultTextColor_ = _color; return *this; }
+	ViewerBox& SetIsShowLineCountBar(const bool _isShowing)            { isShowLineCountBar_ = _isShowing; return Recalculate(); }
+	ViewerBox& SetShowLineCount(const int _width)                      { showLineCount_ = _width; return Recalculate(); }
+	ViewerBox& SetFrameWidth(const int _width)                         { frameWidth_ = _width; return Recalculate(); }
+	ViewerBox& SetFrameColor(const BackgroundColor _color)             { frameColor_ = _color; return Recalculate(); }
+	ViewerBox& SetDefaultBackgroundColor(const BackgroundColor _color) { defaultBackgroundColor_ = _color; return Recalculate(); }
+	ViewerBox& SetDefaultTextColor(const TextColor _color)             { defaultTextColor_ = _color; return Recalculate(); }
 	ViewerBox& SetTextLines(const std::vector<std::string>& _textLines);
+
 
 	ViewerBox& ClearMarks();
 
@@ -57,8 +59,16 @@ public:
 
 	inline RectInt GetDrawRect() const { return rect_.ToInt(); }
 
+	/// <summary>
+	/// 配置を再計算する
+	/// </summary>
+	/// <returns></returns>
+	ViewerBox& Recalculate();
 private:
-	int maxShowLine_;  // 表示する最大の行数 0 以下で全て表示
+	bool isShow_;  // 表示するか
+	bool isShowLineCountBar_;  // 行数表示があるか
+
+	int showLineCount_;  // 表示する最大の行数 0 以下で全て表示
 	int readingLine_;  // 見ている行数
 	int lineSize_;  // 行サイズ
 	int lineMarginSize_;  // 行間サイズ

@@ -38,7 +38,7 @@ public:
 			const ByteCodeReader& _codeReader,
 			const std::vector<Byte>& _memory,
 			const Stack<int>& _stackMachine,
-			const Stack<Byte>& _callStack,
+			const Stack<int>& _callStack,
 			const std::vector<Byte>& _register)>& _callback) const;
 
 	inline int GetReadByteCodeIndex() const { return static_cast<int>(bcr_.GetCurrentIndex()); }
@@ -60,7 +60,7 @@ private:
 	ByteCodeReader bcr_;
 	std::vector<Byte> memory_;
 	Stack<int> stackMachine_;
-	Stack<Byte> callStack_;
+	Stack<int> callStack_;
 	std::vector<Byte> register_;
 
 	CodeRunner codeRunner_;  // コードを実行する頭

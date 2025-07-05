@@ -34,7 +34,7 @@ public:
 		ByteCodeReader& _byteCodeReader,  // コード領域
 		std::vector<Byte>& _memory,          // メモリ領域
 		Stack<int>& _stackMachine,           // スタック領域0
-		Stack<Byte>& _callStack,             // スタック領域1
+		Stack<int>& _callStack,             // スタック領域1
 		std::vector<Byte>& _register,        // レジスタ
 		const int _registerSize  // レジスタのサイズ
 	);
@@ -67,6 +67,6 @@ private:
 	ByteCodeReader& bcr_;          // コード領域リーダー
 	std::vector<Byte>& memory_;    // メモリ領域
 	Stack<int>& stackMachine_;     // スタック領域0
-	Stack<Byte>& callStack_;       // スタック領域1
+	Stack<int>& callStack_;        // スタック領域1
 	std::vector<Byte>& register_;  // レジスタ
 };

@@ -205,7 +205,7 @@ inline void Robot::GetMemoryRef(
 		const ByteCodeReader& _codeReader,
 		const std::vector<Byte>& _memory,
 		const Stack<int>& _stackMachine,
-		const Stack<Byte>& _callStack,
+		const Stack<int>& _callStack,
 		const std::vector<Byte>& _register)>& _callback) const
 {
 	_callback(bcr_, memory_, stackMachine_, callStack_, register_);

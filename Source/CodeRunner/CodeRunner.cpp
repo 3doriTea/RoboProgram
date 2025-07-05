@@ -7,7 +7,7 @@ CodeRunner::CodeRunner(
 	ByteCodeReader& _byteCodeReader,
 	std::vector<Byte>& _memory,
 	Stack<int>& _stackMachine,
-	Stack<Byte>& _callStack,
+	Stack<int>& _callStack,
 	std::vector<Byte>& _register,
 	const int _registerSize) :
 	bcr_{ _byteCodeReader },
@@ -87,9 +87,15 @@ bool CodeRunner::TryReadNext()
 	}
 	else if (bcr_.Consume(BCD_CALL))
 	{
-		signed char destAddr = static_cast<signed char>(bcr_.Pop());  // 関数スタートの相対位置
+		int dest{};  // 関数スタートの相対位置
+		Byte* destPtr{ reinterpret_cast<Byte*>(&dest) };
+		destPtr[0] = bcr_.Pop();
+		destPtr[1] = bcr_.Pop();
+		destPtr[2] = bcr_.Pop();
+		destPtr[3] = bcr_.Pop();
+
 		callStack_.Push(bcr_.GetCurrentIndex());
-		bcr_.Seek(destAddr + bcr_.GetCurrentIndex());
+		bcr_.Seek(dest + bcr_.GetCurrentIndex());
 	}
 	else if (bcr_.Consume(BCD_RET))
 	{

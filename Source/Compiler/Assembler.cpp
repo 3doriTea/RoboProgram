@@ -62,7 +62,6 @@ void Assembler::ToAssemble(const ByteCodes& bcs, std::string& outStr)
 		break;
 		case BCD_ACT:
 		case BCD_AIO:
-		case BCD_CALL:
 		case BCD_PUS:
 		case BCD_POP:
 		case BCD_JMP:
@@ -80,6 +79,15 @@ void Assembler::ToAssemble(const ByteCodes& bcs, std::string& outStr)
 		case BCD_RSET:
 		{
 			Print(code);
+			Print(bcr.Pop());
+			Print(bcr.Pop());
+		}
+		break;
+		case BCD_CALL:
+		{
+			Print(code);
+			Print(bcr.Pop());
+			Print(bcr.Pop());
 			Print(bcr.Pop());
 			Print(bcr.Pop());
 		}
@@ -156,10 +164,6 @@ void Assembler::ToAssemble(const ByteCodes& bcs, std::string& outStr)
 			PrintN("AIO");
 			PrintC("io", bcr.Pop());
 			break;
-		case BCD_CALL:
-			PrintN("CALL");
-			PrintC("at", bcr.Pop());
-			break;
 		case BCD_PUS:
 			PrintN("PUSH");
 			PrintC("reg", bcr.Pop());
@@ -207,6 +211,14 @@ void Assembler::ToAssemble(const ByteCodes& bcs, std::string& outStr)
 			PrintN("REGSET");
 			PrintC("reg", bcr.Pop());
 			PrintC("val", bcr.Pop());
+			break;
+// --------------------------------------------
+		case BCD_CALL:
+			PrintN("CALL");
+			PrintC("at", bcr.Pop());
+			PrintC("", bcr.Pop());
+			PrintC("", bcr.Pop());
+			PrintC("", bcr.Pop());
 			break;
 		default:
 			assert(false && "–¢’è‹`");
