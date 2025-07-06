@@ -12,7 +12,7 @@ Fader::Fader(const char* _imageFileName, const float _fadeTime, const bool _show
 	hImage_ = LoadGraph(_imageFileName);
 	assert(hImage_ != -1 && "フェード画像読み込みに失敗");
 
-	SetDrawOrder(-100);
+	SetDrawOrder(-1000);
 }
 
 Fader::~Fader()

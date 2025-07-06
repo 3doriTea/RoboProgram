@@ -17,6 +17,7 @@ public:
 	void Draw() override;
 
 	void OpenSrcFile();
+	void OpenDocument();
 
 private:
 	SourceObserver* pSourceObserver_;

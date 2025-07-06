@@ -5,6 +5,7 @@
 #include "Vector2.h"
 #include <vector>
 #include <map>
+#include "IO/FileSaver.h"
 
 
 class CsvReader;
@@ -23,13 +24,13 @@ private:
 public:
 	enum Tile
 	{
-		TILE_NONE,
-		TILE_GROUND,
-		TILE_COIN,
-		TILE_PLAYER,
-		TILE_FLAG,
-		TILE_DOC,
-		TILE_1,
+		TILE_NONE = 0,
+		TILE_GROUND = 1,
+		TILE_COIN = 2,
+		TILE_PLAYER = 3,
+		TILE_FLAG = 4,
+		TILE_DOC = 5,
+		TILE_1 = 6,
 
 		TILE_LIGHTNING = 9,
 
@@ -118,8 +119,23 @@ public:
 	/// <returns>チェックポイントの座標を取得</returns>
 	Vector2 GetCheckPoint() const;
 
+	/// <summary>
+	/// ドキュメントを開く
+	/// </summary>
+	void OpenDocument();
+
+	/// <summary>
+	/// 状況をセーブする
+	/// </summary>
+	void Save();
+
 private:
-	static Vector2 checkPoint_;  // チェックポイント
+	std::string WriteDocument() const;
+
+#pragma region セーブデータ
+	Vector2 checkPoint_;  // チェックポイント
+	int documentLevel_;  // ドキュメントレベル
+#pragma endregion
 
 	Vector2 scroll_;  // スクロール量
 	Vector2 position_;  // 座標
@@ -127,4 +143,6 @@ private:
 
 	std::vector<std::vector<Tile>> map_;
 	std::map<Tile, int> hImages_;
+
+	FileSaver saveFile_;
 };

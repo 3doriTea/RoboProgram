@@ -157,6 +157,7 @@
     <ClInclude Include="Source\Background.h" />
     <ClInclude Include="Source\BlockEffect.h" />
     <ClInclude Include="Source\BootScene.h" />
+    <ClInclude Include="Source\Button.h" />
     <ClInclude Include="Source\ByteCodeDefine.h" />
     <ClInclude Include="Source\CodeBox.h" />
     <ClInclude Include="Source\CodeReader\ByteCodeReader.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Source\Compiler\SemanticAnalyzer.h" />
     <ClInclude Include="Source\Compiler\SyntaxAnalyzer.h" />
     <ClInclude Include="Source\Doc.h" />
+    <ClInclude Include="Source\DocButton.h" />
     <ClInclude Include="Source\Fader.h" />
     <ClInclude Include="Source\IO\Common.h" />
     <ClInclude Include="Source\IO\FileSaver.h" />
@@ -217,6 +219,7 @@
     <ClCompile Include="Source\Background.cpp" />
     <ClCompile Include="Source\BlockEffect.cpp" />
     <ClCompile Include="Source\BootScene.cpp" />
+    <ClCompile Include="Source\Button.cpp" />
     <ClCompile Include="Source\CodeBox.cpp" />
     <ClCompile Include="Source\CodeReader\ByteCodeReader.cpp" />
     <ClCompile Include="Source\CodeRunner\CodeRunner.cpp" />
@@ -228,8 +231,10 @@
     <ClCompile Include="Source\Compiler\SemanticAnalyzer.cpp" />
     <ClCompile Include="Source\Compiler\SyntaxAnalyzer.cpp" />
     <ClCompile Include="Source\Doc.cpp" />
+    <ClCompile Include="Source\DocButton.cpp" />
     <ClCompile Include="Source\Fader.cpp" />
     <ClCompile Include="Source\Flag.cpp" />
+    <ClCompile Include="Source\IO\FileSaver.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />
     <ClCompile Include="Source\IO\MemoryStream.cpp" />
     <ClCompile Include="Source\IO\SourceObserver.cpp" />

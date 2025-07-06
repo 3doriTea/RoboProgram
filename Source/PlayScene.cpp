@@ -23,9 +23,12 @@
 #include "Compiler/Assembler.h"
 #include "Fader.h"
 
+#include "DocButton.h"
+
 namespace
 {
 	static const char SRC_FILE_NAME[]{ "SourceCode.txt" };
+	static const char DOC_FILE_NAME[]{ "Document.txt" };
 	static const char PLAY_IMAGE_PATH[]{ "Data/Image/Background.png" };
 }
 
@@ -34,13 +37,18 @@ PlayScene::PlayScene() :
 {
 	Timer::Instance().Clear();  // 最初にタイマーをクリアする
 
+
 	(new Fader{ PLAY_IMAGE_PATH, 1.0f, true })->OnFinish([&, this]()
 		{
 			//SceneManager::ChangeScene("PLAY");
 		});
 
-	new Background{ PLAY_IMAGE_PATH };
 	Stage* pStage{ new Stage{} };
+	// NOTE: Stageを参照するオブジェクトはこれ以降に書く必要がある
+
+	new DocButton{};
+
+	new Background{ PLAY_IMAGE_PATH };
 	//CodeBox* pCodeBox{ new CodeBox{} };
 
 	ViewerBox* pCodeViewer{ new ViewerBox{} };
@@ -308,4 +316,9 @@ void PlayScene::OpenSrcFile()
 {
 	//system(SRC_FILE_NAME);
 	ShellExecute(NULL, "open", SRC_FILE_NAME, "", "", SW_SHOW);
+}
+
+void PlayScene::OpenDocument()
+{
+	ShellExecute(NULL, "open", DOC_FILE_NAME, "", "", SW_SHOW);
 }

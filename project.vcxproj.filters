@@ -114,6 +114,9 @@
     <ClCompile Include="Source\StartButton.cpp" />
     <ClCompile Include="Source\BlockEffect.cpp" />
     <ClCompile Include="Source\IO\MemoryStream.cpp" />
+    <ClCompile Include="Source\IO\FileSaver.cpp" />
+    <ClCompile Include="Source\Button.cpp" />
+    <ClCompile Include="Source\DocButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -266,6 +269,8 @@
     <ClInclude Include="Source\IO\FileSaver.h" />
     <ClInclude Include="Source\IO\Common.h" />
     <ClInclude Include="Source\IO\MemoryStream.h" />
+    <ClInclude Include="Source\Button.h" />
+    <ClInclude Include="Source\DocButton.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

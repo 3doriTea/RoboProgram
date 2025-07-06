@@ -1,9 +1,4 @@
-//void 
-//
 void Update()
 {
-  for (int i = 0; i < 10; i = i + 1)
-  {
-    Run();
-  }
+  Run();
 }

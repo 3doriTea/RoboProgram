@@ -2,11 +2,13 @@
 #include "IO/Input.h"
 #include "../Library/CsvReader/CsvReader.h"
 #include <cassert>
+#include <sstream>
 #include "Player.h"
 #include "Coin.h"
 #include "Flag.h"
 #include "Doc.h"
 #include "Lightning.h"
+#include "PlayScene.h"
 
 
 namespace
@@ -14,6 +16,7 @@ namespace
 	static const int TILE_WIDTH{ 80 };
 	static const int TILE_HEIGHT{ 80 };
 	static const float INVALED_POSITION{ -100 };
+	static const char DOC_FILE_NAME[]{ "Document.txt" };
 	static const char* TILE_FILES[]
 	{
 		"",
@@ -24,10 +27,30 @@ namespace
 		"",  // doc
 		"Data/Image/Tile1.png",  // tile1
 	};
+
+	static const char SAVE_FILE_NAME[]{ "SaveFile.bin" };
+	static const size_t SAVE_FILE_BUFFER_SIZE{ 1024 };
 }
 
-Stage::Stage()
+Stage::Stage() :
+	saveFile_{ SAVE_FILE_NAME, SAVE_FILE_BUFFER_SIZE },
+	checkPoint_{ INVALED_POSITION, INVALED_POSITION }
 {
+	saveFile_.OnLoad([&, this](mtbin::MemoryStream& _ms)
+		{
+			checkPoint_.x = _ms.Read<float>();
+			checkPoint_.y = _ms.Read<float>();
+			documentLevel_ = _ms.Read<int>();
+		});
+	saveFile_.OnSave([&, this](mtbin::MemoryStream& _ms)
+		{
+			_ms.Write(checkPoint_.x);
+			_ms.Write(checkPoint_.y);
+			_ms.Write(documentLevel_);
+		});
+
+	saveFile_.TryLoad();
+
 	int hImage = LoadGraph(TILE_FILES[TILE_GROUND]);
 	assert(hImage > 0
 		&& "画像読み込みに失敗 @Stage::Stage");
@@ -384,6 +407,7 @@ Player* Stage::GetPlayer()
 void Stage::SetCheckPoint(const Vector2& _point)
 {
 	checkPoint_ = _point;
+	Save();
 }
 
 Vector2 Stage::GetCheckPoint() const
@@ -391,4 +415,70 @@ Vector2 Stage::GetCheckPoint() const
 	return checkPoint_;
 }
 
-Vector2 Stage::checkPoint_{ INVALED_POSITION, INVALED_POSITION };
+void Stage::OpenDocument()
+{
+	FileSaver::QuickWriteText(DOC_FILE_NAME, WriteDocument());
+
+	GetScene<PlayScene>()->OpenDocument();
+}
+
+void Stage::Save()
+{
+	saveFile_.TrySave();
+}
+
+std::string Stage::WriteDocument() const
+{
+	std::stringstream ss{};
+	using std::endl;
+
+	ss << "【ドキュメント】" << endl
+		<< "コードを書くためのヒントが載っているよ！" << endl
+		<< "サンプルだから、コピペしてもいいけど自分でいい感じに編集してね！" << endl;
+
+	if (documentLevel_ <= 2)
+	{
+		ss << endl << endl
+		<< "【変数と条件分岐、チェック関数】" << endl << endl
+		<< "void Sample2()" << endl
+		<< "{" << endl
+		<< "  // 乗っているタイルに書かれている番号を、変数「tileNumber」に代入するよ" << endl
+		<< "  int tileNumber = GetOnTileNumber();" << endl
+		<< "" << endl
+		<< "  // もし、tileの番号が1なら、ジャンプするよ" << endl
+		<< "  if (tileNumber == 1)" << endl
+		<< "  {" << endl
+		<< "   Jump();  // 条件が満たされたとき、「Jump関数」が呼び出される" << endl
+		<< "}" << endl
+		<< "}" << endl
+			<< "" << endl;
+	}
+	if (documentLevel_ <= 1)
+	{
+		ss << endl << endl
+			<< "【関数定義とジャンプ関数】" << endl << endl
+			<< "// 「Update関数」以外に、オリジナルの関数を定義できるよ！" << endl
+			<< "// ただし、「Update関数」より上に書かないと見つからないよ" << endl
+			<< "void Sample1()" << endl
+			<< "{" << endl
+			<< "  Jump();  // ロボットをジャンプさせるときは、「ジャンプ関数」を呼び出すよ" << endl
+			<< "}" << endl
+			<< "// 「Sample1関数」は「Jump関数」と同じように呼び出せるよ" << endl
+			<< "// Sample1();" << endl
+			<< "" << endl;
+	}
+	if (documentLevel_ <= 0)
+	{
+		ss << endl << endl
+			<< "【更新処理】" << endl << endl
+			<< "// 「Update関数」は一定間隔で呼ばれるよ！" << endl
+			<< "void Update()" << endl
+			<< "{" << endl
+			<< "  // ここに書いた処理は上から順に実行されていくよ" << endl
+			<< "  Run();  // ロボットを走らせるときは、「Run関数」を呼び出すよ" << endl
+			<< "}" << endl
+			<< "" << endl;
+	}
+
+	return ss.str();
+}
