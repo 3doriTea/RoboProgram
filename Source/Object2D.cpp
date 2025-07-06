@@ -39,7 +39,7 @@ void Object2D::Draw()
 		//DrawRectGraph(x - scroll.x, y - scroll.y, 0, 0, IMAGE_SIZE, IMAGE_SIZE, hImage_, TRUE);
 		DrawGraph(x - scroll.x - (width - rect_.width) / 2, y - scroll.y, hImage_, TRUE);
 
-		#if true
+		#if false
 		DrawBox(
 			x - scroll.x, y - scroll.y,
 			x - scroll.x + rect_.width, y - scroll.y + rect_.height,

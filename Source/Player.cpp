@@ -27,6 +27,10 @@ namespace
 	//static const float ROBOT_STEP_TIME_SEC{ 0.07 / 3.0f };
 	static const float ROBOT_STEP_TIME_SEC{ 0.07 };
 	static const float ROBOT_BEAT_TIME_SEC{ 1 };
+
+	static const Vector2Int NORMAL_CODE_VIEW_POSITION{ 200, 30 };
+	static const int BOTTOM_VIEW_POSITION_Y{ Screen::HEIGHT - 30 };
+
 }
 
 Player::Player(const Vector2& _position) :
@@ -43,7 +47,13 @@ Player::Player(const Vector2& _position) :
 	pMemoryViewer_{ nullptr },
 	pCallStackViewer_{ nullptr },
 	pStackMachineViewer_{ nullptr },
-	pRegisterViewer_{ nullptr }
+	pRegisterViewer_{ nullptr },
+	hasByteCodeViewer_{ false },
+	hasMemoryViewer_{ false },
+	hasCallStackViewer_{ false },
+	hasRegisterViewer_{ false },
+	hasStackMachineViewer_{ false },
+	isBottomViewer_{ false }
 {
 	jumpV0 = -std::sqrtf(2.0f * gravity * jumpHeight);
 
@@ -65,6 +75,8 @@ Player::Player(const Vector2& _position) :
 		&& "PlayerのDownイメージ読み込みに失敗 @Player::Player");
 
 	SetState(S_READY);
+
+	SetInfoLevel(pStage_->GetInfoLevel());
 }
 
 Player::~Player()
@@ -214,6 +226,25 @@ void Player::Update()
 	{
 		rect_.pivot.x = LEFT_LIMIT;
 	}
+
+#pragma region ビューの位置処理
+	if (rect_.y < Screen::HEIGHT / 3)
+	{
+		if (isBottomViewer_ == false)
+		{
+			SetViewer(true);
+			isBottomViewer_ = true;
+		}
+	}
+	else
+	{
+		if (isBottomViewer_)
+		{
+			SetViewer(false);
+			isBottomViewer_ = false;
+		}
+	}
+#pragma endregion
 }
 
 void Player::Draw()
@@ -286,6 +317,8 @@ void Player::SetByteCode(const ByteCodes& _byteCode)
 
 	// バイトコードテキストセット
 	pByteCodeViewer_->SetTextLines(textLines);
+
+	SetViewer(rect_.y < Screen::HEIGHT / 3);
 }
 
 int Player::GetReadLine() const
@@ -301,6 +334,15 @@ int Player::GetReadLine() const
 void Player::ShockDown()
 {
 	SetState(S_DOWN);
+}
+
+void Player::SetInfoLevel(const bool _showing)
+{
+	hasByteCodeViewer_ = _showing;
+	hasMemoryViewer_ = _showing;
+	hasCallStackViewer_ = _showing;
+	hasRegisterViewer_ = _showing;
+	hasStackMachineViewer_ = _showing;
 }
 
 void Player::SetViewerBoxes(
@@ -400,6 +442,7 @@ void Player::SetState(const State _state)
 						{
 							ss.str("");
 							textLines.clear();
+							textLines.push_back("--Memory--");
 
 							for (int i = 0; i < _memory.size(); i++)
 							{
@@ -421,16 +464,44 @@ void Player::SetState(const State _state)
 						{
 							pMemoryViewer_->SetIsShow(false);
 						}
+
 						if (hasCallStackViewer_)
 						{
+							textLines.clear();
+
+							textLines.push_back("--CallStack--");
+							int lineCount{};
+							for (auto itr = _callStack.begin(); itr != _callStack.end(); itr++)
+							{
+								ss.str("");
+								ss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase << lineCount << ":";
+								ss << std::hex << std::setw(8) << std::setfill('0') << std::uppercase << (*itr);
+								textLines.push_back(ss.str());
+								lineCount++;
+							}
+
+
+							pCallStackViewer_->SetTextLines(textLines);
 							pCallStackViewer_->SetIsShow(true);
 						}
 						else
 						{
 							pCallStackViewer_->SetIsShow(false);
 						}
+
 						if (hasRegisterViewer_)
 						{
+							textLines.clear();
+							ss.str("");
+							textLines.push_back("--Register--");
+
+							for (auto itr = _register.begin(); itr != _register.end(); itr++)
+							{
+								ss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase << static_cast<int>(*itr) << " ";
+							}
+							textLines.push_back(ss.str());
+
+							pRegisterViewer_->SetTextLines(textLines);
 							pRegisterViewer_->SetIsShow(true);
 						}
 						else
@@ -439,6 +510,23 @@ void Player::SetState(const State _state)
 						}
 						if (hasStackMachineViewer_)
 						{
+							textLines.clear();
+							textLines.push_back("--DataStack--");
+
+							int lineCount{};
+
+							for (auto itr = _stackMachine.begin(); itr != _stackMachine.end(); itr++)
+							{
+								ss.str("");
+								ss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase << lineCount << ":";
+								ss << std::hex << std::setw(8) << std::setfill('0') << std::uppercase << (*itr);
+								textLines.push_back(ss.str());
+
+								lineCount++;
+							}
+
+
+							pStackMachineViewer_->SetTextLines(textLines);
 							pStackMachineViewer_->SetIsShow(true);
 						}
 						else
@@ -467,4 +555,21 @@ void Player::SetState(const State _state)
 	default:
 		break;
 	}
+}
+
+void Player::SetViewer(const bool isBottom)
+{
+	if (isBottom)
+	{
+		pSrcCodeViewer_->SetPosition({ NORMAL_CODE_VIEW_POSITION.x, BOTTOM_VIEW_POSITION_Y }, ViewerBox::Pivot::BottomLeft);
+		RectInt codeDrawRect{ pByteCodeViewer_->GetDrawRect() };
+		pByteCodeViewer_->SetPosition({ NORMAL_CODE_VIEW_POSITION.x - codeDrawRect.width - 7, BOTTOM_VIEW_POSITION_Y }, ViewerBox::Pivot::BottomLeft);
+	}
+	else
+	{
+		pSrcCodeViewer_->SetPosition(NORMAL_CODE_VIEW_POSITION, ViewerBox::Pivot::TopLeft);
+		RectInt codeDrawRect{ pByteCodeViewer_->GetDrawRect() };
+		pByteCodeViewer_->SetPosition({ NORMAL_CODE_VIEW_POSITION.x - codeDrawRect.width - 7, NORMAL_CODE_VIEW_POSITION.y }, ViewerBox::Pivot::TopLeft);
+	}
+
 }

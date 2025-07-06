@@ -159,6 +159,7 @@
     <ClInclude Include="Source\BootScene.h" />
     <ClInclude Include="Source\Button.h" />
     <ClInclude Include="Source\ByteCodeDefine.h" />
+    <ClInclude Include="Source\ClearScene.h" />
     <ClInclude Include="Source\CodeBox.h" />
     <ClInclude Include="Source\CodeReader\ByteCodeReader.h" />
     <ClInclude Include="Source\CodeRunner\CodeRunner.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="Source\Doc.h" />
     <ClInclude Include="Source\DocButton.h" />
     <ClInclude Include="Source\Fader.h" />
+    <ClInclude Include="Source\Goal.h" />
     <ClInclude Include="Source\Info.h" />
     <ClInclude Include="Source\IO\Common.h" />
     <ClInclude Include="Source\IO\FileSaver.h" />
@@ -182,6 +184,7 @@
     <ClInclude Include="Source\Lightning.h" />
     <ClInclude Include="Source\Object2D.h" />
     <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\ReadAssemblyButton.h" />
     <ClInclude Include="Source\Rectan.h" />
     <ClInclude Include="Source\RectInt.h" />
     <ClInclude Include="Source\ReloadButton.h" />
@@ -224,6 +227,7 @@
     <ClCompile Include="Source\BlockEffect.cpp" />
     <ClCompile Include="Source\BootScene.cpp" />
     <ClCompile Include="Source\Button.cpp" />
+    <ClCompile Include="Source\ClearScene.cpp" />
     <ClCompile Include="Source\CodeBox.cpp" />
     <ClCompile Include="Source\CodeReader\ByteCodeReader.cpp" />
     <ClCompile Include="Source\CodeRunner\CodeRunner.cpp" />
@@ -239,6 +243,8 @@
     <ClCompile Include="Source\DocButton.cpp" />
     <ClCompile Include="Source\Fader.cpp" />
     <ClCompile Include="Source\Flag.cpp" />
+    <ClCompile Include="Source\Goal.cpp" />
+    <ClCompile Include="Source\Info.cpp" />
     <ClCompile Include="Source\IO\FileSaver.cpp" />
     <ClCompile Include="Source\IO\Input.cpp" />
     <ClCompile Include="Source\IO\MemoryStream.cpp" />
@@ -247,6 +253,7 @@
     <ClCompile Include="Source\Object2D.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\PlayScene.cpp" />
+    <ClCompile Include="Source\ReadAssemblyButton.cpp" />
     <ClCompile Include="Source\ReloadButton.cpp" />
     <ClCompile Include="Source\Robot.cpp" />
     <ClCompile Include="Source\SceneFactory.cpp" />

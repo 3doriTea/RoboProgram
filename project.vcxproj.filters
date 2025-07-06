@@ -110,7 +110,6 @@
     <ClCompile Include="Source\Compiler\Assembler.cpp" />
     <ClCompile Include="Source\Doc.cpp" />
     <ClCompile Include="Source\Fader.cpp" />
-    <ClCompile Include="Source\Lightning.cpp" />
     <ClCompile Include="Source\StartButton.cpp" />
     <ClCompile Include="Source\BlockEffect.cpp" />
     <ClCompile Include="Source\IO\MemoryStream.cpp" />
@@ -120,6 +119,15 @@
     <ClCompile Include="Source\WriteButton.cpp" />
     <ClCompile Include="Source\ReloadButton.cpp" />
     <ClCompile Include="Source\CursorText.cpp" />
+    <ClCompile Include="Source\Info.cpp" />
+    <ClCompile Include="Source\ReadAssemblyButton.cpp" />
+    <ClCompile Include="Source\ClearScene.cpp" />
+    <ClCompile Include="Source\Lightning.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Goal.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -265,7 +273,6 @@
     <ClInclude Include="Source\Compiler\Assembler.h" />
     <ClInclude Include="Source\Doc.h" />
     <ClInclude Include="Source\Fader.h" />
-    <ClInclude Include="Source\Lightning.h" />
     <ClInclude Include="Source\StartButton.h" />
     <ClInclude Include="Source\BlockEffect.h" />
     <ClInclude Include="Source\Utility\Easings.h" />
@@ -278,6 +285,14 @@
     <ClInclude Include="Source\ReloadButton.h" />
     <ClInclude Include="Source\CursorText.h" />
     <ClInclude Include="Source\Info.h" />
+    <ClInclude Include="Source\ReadAssemblyButton.h" />
+    <ClInclude Include="Source\ClearScene.h" />
+    <ClInclude Include="Source\Goal.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Lightning.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

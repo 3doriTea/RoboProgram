@@ -7,6 +7,8 @@
 #include "Coin.h"
 #include "Flag.h"
 #include "Doc.h"
+#include "Info.h"
+#include "Goal.h"
 #include "Lightning.h"
 #include "PlayScene.h"
 #include "DocButton.h"
@@ -35,19 +37,23 @@ namespace
 
 Stage::Stage() :
 	saveFile_{ SAVE_FILE_NAME, SAVE_FILE_BUFFER_SIZE },
-	checkPoint_{ INVALED_POSITION, INVALED_POSITION }
+	checkPoint_{ INVALED_POSITION, INVALED_POSITION },
+	infoLevel_{ 0 },
+	documentLevel_{ 0 }
 {
 	saveFile_.OnLoad([&, this](mtbin::MemoryStream& _ms)
 		{
 			checkPoint_.x = _ms.Read<float>();
 			checkPoint_.y = _ms.Read<float>();
 			documentLevel_ = _ms.Read<int>();
+			infoLevel_ = _ms.Read<int>();
 		});
 	saveFile_.OnSave([&, this](mtbin::MemoryStream& _ms)
 		{
 			_ms.Write(checkPoint_.x);
 			_ms.Write(checkPoint_.y);
 			_ms.Write(documentLevel_);
+			_ms.Write(infoLevel_);
 		});
 
 	saveFile_.TryLoad();
@@ -136,6 +142,24 @@ Stage::Stage() :
 					}
 				};
 				break;
+			case TILE_INFO:
+				new Info
+				{
+					{
+						static_cast<float>(x) * TILE_WIDTH,
+						static_cast<float>(y) * TILE_HEIGHT
+					},
+					1
+				};
+				break;
+			case TILE_GOAL:
+				new Goal
+				{
+					{
+						static_cast<float>(x) * TILE_WIDTH,
+						static_cast<float>(y) * TILE_HEIGHT
+					}
+				};
 			default:
 				break;
 			}
@@ -253,6 +277,8 @@ bool Stage::IsWall(const Vector2& _position)
 	case TILE_FLAG:  // チェックポイント
 	case TILE_DOC:  // チェックポイント
 	case TILE_LIGHTNING:  // 感電
+	case TILE_INFO:  // 情報
+	case TILE_GOAL:  // 博士(ゴール)
 	case TILE_MAX:  // ?
 		return false;  // 壁でない
 	default:
@@ -436,6 +462,12 @@ void Stage::GetDocument(const int _docLevel)
 			pDocButton->News();
 		}
 	}
+}
+
+void Stage::GetInfo(const int _infoLevel)
+{
+	infoLevel_ = _infoLevel;
+	pPlayer_->SetInfoLevel(true);
 }
 
 void Stage::Save()

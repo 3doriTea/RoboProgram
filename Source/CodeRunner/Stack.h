@@ -15,8 +15,8 @@ public:
 
 	inline auto begin()       { return listCollection_.begin(); }
 	inline auto end()         { return listCollection_.end(); }
-	inline auto begin() const { return listCollection_.begin(); }
-	inline auto end() const   { return listCollection_.end(); }
+	inline auto begin() const { return listCollection_.cbegin(); }
+	inline auto end() const   { return listCollection_.cend(); }
 private:
 	std::list<ValueT> listCollection_;
 };

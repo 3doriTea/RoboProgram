@@ -31,6 +31,8 @@ public:
 		TILE_FLAG = 4,
 		TILE_DOC = 5,
 		TILE_1 = 6,
+		TILE_INFO = 7,
+		TILE_GOAL = 8,  // 博士
 
 		TILE_LIGHTNING = 9,
 
@@ -129,6 +131,8 @@ public:
 	/// </summary>
 	void GetDocument(const int _docLevel);
 
+	void GetInfo(const int _infoLevel);
+
 	/// <summary>
 	/// 状況をセーブする
 	/// </summary>
@@ -139,6 +143,11 @@ public:
 	/// </summary>
 	/// <returns>ドキュメントレベル</returns>
 	inline const int GetDocLevel() const { return documentLevel_; }
+	/// <summary>
+	/// 現在の情報レベルを取得する
+	/// </summary>
+	/// <returns></returns>
+	inline const int GetInfoLevel() const { return infoLevel_; }
 
 private:
 	std::string WriteDocument() const;
@@ -146,6 +155,7 @@ private:
 #pragma region セーブデータ
 	Vector2 checkPoint_;  // チェックポイント
 	int documentLevel_;  // ドキュメントレベル
+	int infoLevel_;      // 情報レベル
 #pragma endregion
 
 	Vector2 scroll_;  // スクロール量

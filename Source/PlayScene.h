@@ -1,5 +1,6 @@
 #pragma once
 #include "../Library/SceneBase.h"
+#include <string>
 
 
 class SourceObserver;
@@ -19,7 +20,10 @@ public:
 	void OpenSrcFile();
 	void OpenDocument();
 
+	static const std::string GetAssembleText() { return assembleText_; }
+
 private:
 	SourceObserver* pSourceObserver_;
 	Player* pPlayer_;
+	static std::string assembleText_;
 };

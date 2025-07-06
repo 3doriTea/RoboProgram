@@ -1,6 +1,7 @@
 #include "ViewerBox.h"
 #include <cassert>
 #include "Utility/RectanUtility.h"
+#include "Screen.h"
 
 
 namespace
@@ -10,6 +11,7 @@ namespace
 	
 	static const int TEXT_BOX_MARGIN{ 4 };
 	static const int TEXT_LINE_MARGIN{ 4 };
+	static const int GHOST_ALPHA{ 80 };
 	static const ColorCode START_FRAME_COLOR{ COLOR_BLACK };
 	static const ColorCode START_DEFAULT_BACKGROUND_COLOR{ COLOR_WHITE };
 	static const ColorCode START_DEFAULT_TEXT_COLOR{ COLOR_BLACK };
@@ -28,7 +30,8 @@ ViewerBox::ViewerBox() :
 	textLines_{},
 	lineMarks_{},
 	lineSize_{},
-	lineCount_{}
+	lineCount_{},
+	drawAlpha_{ UINT8_MAX }
 {
 }
 
@@ -57,6 +60,11 @@ void ViewerBox::Update()
 		{
 			readingLine_ = textLines_.size() - 1;
 		}
+		drawAlpha_ = UINT8_MAX;
+	}
+	else
+	{
+		drawAlpha_ = GHOST_ALPHA;
 	}
 }
 
@@ -67,6 +75,10 @@ void ViewerBox::Draw()
 		return;
 	}
 
+	if (useGhost_)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, drawAlpha_);
+	}
 	//printfDx("%d\n", defaultBackgroundColor_);
 	DrawBox(  // 枠表示
 		rect_.x - frameWidth_,
@@ -138,6 +150,8 @@ void ViewerBox::Draw()
 				textLines_[l].c_str());
 		}
 	}
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 ViewerBox& ViewerBox::SetTextLines(const std::vector<std::string>& _textLines)
@@ -164,6 +178,7 @@ ViewerBox& ViewerBox::ReadLine(const int _line)
 
 ViewerBox& ViewerBox::SetPosition(const Vector2Int _position, const Pivot _pivotType)
 {
+	// NOTE: 位置合わせは計算関数がしてくれるため、このままでOK
 	position_ = _position;
 	pivotType_ = _pivotType;
 
@@ -247,7 +262,12 @@ ViewerBox& ViewerBox::Recalculate()
 		rect_.pivot = position_;
 		rect_.pivot -= rect_.size;
 		break;
+	case Pivot::BottomLeft:
+		rect_.pivot = position_;
+		rect_.y -= rect_.height;
+		break;
 	default:
+		assert(false);
 		break;
 	}
 

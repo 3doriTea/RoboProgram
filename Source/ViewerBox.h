@@ -20,6 +20,7 @@ public:
 		RightCenter,
 		TopLeft,  // 左上
 		BottomRight,  // 右下
+		BottomLeft,  // 左下
 	};
 public:
 	ViewerBox();
@@ -41,6 +42,7 @@ public:
 	/// <param name="pivotType">位置指定するボックスの基準</param>
 	ViewerBox& SetPosition(const Vector2Int _position, const Pivot _pivotType);
 
+	ViewerBox& SetUseGhost(const bool _use)                            { useGhost_ = _use; return Recalculate(); }
 	ViewerBox& SetIsShowLineCountBar(const bool _isShowing)            { isShowLineCountBar_ = _isShowing; return Recalculate(); }
 	ViewerBox& SetShowLineCount(const int _width)                      { showLineCount_ = _width; return Recalculate(); }
 	ViewerBox& SetTextBoxMargin(const int _margin)                     { textBoxMargin_ = _margin; return Recalculate(); }
@@ -68,6 +70,7 @@ public:
 	/// <returns></returns>
 	ViewerBox& Recalculate();
 private:
+	bool useGhost_;  // 透明化するか
 	bool isShow_;  // 表示するか
 	bool isShowLineCountBar_;  // 行数表示があるか
 	bool isScrollable_;  // スクロール可能か
@@ -90,4 +93,6 @@ private:
 	Pivot pivotType_;
 	std::vector<std::string> textLines_;
 	std::map<int, Mark> lineMarks_;
+
+	int drawAlpha_;  // 描画時の不透明度
 };

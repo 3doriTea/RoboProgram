@@ -46,6 +46,8 @@ public:
 
 	void ShockDown();
 
+	void SetInfoLevel(const bool _showing);
+
 	/// <summary>
 	/// ビューアをセットする
 	/// </summary>
@@ -66,6 +68,7 @@ public:
 private:
 	State GetState() const { return currentState_; }
 	void SetState(const State _state);
+	void SetViewer(const bool isBottom);
 
 private:
 	ViewerBox* pSrcCodeViewer_;
@@ -75,6 +78,7 @@ private:
 	ViewerBox* pStackMachineViewer_;
 	ViewerBox* pRegisterViewer_;
 
+	bool isBottomViewer_;
 	bool isShockDown_;
 
 	TimerHandle hBeatTimer_;
@@ -100,9 +104,9 @@ private:
 	ByteCodes byteCodeAndLines_;
 	std::vector<Byte> byteCode_;
 
-	bool hasByteCodeViewer_{ true };
-	bool hasMemoryViewer_{ true };
-	bool hasCallStackViewer_{};
-	bool hasRegisterViewer_{};
-	bool hasStackMachineViewer_{};
+	bool hasByteCodeViewer_;
+	bool hasMemoryViewer_;
+	bool hasCallStackViewer_;
+	bool hasRegisterViewer_;
+	bool hasStackMachineViewer_;
 };

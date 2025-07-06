@@ -65,8 +65,7 @@ PlayScene::PlayScene() :
 		.SetIsScrollable(true)
 		.SetShowLineCount(10)
 		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(true)
-		.SetPosition({ 200, 30 }, ViewerBox::Pivot::TopLeft);
+		.SetIsShowLineCountBar(true);
 
 	//RectInt codeDrawRect{ pCodeViewer->GetDrawRect() };
 
@@ -78,15 +77,11 @@ PlayScene::PlayScene() :
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(true);
 	
-	RectInt codeDrawRect{ pByteViewer->GetDrawRect() };
-
-	pByteViewer->SetPosition({ 100 - codeDrawRect.width - 7, 30 }, ViewerBox::Pivot::TopLeft);
-	
 	ViewerBox* pRegisterViewer{ new ViewerBox{} };
 	pRegisterViewer
 		->SetFrameWidth(5)
 		.SetIsScrollable(true)
-		.SetShowLineCount(7)
+		.SetUseGhost(true)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(true)
 		.SetPosition({ 990, 110 }, ViewerBox::Pivot::TopLeft);
@@ -95,25 +90,27 @@ PlayScene::PlayScene() :
 	pStackViewer
 		->SetFrameWidth(5)
 		.SetIsScrollable(true)
+		.SetUseGhost(true)
 		.SetShowLineCount(7)
 		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(true)
-		.SetPosition({ 1030, 200 }, ViewerBox::Pivot::TopLeft);
+		.SetIsShowLineCountBar(false)
+		.SetPosition({ 1000, 200 }, ViewerBox::Pivot::TopLeft);
 
 	ViewerBox* pCallStackViewer{ new ViewerBox{} };
 	pCallStackViewer
 		->SetFrameWidth(5)
 		.SetIsScrollable(true)
+		.SetUseGhost(true)
 		.SetShowLineCount(7)
 		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(true)
+		.SetIsShowLineCountBar(false)
 		.SetPosition({ 1130, 200 }, ViewerBox::Pivot::TopLeft);
 
 	ViewerBox* pMemoryViewer{ new ViewerBox{} };
 	pMemoryViewer
 		->SetFrameWidth(5)
 		.SetIsScrollable(false)
-		//.SetShowLineCount(7)
+		.SetUseGhost(true)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(false)
 		.SetPosition({ Screen::WIDTH - 30, Screen::HEIGHT - 30 }, ViewerBox::Pivot::BottomRight);
@@ -275,11 +272,8 @@ PlayScene::PlayScene() :
 					delete node;
 				}
 
-
-				std::string asTex{};
-				Assembler::ToAssemble(byteCodes, asTex);
-				OutputDebugString(asTex.c_str());
-
+				std::string assembleText_{};
+				Assembler::ToAssemble(byteCodes, assembleText_);
 
 				//std::string testout = test.str();
 				//const char* strtestout = testout.c_str();
@@ -330,3 +324,5 @@ void PlayScene::OpenDocument()
 {
 	ShellExecute(NULL, "open", DOC_FILE_NAME, "", "", SW_SHOW);
 }
+
+std::string PlayScene::assembleText_{};
