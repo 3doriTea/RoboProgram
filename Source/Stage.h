@@ -153,6 +153,11 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	inline const int GetInfoLevel() const { return infoLevel_; }
+	/// <summary>
+	/// 既読のドキュメントレベル
+	/// </summary>
+	/// <returns></returns>
+	inline const int GetReadedDocLevel() const { return readedDocLevel_; }
 
 private:
 	std::string WriteDocument() const;
@@ -162,6 +167,7 @@ private:
 	int documentLevel_;  // ドキュメントレベル
 	int infoLevel_;      // 情報レベル
 	bool isGoaled_;   // ゴールした true / false
+	int readedDocLevel_;  // 見たドキュメントのレベル
 #pragma endregion
 
 	Vector2 scroll_;  // スクロール量

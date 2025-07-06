@@ -282,7 +282,7 @@ PlayScene::PlayScene() :
 
 				//std::string testout = test.str();
 				//const char* strtestout = testout.c_str();
-				//OutputDebugString(strtestout);
+				OutputDebugString(assembleText_.c_str());
 
 				pPlayer_->SetByteCode(byteCodes);
 			});

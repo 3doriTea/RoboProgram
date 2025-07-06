@@ -12,6 +12,11 @@ public:
 
 	void News() { hImage_ = hImageNew_; }
 private:
+	/// <summary>
+	/// ニュースがあるかチェックする
+	/// </summary>
+	/// <returns></returns>
+	const bool CheckHasNews() const;
 	int hImageNormal_;
 	int hImageNew_;
 };

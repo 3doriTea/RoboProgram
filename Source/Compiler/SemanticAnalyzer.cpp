@@ -103,6 +103,10 @@ int SemanticAnalyzer::GetMemory(const std::string& name)
 
 void SemanticAnalyzer::WriteFuncCall(const SOURCE_POS srcPos, ByteCodes& bc, int dest)
 {
+	if (dest < 0)
+	{
+		//dest -= 3;
+	}
 	// ŠÖ”ŒÄ‚Ño‚µ‚Ì‘Š‘ÎˆÊ’u‚Í 4byte•\Œ»
 	Byte* ptr{ reinterpret_cast<Byte*>(&dest) };
 	bc.push_back({ srcPos, BCD_CALL });

@@ -17,7 +17,9 @@ DocButton::DocButton()
 	hImageNew_ = LoadGraph(BUTTON_IMAGE_NEW);
 	assert(hImageNew_ != 0 && "ドキュメントボタン 新規 画像読み込みに失敗");
 
-	hImage_ = hImageNormal_;
+	hImage_ = CheckHasNews()
+		? hImageNew_
+		: hImageNormal_;
 
 	GetGraphSizeF(hImageNormal_, &rect_.width, &rect_.height);
 
@@ -33,7 +35,7 @@ DocButton::~DocButton()
 
 void DocButton::OnDraw(const bool _onTouching, const bool _isPushing)
 {
-	if (_onTouching)
+	if (_onTouching || CheckHasNews())
 	{
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
@@ -55,4 +57,9 @@ void DocButton::OnPush()
 {
 	hImage_ = hImageNormal_;
 	pStage_->OpenDocument();
+}
+
+const bool DocButton::CheckHasNews() const
+{
+	return pStage_->GetReadedDocLevel() < pStage_->GetDocLevel();
 }

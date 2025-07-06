@@ -38,8 +38,10 @@ namespace
 Stage::Stage() :
 	saveFile_{ SAVE_FILE_NAME, SAVE_FILE_BUFFER_SIZE },
 	checkPoint_{ INVALED_POSITION, INVALED_POSITION },
-	infoLevel_{ 0 },
-	documentLevel_{ 0 }
+	infoLevel_{ 1 },
+	documentLevel_{ 0 },
+	readedDocLevel_{ 0 },
+	isGoaled_{ false }
 {
 	saveFile_.OnLoad([&, this](mtbin::MemoryStream& _ms)
 		{
@@ -49,6 +51,7 @@ Stage::Stage() :
 			infoLevel_ = _ms.Read<int>();
 			//PlayScene::SetIsFinalMode(_ms.Read<bool>());
 			isGoaled_ = _ms.Read<bool>();
+			readedDocLevel_ = _ms.Read<int>();
 		});
 	saveFile_.OnSave([&, this](mtbin::MemoryStream& _ms)
 		{
@@ -58,6 +61,7 @@ Stage::Stage() :
 			_ms.Write(infoLevel_);
 			//_ms.Write(PlayScene::GetIsFinalMode());
 			_ms.Write(isGoaled_);
+			_ms.Write(readedDocLevel_);
 		});
 
 	saveFile_.TryLoad();
@@ -455,8 +459,9 @@ Vector2 Stage::GetCheckPoint() const
 void Stage::OpenDocument()
 {
 	FileSaver::QuickWriteText(DOC_FILE_NAME, WriteDocument());
-
 	GetScene<PlayScene>()->OpenDocument();
+
+	readedDocLevel_ = documentLevel_;
 }
 
 void Stage::GetDocument(const int _docLevel)
@@ -504,7 +509,7 @@ std::string Stage::WriteDocument() const
 		<< "  // もし、tileの番号が1なら、ジャンプするよ" << endl
 		<< "  if (tileNumber == 1)" << endl
 		<< "  {" << endl
-		<< "   Jump();  // 条件が満たされたとき、「Jump関数」が呼び出される" << endl
+		<< "    Jump();  // 条件が満たされたとき、「Jump関数」が呼び出される" << endl
 		<< "  }" << endl
 		<< "}" << endl
 			<< "" << endl;

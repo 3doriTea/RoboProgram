@@ -368,10 +368,10 @@ void Player::SetState(const State _state)
 
 	hImage_ = hStateImages[static_cast<int>(_state)];
 	currentState_ = _state;
-	if (pSrcCodeViewer_ != nullptr)
+	/*if (pSrcCodeViewer_ != nullptr)
 	{
 		pSrcCodeViewer_->ClearMarks();
-	}
+	}*/
 
 	// ステート別処理走らせる
 	switch (_state)
