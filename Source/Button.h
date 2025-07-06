@@ -1,8 +1,13 @@
 #pragma once
 #include "Object2D.h"
 
+class CursorText;
+
 class Button : public Object2D
 {
+protected:
+	static const int BUTTON_PADDING;
+
 public:
 	Button();
 	virtual ~Button();
@@ -24,8 +29,8 @@ public:
 	inline void SetHintText(const std::string _text) { hintText_ = _text; }
 
 private:
+	CursorText* pCursorText_;
 	std::string hintText_;  // マウスオーバーしたときのヒントテキスト
-	Vector2 mousePos_;  // マウス座標
 	bool isOnMouse_;  // マウスが触れているか
 	bool isPushing_;  // 押されているか
 };

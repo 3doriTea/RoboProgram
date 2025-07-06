@@ -44,6 +44,9 @@ public:
 	inline int GetReadByteCodeIndex() const { return static_cast<int>(bcr_.GetCurrentIndex()); }
 
 private:
+	std::pair<int, Vector2Int> CheckTile(const Vector2 _checkPos);
+
+private:
 	static const int REGISTER_SIZE;  // レジスタのサイズ
 
 	bool isLeftDir_;  // 左方向を見ている

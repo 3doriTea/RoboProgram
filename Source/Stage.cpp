@@ -9,6 +9,7 @@
 #include "Doc.h"
 #include "Lightning.h"
 #include "PlayScene.h"
+#include "DocButton.h"
 
 
 namespace
@@ -91,6 +92,7 @@ Stage::Stage() :
 		pPlayer_ = new Player{ checkPoint_ };
 	}
 
+	int docLevelCount{ 0 };
 	for (int y = 0; y < map_.size(); y++)
 	{
 		for (int x = 0; x < map_[y].size(); x++)
@@ -121,7 +123,8 @@ Stage::Stage() :
 					{
 						static_cast<float>(x) * TILE_WIDTH,
 						static_cast<float>(y) * TILE_HEIGHT
-					}
+					},
+					++docLevelCount
 				};
 				break;
 			case TILE_LIGHTNING:
@@ -422,6 +425,19 @@ void Stage::OpenDocument()
 	GetScene<PlayScene>()->OpenDocument();
 }
 
+void Stage::GetDocument(const int _docLevel)
+{
+	if (documentLevel_ < _docLevel)
+	{
+		documentLevel_ = _docLevel;
+		DocButton* pDocButton{ FindGameObject<DocButton>() };
+		if (pDocButton != nullptr)
+		{
+			pDocButton->News();
+		}
+	}
+}
+
 void Stage::Save()
 {
 	saveFile_.TrySave();
@@ -436,7 +452,7 @@ std::string Stage::WriteDocument() const
 		<< "コードを書くためのヒントが載っているよ！" << endl
 		<< "サンプルだから、コピペしてもいいけど自分でいい感じに編集してね！" << endl;
 
-	if (documentLevel_ <= 2)
+	if (documentLevel_ >= 2)
 	{
 		ss << endl << endl
 		<< "【変数と条件分岐、チェック関数】" << endl << endl
@@ -449,11 +465,11 @@ std::string Stage::WriteDocument() const
 		<< "  if (tileNumber == 1)" << endl
 		<< "  {" << endl
 		<< "   Jump();  // 条件が満たされたとき、「Jump関数」が呼び出される" << endl
-		<< "}" << endl
+		<< "  }" << endl
 		<< "}" << endl
 			<< "" << endl;
 	}
-	if (documentLevel_ <= 1)
+	if (documentLevel_ >= 1)
 	{
 		ss << endl << endl
 			<< "【関数定義とジャンプ関数】" << endl << endl
@@ -467,7 +483,7 @@ std::string Stage::WriteDocument() const
 			<< "// Sample1();" << endl
 			<< "" << endl;
 	}
-	if (documentLevel_ <= 0)
+	if (documentLevel_ >= 0)
 	{
 		ss << endl << endl
 			<< "【更新処理】" << endl << endl

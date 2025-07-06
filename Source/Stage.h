@@ -125,9 +125,20 @@ public:
 	void OpenDocument();
 
 	/// <summary>
+	/// ドキュメントレベルを上げる
+	/// </summary>
+	void GetDocument(const int _docLevel);
+
+	/// <summary>
 	/// 状況をセーブする
 	/// </summary>
 	void Save();
+
+	/// <summary>
+	/// 現在のドキュメントレベルを取得する
+	/// </summary>
+	/// <returns>ドキュメントレベル</returns>
+	inline const int GetDocLevel() const { return documentLevel_; }
 
 private:
 	std::string WriteDocument() const;

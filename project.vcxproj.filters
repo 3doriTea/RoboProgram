@@ -117,6 +117,9 @@
     <ClCompile Include="Source\IO\FileSaver.cpp" />
     <ClCompile Include="Source\Button.cpp" />
     <ClCompile Include="Source\DocButton.cpp" />
+    <ClCompile Include="Source\WriteButton.cpp" />
+    <ClCompile Include="Source\ReloadButton.cpp" />
+    <ClCompile Include="Source\CursorText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -271,6 +274,10 @@
     <ClInclude Include="Source\IO\MemoryStream.h" />
     <ClInclude Include="Source\Button.h" />
     <ClInclude Include="Source\DocButton.h" />
+    <ClInclude Include="Source\WriteButton.h" />
+    <ClInclude Include="Source\ReloadButton.h" />
+    <ClInclude Include="Source\CursorText.h" />
+    <ClInclude Include="Source\Info.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

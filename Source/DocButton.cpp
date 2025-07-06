@@ -21,10 +21,8 @@ DocButton::DocButton()
 
 	GetGraphSizeF(hImageNormal_, &rect_.width, &rect_.height);
 
-	rect_.x = Screen::WIDTH - (rect_.width * 1);
-	rect_.y = 0;
-
-	SetDrawOrder(-110);
+	rect_.x = Screen::WIDTH - ((rect_.width + BUTTON_PADDING) * 1);
+	rect_.y = BUTTON_PADDING;
 
 	SetHintText("ƒhƒLƒ…ƒƒ“ƒg‚ğŒ©‚é");
 }

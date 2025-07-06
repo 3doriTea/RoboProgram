@@ -621,6 +621,8 @@ bool SyntaxAnalyzer::Consume(const std::string& _str)
 
 void SyntaxAnalyzer::Expect(const std::string& _str)
 {
+	if (readIndex_ >= in_.size()) return;
+
 	if (in_[readIndex_].second == _str)
 	{
 		readIndex_++;
@@ -643,4 +645,5 @@ void SyntaxAnalyzer::Error(const char* _message)
 	{
 		ErrorFull(_message, in_[readIndex_].first);
 	}
+	readIndex_ = in_.size();
 }

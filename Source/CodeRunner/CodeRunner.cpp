@@ -270,7 +270,7 @@ void CodeRunner::Reset()
 {
 	bcr_.Seek(0);
 	memory_.clear();
-	memory_.resize(256);  // 256 byteƒƒ‚ƒŠ
+	memory_.resize(64);  // 64 byteƒƒ‚ƒŠ
 	stackMachine_.Clear();
 	callStack_.Clear();
 	register_.clear();

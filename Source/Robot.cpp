@@ -53,27 +53,30 @@ Robot::Robot(
 					return isGrounded_ ? 1 : 0;
 				case GetIOMessage::GetOnTileNumber:
 				{
-					Vector2 rectWorld
-					{
-						rect_.pivot + Vector2{ rect_.size.x / 2, rect_.size.y } + Vector2{ 0, 30.0f }
-					};
-					Vector2Int tilePosition
-					{
-						pStage_->ToTilePosition(rectWorld).ToInt()
-					};
-					new BlockEffect{ tilePosition, 0xF601FF };
+					std::pair<int, Vector2Int> tile{};
 
-					int tile{ pStage_->GetTile(tilePosition) };
-					switch (tile)
+					tile = CheckTile(rect_.pivot + Vector2{ rect_.size.x / 2, rect_.size.y } + Vector2{ 0, 30.0f });
+					if (tile.first == 0)
+					{
+						tile = CheckTile(rect_.pivot + Vector2{ rect_.size.x / 2, rect_.size.y } + Vector2{ -rect_.size.x / 2, 30.0f });
+					}
+					if (tile.first == 0)
+					{
+						tile = CheckTile(rect_.pivot + Vector2{ rect_.size.x / 2, rect_.size.y } + Vector2{ rect_.size.x / 2, 30.0f });
+					}
+					
+					switch (tile.first)
 					{
 					case 6:
-						tile = 1;
+						tile.first = 1;
 						break;
 					default:
-						tile = -1;
+						tile.first = -1;
 						break;
 					}
-					return tile;
+					new BlockEffect{ tile.second, 0xF601FF };
+
+					return tile.first;
 				}
 				case GetIOMessage::CheckTile:  // ƒ^ƒCƒ‹Žæ“¾–¢ŽÀ‘•
 				default:
@@ -213,6 +216,16 @@ void Robot::GetMemoryRef(
 		const std::vector<Byte>& _register)>& _callback) const
 {
 	_callback(bcr_, memory_, stackMachine_, callStack_, register_);
+}
+
+std::pair<int, Vector2Int> Robot::CheckTile(const Vector2 _checkPos)
+{
+	Vector2Int tilePosition
+	{
+		pStage_->ToTilePosition(_checkPos).ToInt()
+	};
+
+	return { pStage_->GetTile(tilePosition), tilePosition };
 }
 
 const int Robot::REGISTER_SIZE{ 4 };

@@ -1,12 +1,16 @@
 #pragma once
-#include "Object2D.h"
+#include "StageObject.h"
 
 
-class Doc : public Object2D
+class Doc : public StageObject
 {
 public:
-	Doc(const Vector2& _position);
+	Doc(const Vector2& _position, const int _docLevel);
 	~Doc();
 
-	void Update() override;
+	void Draw() override;
+	void OnPlayer() override;
+
+private:
+	const int DOC_LEVEL_;
 };

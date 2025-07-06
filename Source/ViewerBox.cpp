@@ -214,7 +214,7 @@ ViewerBox& ViewerBox::Recalculate()
 
 		if (l != textLines_.size() - 1)
 		{
-			str += "-\n";
+			str += "\n";
 		}
 	}
 
@@ -226,7 +226,7 @@ ViewerBox& ViewerBox::Recalculate()
 		rect_.width = GetDrawFormatStringWidth(
 			"%s:%s",
 			std::to_string(textLines_.size()).c_str(),
-			textLines_[maxCountLine].c_str());
+			textLines_[maxCountLine].c_str()) + 30;
 	}
 	else
 	{

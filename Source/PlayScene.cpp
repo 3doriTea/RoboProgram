@@ -24,6 +24,10 @@
 #include "Fader.h"
 
 #include "DocButton.h"
+#include "ReloadButton.h"
+#include "WriteButton.h"
+
+#include "CursorText.h"
 
 namespace
 {
@@ -46,7 +50,11 @@ PlayScene::PlayScene() :
 	Stage* pStage{ new Stage{} };
 	// NOTE: Stageを参照するオブジェクトはこれ以降に書く必要がある
 
+	new CursorText{};
+
 	new DocButton{};
+	new ReloadButton{};
+	new WriteButton{};
 
 	new Background{ PLAY_IMAGE_PATH };
 	//CodeBox* pCodeBox{ new CodeBox{} };

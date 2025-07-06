@@ -24,7 +24,8 @@ namespace
 	static const float GRAVITY{ 0.05 };
 	static const int IMAGE_WIDTH{ 80 };
 	static const int IMAGE_HEIGHT{ 160 };
-	static const float ROBOT_STEP_TIME_SEC{ 0.07 / 3.0f };
+	//static const float ROBOT_STEP_TIME_SEC{ 0.07 / 3.0f };
+	static const float ROBOT_STEP_TIME_SEC{ 0.07 };
 	static const float ROBOT_BEAT_TIME_SEC{ 1 };
 }
 
@@ -264,6 +265,7 @@ void Player::SetError(const std::string& _message, const SOURCE_POS& _srcPos)
 
 void Player::SetByteCode(const ByteCodes& _byteCode)
 {
+	clsDx();
 	robot_.Reset();
 	if (currentState_ == S_ERROR)
 	{
@@ -402,7 +404,7 @@ void Player::SetState(const State _state)
 							for (int i = 0; i < _memory.size(); i++)
 							{
 								ss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase << static_cast<int>(_memory[i]);
-								if ((i > 0 && i % 8 == 0) || i == _memory.size() - 1)
+								if (((1 + i) % 8 == 0) || i == _memory.size() - 1)
 								{
 									textLines.push_back(ss.str());
 									ss.str("");
