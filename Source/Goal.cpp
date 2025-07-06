@@ -1,6 +1,7 @@
 #include "Goal.h"
 #include <cassert>
 #include "Fader.h"
+#include "Stage.h"
 
 
 namespace
@@ -12,7 +13,8 @@ namespace
 }
 
 Goal::Goal(const Vector2& _position) :
-	StageObject{ _position, IMAGE_FILE }
+	StageObject{ _position, IMAGE_FILE },
+	isGoaled_{ false }
 {
 	//rect_.pivot = _position;
 	//rect_.size = { IMAGE_SIZE, IMAGE_SIZE };
@@ -33,9 +35,17 @@ void Goal::Draw()
 
 void Goal::OnPlayer()
 {
+	if (isGoaled_)
+	{
+		return;
+	}
+
+	pStage_->DoGoal();  // ゴールした！
+	pStage_->Save();  // セーブする
+	isGoaled_ = true;
 	GetPlayer()->ShockDown();  // プレイヤにshockして電源落とす
 	(new Fader{ FADE_IMAGE_FILE, TO_CLEAR_SCENE_TIME, false })->OnFinish([&, this]()
 		{
-			SceneManager::ReloadScene();
+			SceneManager::ChangeScene("CLEAR");
 		});
 }

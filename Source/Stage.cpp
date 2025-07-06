@@ -47,6 +47,8 @@ Stage::Stage() :
 			checkPoint_.y = _ms.Read<float>();
 			documentLevel_ = _ms.Read<int>();
 			infoLevel_ = _ms.Read<int>();
+			//PlayScene::SetIsFinalMode(_ms.Read<bool>());
+			isGoaled_ = _ms.Read<bool>();
 		});
 	saveFile_.OnSave([&, this](mtbin::MemoryStream& _ms)
 		{
@@ -54,6 +56,8 @@ Stage::Stage() :
 			_ms.Write(checkPoint_.y);
 			_ms.Write(documentLevel_);
 			_ms.Write(infoLevel_);
+			//_ms.Write(PlayScene::GetIsFinalMode());
+			_ms.Write(isGoaled_);
 		});
 
 	saveFile_.TryLoad();
@@ -84,8 +88,9 @@ Stage::Stage() :
 	delete csv;
 
 	// チェックポイントの情報がない
-	if (checkPoint_.x <= INVALED_POSITION + 1
-		&& checkPoint_.y <= INVALED_POSITION + 1)
+	if (PlayScene::GetIsFinalMode() == true ||
+		(checkPoint_.x <= INVALED_POSITION + 1
+		&& checkPoint_.y <= INVALED_POSITION + 1))
 	{
 		Vector2 playerPosition{};
 		assert(TryFindPlayerPositionFromMap(&playerPosition)
@@ -115,6 +120,10 @@ Stage::Stage() :
 				};
 				break;
 			case TILE_FLAG:
+				if (PlayScene::GetIsFinalMode())
+				{
+					break;  // ファイナルモードならフラッグなし
+				}
 				new Flag
 				{
 					{
@@ -160,6 +169,7 @@ Stage::Stage() :
 						static_cast<float>(y) * TILE_HEIGHT
 					}
 				};
+				break;
 			default:
 				break;
 			}
@@ -330,8 +340,6 @@ const int Stage::GetTile(const Vector2Int& tilePosition) const
 	{
 		return -1;
 	}
-
-	printfDx("チェック %d,%d block:%d\n", tileX, tileY, map_[tileY][tileX]);
 
 	return map_[tileY][tileX];
 }

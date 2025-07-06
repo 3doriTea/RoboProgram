@@ -1,24 +1,20 @@
-void Sample2()
+void RunLong()
 {
-  int tileNumber = GetOnTileNumber();
-
-  if (tileNumber != 1)
-  {
-    Jump();
-  }
+  Run();  // これを書くと走るよ
+  Run();Run();Run();Run();Run();Run();Run();Run();Run();Run();Run();Run();
+  Run();Run();Run();Run();Run();
 }
 
-void Orilin()
-{
-  Run();Run();Run();Run();Run();Run();Run();Run();
-Run();Run();Run();Run();Run();Run();Run();Run();
-
-}
-
+// 毎ビート呼ばれるよ！
 void Update()
 {
-  Sample2();
-  // ここに書いた処理は上から順に実行されていくよ
-  Run();  // ロボットを走らせるときは、「Run関数」を呼び出すよ
-  Orilin();
+  int tileNumber = GetOnTileNumber();
+  int a = tileNumber + 10 * 10;
+
+  // もし、tileの番号が1なら、ジャンプするよ
+  if (tileNumber != 1)
+  {
+   Jump();  // 条件が満たされたとき、「Jump関数」が呼び出される
+  }
+  RunLong();
 }

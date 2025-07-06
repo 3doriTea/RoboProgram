@@ -83,7 +83,7 @@ PlayScene::PlayScene() :
 		.SetIsScrollable(true)
 		.SetUseGhost(true)
 		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(true)
+		.SetIsShowLineCountBar(false)
 		.SetPosition({ 990, 110 }, ViewerBox::Pivot::TopLeft);
 
 	ViewerBox* pStackViewer{ new ViewerBox{} };
@@ -147,6 +147,12 @@ PlayScene::PlayScene() :
 		.OnUpdateSource([&, this, pCodeViewer](
 			const std::vector<std::string>& _newSource)
 			{
+				srcCodeCache_ = "";
+				for (const auto& line : _newSource)
+				{
+					srcCodeCache_ += line + "\n";
+				}
+
 				//　コンパイル処理
 
 				bool isError{ false };
@@ -272,7 +278,6 @@ PlayScene::PlayScene() :
 					delete node;
 				}
 
-				std::string assembleText_{};
 				Assembler::ToAssemble(byteCodes, assembleText_);
 
 				//std::string testout = test.str();
@@ -325,4 +330,6 @@ void PlayScene::OpenDocument()
 	ShellExecute(NULL, "open", DOC_FILE_NAME, "", "", SW_SHOW);
 }
 
+std::string PlayScene::srcCodeCache_{};
 std::string PlayScene::assembleText_{};
+bool PlayScene::isFinalMode_{ false };

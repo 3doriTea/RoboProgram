@@ -1,35 +1,36 @@
-#include "ReadAssemblyButton.h"
+#include "FinalTestButton.h"
 #include "ClearScene.h"
 #include <cassert>
 #include "Screen.h"
 #include "IO/FileSaver.h"
 #include "PlayScene.h"
+#include "Fader.h"
 
 
 namespace
 {
-	static char BUTTON_IMAGE[]{ "Data/Image/ReadAssemblyButton.png" };
-	static char ASSEMBLE_TEXT_NAME[]{ "ByteCodeAndAssembler.txt" };
+	const static char BUTTON_IMAGE[]{ "Data/Image/FinalTestButton.png" };
+	const static char PLAY_SCENE_BACKGROUND_IMAGE[]{ "Data/Inage/background.png" };
 }
 
-ReadAssemblyButton::ReadAssemblyButton()
+FinalTestButton::FinalTestButton()
 {
 	hImage_ = LoadGraph(BUTTON_IMAGE);
 	assert(hImage_ != 0 && "ボタン画像読み込みに失敗");
 
 	GetGraphSizeF(hImage_, &rect_.width, &rect_.height);
 
-	rect_.x = 130;//Screen::WIDTH / 2 - rect_.width / 2;
-	rect_.y = 570;//Screen::HEIGHT - ;
+	rect_.x = 335;//Screen::WIDTH / 2 - rect_.width / 2;
+	rect_.y = 410;//Screen::HEIGHT - ;
 
-	SetHintText("コンピュータが理解できる形式で表示します。");
+	SetHintText("セーブポイントなしでロボットを動かします");
 }
 
-ReadAssemblyButton::~ReadAssemblyButton()
+FinalTestButton::~FinalTestButton()
 {
 }
 
-void ReadAssemblyButton::OnDraw(const bool _onTouching, const bool _isPushing)
+void FinalTestButton::OnDraw(const bool _onTouching, const bool _isPushing)
 {
 	if (_onTouching)
 	{
@@ -50,8 +51,8 @@ void ReadAssemblyButton::OnDraw(const bool _onTouching, const bool _isPushing)
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void ReadAssemblyButton::OnPush()
+void FinalTestButton::OnPush()
 {
-	FileSaver::QuickWriteText(ASSEMBLE_TEXT_NAME, PlayScene::GetAssembleText());
-	GetScene<ClearScene>()->OpenFile(ASSEMBLE_TEXT_NAME);
+	PlayScene::SetIsFinalMode(true);
+	SceneManager::ChangeScene("PLAY");
 }

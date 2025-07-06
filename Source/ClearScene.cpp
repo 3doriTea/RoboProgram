@@ -1,7 +1,10 @@
 #include "ClearScene.h"
 #include "Background.h"
+#include "IO/Input.h"
 
 #include "ReadAssemblyButton.h"
+#include "ReadCodeButton.h"
+#include "FinalTestButton.h"
 
 namespace
 {
@@ -14,6 +17,8 @@ ClearScene::ClearScene()
 	new Background{ BACKGROUND_IMAGE_FILE };
 
 	new ReadAssemblyButton{};
+	new ReadCodeButton{};
+	new FinalTestButton{};
 }
 
 ClearScene::~ClearScene()
@@ -22,6 +27,7 @@ ClearScene::~ClearScene()
 
 void ClearScene::Update()
 {
+	Input::Instance().Update();
 }
 
 void ClearScene::Draw()

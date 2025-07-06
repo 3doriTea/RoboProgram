@@ -134,6 +134,11 @@ public:
 	void GetInfo(const int _infoLevel);
 
 	/// <summary>
+	/// ゴールする
+	/// </summary>
+	void DoGoal() { isGoaled_ = true; }
+
+	/// <summary>
 	/// 状況をセーブする
 	/// </summary>
 	void Save();
@@ -156,6 +161,7 @@ private:
 	Vector2 checkPoint_;  // チェックポイント
 	int documentLevel_;  // ドキュメントレベル
 	int infoLevel_;      // 情報レベル
+	bool isGoaled_;   // ゴールした true / false
 #pragma endregion
 
 	Vector2 scroll_;  // スクロール量

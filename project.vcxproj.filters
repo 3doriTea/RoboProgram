@@ -128,6 +128,8 @@
     <ClCompile Include="Source\Goal.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ReadCodeButton.cpp" />
+    <ClCompile Include="Source\FinalTestButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -293,6 +295,8 @@
     <ClInclude Include="Source\Lightning.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ReadCodeButton.h" />
+    <ClInclude Include="Source\FinalTestButton.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

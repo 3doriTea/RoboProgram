@@ -10,4 +10,6 @@ public:
 
 	void Draw() override;
 	void OnPlayer() override;
+private:
+	bool isGoaled_;  // ‚·‚Å‚ÉƒS[ƒ‹‚µ‚Ä‚¢‚é‚©
 };

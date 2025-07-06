@@ -1,4 +1,4 @@
-#include "ReadAssemblyButton.h"
+#include "ReadCodeButton.h"
 #include "ClearScene.h"
 #include <cassert>
 #include "Screen.h"
@@ -8,28 +8,28 @@
 
 namespace
 {
-	static char BUTTON_IMAGE[]{ "Data/Image/ReadAssemblyButton.png" };
-	static char ASSEMBLE_TEXT_NAME[]{ "ByteCodeAndAssembler.txt" };
+	static char BUTTON_IMAGE[]{ "Data/Image/ReadCodeButton.png" };
+	static char CODE_TEXT_NAME[]{ "ReadOnlySourceCode.txt" };
 }
 
-ReadAssemblyButton::ReadAssemblyButton()
+ReadCodeButton::ReadCodeButton()
 {
 	hImage_ = LoadGraph(BUTTON_IMAGE);
 	assert(hImage_ != 0 && "ボタン画像読み込みに失敗");
 
 	GetGraphSizeF(hImage_, &rect_.width, &rect_.height);
 
-	rect_.x = 130;//Screen::WIDTH / 2 - rect_.width / 2;
+	rect_.x = 740;//Screen::WIDTH / 2 - rect_.width / 2;
 	rect_.y = 570;//Screen::HEIGHT - ;
 
-	SetHintText("コンピュータが理解できる形式で表示します。");
+	SetHintText("ゴールしたソースコードを表示します。");
 }
 
-ReadAssemblyButton::~ReadAssemblyButton()
+ReadCodeButton::~ReadCodeButton()
 {
 }
 
-void ReadAssemblyButton::OnDraw(const bool _onTouching, const bool _isPushing)
+void ReadCodeButton::OnDraw(const bool _onTouching, const bool _isPushing)
 {
 	if (_onTouching)
 	{
@@ -50,8 +50,8 @@ void ReadAssemblyButton::OnDraw(const bool _onTouching, const bool _isPushing)
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void ReadAssemblyButton::OnPush()
+void ReadCodeButton::OnPush()
 {
-	FileSaver::QuickWriteText(ASSEMBLE_TEXT_NAME, PlayScene::GetAssembleText());
-	GetScene<ClearScene>()->OpenFile(ASSEMBLE_TEXT_NAME);
+	FileSaver::QuickWriteText(CODE_TEXT_NAME, PlayScene::GetSrcCodeText());
+	GetScene<ClearScene>()->OpenFile(CODE_TEXT_NAME);
 }
