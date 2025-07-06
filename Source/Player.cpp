@@ -26,6 +26,7 @@ namespace
 	static const int IMAGE_HEIGHT{ 160 };
 	//static const float ROBOT_STEP_TIME_SEC{ 0.07 / 3.0f };
 	static const float ROBOT_STEP_TIME_SEC{ 0.07 };
+	//static const float ROBOT_STEP_TIME_SEC{ 1 };
 	static const float ROBOT_BEAT_TIME_SEC{ 1 };
 
 	static const Vector2Int NORMAL_CODE_VIEW_POSITION{ 200, 30 };

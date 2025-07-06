@@ -38,7 +38,7 @@ namespace
 Stage::Stage() :
 	saveFile_{ SAVE_FILE_NAME, SAVE_FILE_BUFFER_SIZE },
 	checkPoint_{ INVALED_POSITION, INVALED_POSITION },
-	infoLevel_{ 1 },
+	infoLevel_{ 0 },
 	documentLevel_{ 0 },
 	readedDocLevel_{ 0 },
 	isGoaled_{ false }

@@ -1,30 +1,23 @@
-void SmartJump()
-{
-  Jump();  // ロボットをジャンプさせるときは、「ジャンプ関数」を呼び出すよ
-}
-// 「Sample1関数」は「Jump関数」と同じように呼び出せるよ
-// Sample1();
-
-// 2マス分の走り
 void RunLong()
 {
-  Run();
+Run();  // これを書くと走るよ
+  Run();Run();Run();Run();Run();Run();Run();Run();Run();
+  Run();Run();Run();Run();Run();Run();Run();Run();Run();
 }
+
 
 // 毎ビート呼ばれるよ！
 void Update()
 {
   // 乗っているタイルに書かれている番号を、変数「tileNumber」に代入するよ
-//  int tileNumber = GetOnTileNumber();
+  int tileNumber = GetOnTileNumber();
 
   // もし、tileの番号が1なら、ジャンプするよ
-//  if (tileNumber != 1)
-  if (true)
+  if (tileNumber != 1)
   {
-    //Jump();
-    SmartJump();  // 条件が満たされたとき、「Jump関数」が呼び出される
+    Jump();  // 条件が満たされたとき、「Jump関数」が呼び出される
   }
 
+  //Jump();
   RunLong();
 }
-

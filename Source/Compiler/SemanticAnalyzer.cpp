@@ -105,7 +105,7 @@ void SemanticAnalyzer::WriteFuncCall(const SOURCE_POS srcPos, ByteCodes& bc, int
 {
 	if (dest < 0)
 	{
-		//dest -= 3;
+		//dest -= 6;
 	}
 	// ŠÖ”ŒÄ‚Ño‚µ‚Ì‘Š‘ÎˆÊ’u‚Í 4byte•\Œ»
 	Byte* ptr{ reinterpret_cast<Byte*>(&dest) };
