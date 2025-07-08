@@ -21,5 +21,9 @@ public:
 	void Analyze() override;
 
 private:
+	/// <summary>
+	/// Šî’êƒNƒ‰ƒX‚É“n‚·—p
+	/// </summary>
+	/// <returns></returns>
 	ProtoAnalyzer& Get() override { return *this; }
 };

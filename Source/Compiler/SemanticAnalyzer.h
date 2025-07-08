@@ -161,7 +161,11 @@ private:
 	/// <param name="bc"></param>
 	void StackPop(const SOURCE_POS srcPos, const int _regOffset, const int _size, ByteCodes& bc);
 
-	SemanticAnalyzer& Get() { return *this; }
+	/// <summary>
+	/// 基底クラスに渡す用
+	/// </summary>
+	/// <returns></returns>
+	SemanticAnalyzer& Get() override { return *this; }
 	/// <summary>
 	/// エラー処理
 	/// </summary>

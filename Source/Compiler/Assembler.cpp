@@ -6,7 +6,17 @@
 #include "../CodeReader/ByteCodeReader.h"
 #include "../ByteCodeDefine.h"
 
-void Assembler::ToAssemble(const ByteCodes& bcs, std::string& outStr)
+
+namespace
+{
+	static const int ABYTE_WIDTH{ 2 };  // 1byte を表すための文字幅
+	static const int NAME_WIDTH{ 6 };  // 名前を表す文字幅
+	static const int PARAM_HINT_WIDTH{ 3 };  // パラメータヒントの文字幅
+	static const int PARAM_VALUE_WIDTH{ 2 };  // パラメータ数字の文字幅
+	static const int LINE_COUNT_WIDTH{ 3 };  // 行数字の文字幅
+}
+
+void Assembler::ToString(const ByteCodes& bcs, std::string& outStr)
 {
 	std::stringstream ss{};
 
@@ -17,26 +27,31 @@ void Assembler::ToAssemble(const ByteCodes& bcs, std::string& outStr)
 		bytes.push_back(bc.second);
 	}
 
-	auto Print = [&](Byte code)
+	// 単に出力する
+	auto Print = [&](const Byte code)
 		{
-			ss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase << static_cast<int>(code) << " ";
+			ss << std::hex << std::setw(ABYTE_WIDTH) << std::setfill('0')
+				<< std::uppercase << static_cast<int>(code) << " ";
 		};
 
-	auto PrintN = [&](std::string name)
+	// 名前を出力する
+	auto PrintN = [&](const std::string& name)
 		{
-			ss << std::setw(6) << std::setfill(' ') << std::uppercase << name << " ";
+			ss << std::setw(NAME_WIDTH) << std::setfill(' ') << std::uppercase << name << " ";
 		};
-	auto PrintC = [&](std::string hint, Byte code)
+
+	// パラメータをヒントを添えて出力する
+	auto PrintC = [&](const std::string& hint, const Byte code)
 		{
-			ss << std::setw(3) << std::setfill(' ') << std::uppercase << hint << ":";
-			ss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase << static_cast<int>(code) << " ";
+			ss << std::setw(PARAM_HINT_WIDTH) << std::setfill(' ') << std::uppercase << hint << ":";
+			ss << std::hex << std::setw(PARAM_VALUE_WIDTH) << std::setfill('0') << std::uppercase << static_cast<int>(code) << " ";
 		};
 
 	ByteCodeReader bcr{ bytes };
 
 	while (!bcr.IsEndOfCode())
 	{
-		ss << std::setw(3) << std::setfill(' ') << std::dec << bcr.GetCurrentIndex();//bc.first.line;
+		ss << std::setw(LINE_COUNT_WIDTH) << std::setfill(' ') << std::dec << bcr.GetCurrentIndex();//bc.first.line;
 		ss << ":";
 		Byte code{ bcr.Pop() };
 		switch (code)
@@ -105,7 +120,7 @@ void Assembler::ToAssemble(const ByteCodes& bcs, std::string& outStr)
 
 	while (!bcr.IsEndOfCode())
 	{
-		ss << std::setw(3) << std::setfill(' ') << std::dec << bcr.GetCurrentIndex();//bc.first.line;
+		ss << std::setw(LINE_COUNT_WIDTH) << std::setfill(' ') << std::dec << bcr.GetCurrentIndex();//bc.first.line;
 		ss << ":";
 		Byte code{ bcr.Pop() };
 		switch (code)

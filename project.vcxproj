@@ -183,6 +183,7 @@
     <ClInclude Include="Source\IO\MemoryStream.h" />
     <ClInclude Include="Source\IO\SourceObserver.h" />
     <ClInclude Include="Source\Lightning.h" />
+    <ClInclude Include="Source\MessageBoxUI.h" />
     <ClInclude Include="Source\Object2D.h" />
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\ReadAssemblyButton.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Source\TitleScene.h" />
     <ClInclude Include="Source\Coin.h" />
     <ClInclude Include="Source\Flag.h" />
+    <ClInclude Include="Source\TutorialScene.h" />
     <ClInclude Include="Source\Utility\Easings.h" />
     <ClInclude Include="Source\Utility\RectanUtility.h" />
     <ClInclude Include="Source\Utility\StringUtility.h" />
@@ -265,6 +267,7 @@
     <ClCompile Include="Source\StageObject.cpp" />
     <ClCompile Include="Source\StartButton.cpp" />
     <ClCompile Include="Source\TitleScene.cpp" />
+    <ClCompile Include="Source\TutorialScene.cpp" />
     <ClCompile Include="Source\Utility\RectanUtility.cpp" />
     <ClCompile Include="Source\Utility\StringUtility.cpp" />
     <ClCompile Include="Source\Utility\Timer.cpp" />

@@ -39,7 +39,7 @@ bool FileSaver::TryLoad()
 	mtbin::MemoryStream ms{ pBuffer, BUFFER_SIZE_ };
 	onLoad_(ms);
 
-	delete pBuffer;
+	delete[] pBuffer;
 
 	return true;
 }
@@ -62,7 +62,7 @@ bool FileSaver::TrySave()
 	ofs.write(reinterpret_cast<char*>(pBuffer), BUFFER_SIZE_);
 	ofs.close();
 
-	delete pBuffer;
+	delete[] pBuffer;
 
 	return true;
 }

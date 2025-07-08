@@ -1,6 +1,12 @@
 #pragma once
 #include <cmath>
 
+/*
+* https://easings.net/ja
+* を参照し持ってきました
+* 数値は全て計算式の定数であるため、マジックナンバーにあたらない、と考えています。
+*/
+
 class Ease
 {
 public:

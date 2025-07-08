@@ -104,8 +104,7 @@ NODE* SyntaxAnalyzer::_Add()
 {
 	NODE* node{ _Mul() };
 
-	//while (true)
-	for( ; ; )
+	while (true)
 	{
 		if (Consume("+"))
 		{

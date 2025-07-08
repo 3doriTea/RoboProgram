@@ -4,15 +4,6 @@
 #include <stack>
 
 
-///// <summary>
-///// 型情報
-///// </summary>
-//struct TypeInfo
-//{
-//	Byte size;  // 型のサイズ
-//	const TokenString& name;  // 型名
-//};
-
 /// <summary>
 /// 構文解析するクラス
 /// </summary>
@@ -96,7 +87,11 @@ private:
 	/// <param name="_offset">読み取り位置からのオフセット</param>
 	/// <returns>トークンのreadonly</returns>
 	const std::string& Peek(const int _offset = 0);
-
+	/// <summary>
+	/// 新しいノードを作る
+	/// </summary>
+	/// <param name="_node">ノードの情報(コピー代入される)</param>
+	/// <returns>作られたノードのポインタ</returns>
 	NODE* NewNode(const NODE& _node);
 	/// <summary>
 	/// 一致していたら進める
@@ -110,10 +105,17 @@ private:
 	/// <param name="_str"></param>
 	void Expect(const std::string& _str);
 
+	/// <summary>
+	/// 現在のインデックスを取得
+	/// </summary>
+	/// <returns></returns>
 	inline const int GetIdx() const { return readIndex_ - 1; }
 #pragma endregion
-
-	SyntaxAnalyzer& Get() { return *this; }
+	/// <summary>
+	/// 基底クラスに渡す用
+	/// </summary>
+	/// <returns></returns>
+	SyntaxAnalyzer& Get() override { return *this; }
 	/// <summary>
 	/// エラー処理
 	/// </summary>
@@ -121,8 +123,8 @@ private:
 	void Error(const char* _message) override;
 
 private:
-	int readIndex_{};
-	std::map<TokenString, Byte> typeRegister_{};
-	std::map<TokenString, Byte> funcRegister_{};
-	std::stack<std::map<TokenString, Byte>> varRegister_{};
+	int readIndex_{};  // 見ているトークンのインデックス
+	std::map<TokenString, Byte> typeRegister_{};  // 使用型の登録
+	std::map<TokenString, Byte> funcRegister_{};  // 使用関数の登録
+	std::stack<std::map<TokenString, Byte>> varRegister_{};  // 使用変数の登録
 };

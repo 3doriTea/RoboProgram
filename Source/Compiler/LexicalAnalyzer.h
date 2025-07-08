@@ -15,6 +15,10 @@ public:
 	void Analyze() override;
 
 private:
+	/// <summary>
+	/// Šî’êƒNƒ‰ƒX‚É“n‚·—p
+	/// </summary>
+	/// <returns></returns>
 	LexicalAnalyzer& Get() override { return *this; };
 
 	void Error(const char* _message) override;

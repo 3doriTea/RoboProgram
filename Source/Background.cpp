@@ -1,6 +1,7 @@
 #include "Background.h"
 #include <cassert>
 
+
 Background::Background(const char* _imageFile)
 {
 	hImage_ = LoadGraph(_imageFile);

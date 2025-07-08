@@ -278,7 +278,7 @@ PlayScene::PlayScene() :
 					delete node;
 				}
 
-				Assembler::ToAssemble(byteCodes, assembleText_);
+				Assembler::ToString(byteCodes, assembleText_);
 
 				//std::string testout = test.str();
 				//const char* strtestout = testout.c_str();
