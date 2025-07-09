@@ -281,6 +281,9 @@
     <Text Include="CppBNFRenew.txt" />
     <Text Include="Test1.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Public\RoboProgram.zip" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
