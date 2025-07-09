@@ -78,3 +78,42 @@ void FileSaver::QuickWriteText(
 		ofs.close();
 	}
 }
+
+std::string FileSaver::QuickReadText(const std::string& _fileName)
+{
+	std::string outStr{};
+
+	std::ifstream ifs(_fileName);
+	std::string lineStr{};
+	while (std::getline(ifs, lineStr))  // 行を読み込めたなら
+	{
+		outStr += lineStr + "\n";
+	}
+	ifs.close();
+	return outStr;
+}
+
+std::vector<std::string> FileSaver::QuickReadTextLines(const std::string& _fileName)
+{
+	std::vector<std::string> textLines{};
+
+	std::ifstream ifs(_fileName);
+	std::string lineStr{};
+	while (std::getline(ifs, lineStr))  // 行を読み込めたなら
+	{
+		textLines.push_back(lineStr);
+	}
+	ifs.close();
+	return textLines;
+}
+
+bool FileSaver::ExistFile(const std::string& _fileName)
+{
+	std::ifstream ifs{ _fileName };
+	if (ifs)  // ファイルが開けているなら、ファイルが存在する
+	{
+		ifs.close();
+		return true;
+	}
+	return false;
+}

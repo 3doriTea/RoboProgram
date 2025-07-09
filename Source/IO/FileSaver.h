@@ -26,6 +26,14 @@ public:
 	inline void OnSave(FileStreamCallback _callback) { onSave_ = _callback; }
 
 	static void QuickWriteText(const std::string& _fileName, const std::string& _text);
+	static std::string QuickReadText(const std::string& _fileName);
+	static std::vector<std::string> QuickReadTextLines(const std::string& _fileName);
+	/// <summary>
+	/// ファイルが存在するか
+	/// </summary>
+	/// <param name="_fileName"></param>
+	/// <returns></returns>
+	static bool ExistFile(const std::string& _fileName);
 private:
 	FileStreamCallback onLoad_;  // ロード処理
 	FileStreamCallback onSave_;  // セーブ処理

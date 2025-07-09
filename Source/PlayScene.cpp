@@ -1,3 +1,4 @@
+#include <Windows.h>
 #include <cassert>
 #include "PlayScene.h"
 #include "IO/Input.h"
@@ -29,10 +30,13 @@
 
 #include "CursorText.h"
 
+#include "Compiler/Compiler.h"
+
 namespace
 {
 	static const char SRC_FILE_NAME[]{ "SourceCode.txt" };
 	static const char DOC_FILE_NAME[]{ "Document.txt" };
+	static const char ERROR_LOG_FILE_NAME[]{ "ErrorLog.txt" };
 	static const char PLAY_IMAGE_PATH[]{ "Data/Image/Background.png" };
 }
 
@@ -40,6 +44,14 @@ PlayScene::PlayScene() :
 	pSourceObserver_{ new SourceObserver{ SRC_FILE_NAME } }
 {
 	Timer::Instance().Clear();  // 最初にタイマーをクリアする
+
+	if (FileSaver::ExistFile(ERROR_LOG_FILE_NAME))
+	{
+		Compiler compiler{};
+		compiler.Start();
+
+		return;
+	}
 
 
 	(new Fader{ PLAY_IMAGE_PATH, 1.0f, true })->OnFinish([&, this]()
@@ -285,6 +297,11 @@ PlayScene::PlayScene() :
 				OutputDebugString(assembleText_.c_str());
 
 				pPlayer_->SetByteCode(byteCodes);
+
+				if (FileSaver::ExistFile(ERROR_LOG_FILE_NAME))
+				{
+					DeleteFile(ERROR_LOG_FILE_NAME);
+				}
 			});
 
 	Timer::AddInterval(1.0f, [&, this]()
