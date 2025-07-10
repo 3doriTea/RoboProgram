@@ -291,6 +291,7 @@ protected:
 	/// <param name="_arg">エラー引数</param>
 	inline void ErrorFull(const char* _message, const ErrorArgT& _arg)
 	{
+		hasError_ = true;
 		onError_(_message, _arg);
 	}
 
@@ -300,18 +301,26 @@ protected:
 	/// <param name="_message">エラーメッセージ</param>
 	inline virtual void Error(const char* _message) {};
 
+	/// <summary>
+	/// エラーがあるか
+	/// </summary>
+	/// <returns>エラーがある true / false</returns>
+	inline bool HasError() const { return hasError_; }
+
 protected:
 	const InT& in_;
 	OutT& out_;
 
 private:
 	std::function<void(const char* _message, const ErrorArgT& _arg)> onError_;
+	bool hasError_;  // エラーがあるか
 };
 
 template<typename SubAnalyzerT, typename InT, typename OutT, typename ErrorArgT>
 inline Analyzer<SubAnalyzerT, InT, OutT, ErrorArgT>::Analyzer(const InT& _inRef, OutT& _outRef) :
 	in_{ _inRef },
-	out_{ _outRef }
+	out_{ _outRef },
+	hasError_{ false }
 {
 }
 

@@ -53,7 +53,7 @@ namespace
 	/// </summary>
 	/// <param name="_addr">アドレス</param>
 	/// <returns>無効なアドレス true / false</returns>
-	static bool IsInvalidAddr(const int _addr) { return _addr < 0 };
+	static bool IsInvalidAddr(const int _addr) { return _addr < 0; }
 }
 
 #define PRINTF(...) \
@@ -435,7 +435,7 @@ int SemanticAnalyzer::ReadType(const NODE* n)
 
 	if (TYPE_SIZE.count(typeName))
 	{
-		return SIZE_INVALID;
+		return SIZE_4BYTE;
 	}
 
 	return TYPE_SIZE.at(typeName);
@@ -968,7 +968,7 @@ void SemanticAnalyzer::ReadVarDec(const NODE* n, ByteCodes& bc, bool allowInit, 
 	}
 
 
-	int typeSize{ SIZE_INVALID };
+	int typeSize{ 0 };
 	if (n->varDec.type != nullptr)
 	{
 		typeSize = ReadType(n->varDec.type);

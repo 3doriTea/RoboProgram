@@ -6,11 +6,15 @@ void SyntaxAnalyzer::Analyze()
 	for (readIndex_ = 0; readIndex_ < in_.size(); readIndex_++)
 	{
 		_Global();
+		if (HasError()) return;
 	}
 }
 
 NODE* SyntaxAnalyzer::_Global()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	if (readIndex_ >= in_.size())
 	{
 		return nullptr;
@@ -21,6 +25,9 @@ NODE* SyntaxAnalyzer::_Global()
 
 NODE* SyntaxAnalyzer::_Expr()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	return _Lor();
 }
 
@@ -28,6 +35,9 @@ NODE* SyntaxAnalyzer::_Expr()
 
 NODE* SyntaxAnalyzer::_Lor()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	NODE* node{ _Land() };
 
 	while (true)
@@ -40,11 +50,16 @@ NODE* SyntaxAnalyzer::_Lor()
 		{
 			return node;
 		}
+		// エラーがあるならreturn
+		if (HasError()) return nullptr;
 	}
 }
 
 NODE* SyntaxAnalyzer::_Land()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	NODE* node{ _Equal() };
 
 	while (true)
@@ -57,11 +72,16 @@ NODE* SyntaxAnalyzer::_Land()
 		{
 			return node;
 		}
+		// エラーがあるならreturn
+		if (HasError()) return nullptr;
 	}
 }
 
 NODE* SyntaxAnalyzer::_Equal()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	NODE* node{ _Then() };
 
 	while (true)
@@ -78,11 +98,16 @@ NODE* SyntaxAnalyzer::_Equal()
 		{
 			return node;
 		}
+		// エラーがあるならreturn
+		if (HasError()) return nullptr;
 	}
 }
 
 NODE* SyntaxAnalyzer::_Then()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	NODE* node{ _Add() };
 
 	while (true)
@@ -97,11 +122,16 @@ NODE* SyntaxAnalyzer::_Then()
 			node = NewNode({ GetIdx(), NODE_GREATEREQUAL, node, _Add() });
 		else
 			return node;
+		// エラーがあるならreturn
+		if (HasError()) return nullptr;
 	}
 }
 
 NODE* SyntaxAnalyzer::_Add()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	NODE* node{ _Mul() };
 
 	while (true)
@@ -118,11 +148,16 @@ NODE* SyntaxAnalyzer::_Add()
 		{
 			return node;
 		}
+		// エラーがあるならreturn
+		if (HasError()) return nullptr;
 	}
 }
 
 NODE* SyntaxAnalyzer::_Mul()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	NODE* node{ _Unary() };
 
 	while (true)
@@ -139,11 +174,16 @@ NODE* SyntaxAnalyzer::_Mul()
 		{
 			return node;
 		}
+		// エラーがあるならreturn
+		if (HasError()) return nullptr;
 	}
 }
 
 NODE* SyntaxAnalyzer::_Unary()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	if (Consume("+"))
 	{
 		return _Postfix();
@@ -157,6 +197,9 @@ NODE* SyntaxAnalyzer::_Unary()
 
 NODE* SyntaxAnalyzer::_Postfix()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	NODE* node{ _Primary() };
 
 	if (Consume("++"))
@@ -173,6 +216,9 @@ NODE* SyntaxAnalyzer::_Postfix()
 
 NODE* SyntaxAnalyzer::_Primary()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	if (Consume("("))
 	{
 		NODE* node{ _Expr() };
@@ -185,6 +231,9 @@ NODE* SyntaxAnalyzer::_Primary()
 
 NODE* SyntaxAnalyzer::_Val()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	NODE* node{ _Liter() };
 	if (node == nullptr)
 	{
@@ -200,6 +249,9 @@ NODE* SyntaxAnalyzer::_Val()
 
 NODE* SyntaxAnalyzer::_Liter()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	NODE* node{ _Integer() };
 	
 	// TODO: リテラル増え次第ここに追記
@@ -220,11 +272,17 @@ NODE* SyntaxAnalyzer::_Liter()
 
 NODE* SyntaxAnalyzer::_Var()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	return NewNode({ GetIdx(), NODE_REGISTER_VAR_NAME, _Name() });
 }
 
 NODE* SyntaxAnalyzer::_CallFunc()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	const std::string& token{ Peek(1) };
 
 	if (token != "(")
@@ -247,6 +305,9 @@ NODE* SyntaxAnalyzer::_CallFunc()
 
 NODE* SyntaxAnalyzer::_Args()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	const std::string& token{ Peek() };
 
 	if (token == ")")
@@ -267,6 +328,9 @@ NODE* SyntaxAnalyzer::_Args()
 
 NODE* SyntaxAnalyzer::_NFor()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	Expect("(");
 
 	NODE* init{ _VarDec() };  // 
@@ -304,6 +368,9 @@ NODE* SyntaxAnalyzer::_NFor()
 
 NODE* SyntaxAnalyzer::_NIf()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	Expect("(");
 
 	NODE* expr{ _Expr() };
@@ -321,6 +388,9 @@ NODE* SyntaxAnalyzer::_NIf()
 
 NODE* SyntaxAnalyzer::_Block()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	if (Consume("{"))
 	{
 		return Procs();
@@ -333,6 +403,9 @@ NODE* SyntaxAnalyzer::_Block()
 
 NODE* SyntaxAnalyzer::Procs(int _callCount)
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	if (_callCount > 1000)
 	{
 		Error("構文エラー");
@@ -351,6 +424,9 @@ NODE* SyntaxAnalyzer::Procs(int _callCount)
 
 NODE* SyntaxAnalyzer::Proc()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	if (Consume("for"))
 	{
 		return _NFor();
@@ -385,6 +461,13 @@ NODE* SyntaxAnalyzer::Proc()
 			Expect(";");
 			return node;
 		}
+
+		if (Consume(";"))
+		{
+			Error("不要なセミコロンがあります。");
+			return nullptr;
+		}
+
 		node = _Expr();  // 式
 		Expect(";");
 		return node;
@@ -393,11 +476,17 @@ NODE* SyntaxAnalyzer::Proc()
 
 NODE* SyntaxAnalyzer::_Func()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	return NewNode({ GetIdx(), NODE_REGISTER_FUNC_NAME, _Name() });
 }
 
 NODE* SyntaxAnalyzer::_Return()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	if (Consume("return"))
 	{
 		return NewNode({ GetIdx(), NODE_RET, _Expr() });
@@ -410,6 +499,9 @@ NODE* SyntaxAnalyzer::_Return()
 
 NODE* SyntaxAnalyzer::_Params()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	const std::string& token{ Peek() };
 	if (token == ")")
 	{
@@ -429,6 +521,9 @@ NODE* SyntaxAnalyzer::_Params()
 
 NODE* SyntaxAnalyzer::_FuncDef()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	if (IsUnreadable(4))
 	{
 		return nullptr;
@@ -469,6 +564,9 @@ NODE* SyntaxAnalyzer::_FuncDef()
 
 NODE* SyntaxAnalyzer::_Name()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	const std::string& token{ Peek() };
 
 	auto itr = token.begin();
@@ -494,6 +592,9 @@ NODE* SyntaxAnalyzer::_Name()
 
 NODE* SyntaxAnalyzer::_Type()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	const std::string& token{ Peek() };
 
 	if (token == "int"
@@ -509,6 +610,9 @@ NODE* SyntaxAnalyzer::_Type()
 
 NODE* SyntaxAnalyzer::_Integer()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	const std::string& token{ Peek() };
 
 	for (auto itr = token.begin(); itr != token.end(); itr++)
@@ -525,6 +629,9 @@ NODE* SyntaxAnalyzer::_Integer()
 
 NODE* SyntaxAnalyzer::_VarDec()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	NODE* type{ _Type() };
 	if (type == nullptr)
 	{
@@ -538,6 +645,9 @@ NODE* SyntaxAnalyzer::_VarDec()
 
 NODE* SyntaxAnalyzer::_Assign()
 {
+	// エラーあるならreturn
+	if (HasError()) return nullptr;
+
 	if (Peek(1) != "=")
 	{
 		return nullptr;  // 代入式ではない
@@ -593,8 +703,13 @@ const std::string& SyntaxAnalyzer::Peek(const int _offset)
 
 NODE* SyntaxAnalyzer::NewNode(const NODE& _node)
 {
-	//out_.push_back(_node);
-	//return &(out_.data()[out_.size() - 1]);
+	static int count{ 0 };
+	count++;
+	if (count > 1000)
+	{
+		Error("未解決のトークンです。");
+		return nullptr;
+	}
 
 	NODE* pNode{ new NODE{ _node } };
 	out_.push_back(pNode);

@@ -20,4 +20,5 @@ void Update()
 
   //Jump();
   RunLong();
+.
 }
