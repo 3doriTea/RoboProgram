@@ -22,11 +22,6 @@ TitleScene::TitleScene()
 	Rectan buttonRect{ pStartButton->GetRectWorld() };
 
 	pStartButton->SetPosition({ static_cast<int>(Screen::WIDTH - buttonRect.width) / 2, START_BUTTON_POS_Y });
-
-	if (FileSaver::ExistFile(ERROR_LOG))
-	{
-		SceneManager::ChangeScene("PLAY");
-	}
 }
 
 TitleScene::~TitleScene()
@@ -35,6 +30,11 @@ TitleScene::~TitleScene()
 
 void TitleScene::Update()
 {
+	if (FileSaver::ExistFile(ERROR_LOG))
+	{
+		SceneManager::ChangeScene("PLAY");
+	}
+
 	if (CheckHitKey(KEY_INPUT_P)) {
 		SceneManager::ChangeScene("PLAY");
 	}
