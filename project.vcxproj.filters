@@ -101,36 +101,83 @@
     <ClCompile Include="Source\Utility\StringUtility.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Compiler\LexicalAnalyzer.cpp" />
-    <ClCompile Include="Source\Compiler\SyntaxAnalyzer.cpp" />
-    <ClCompile Include="Source\CodeRunner\CodeRunner.cpp" />
-    <ClCompile Include="Source\CodeRunner\Stack.cpp" />
-    <ClCompile Include="Source\Compiler\SemanticAnalyzer.cpp" />
-    <ClCompile Include="Source\ViewerBox.cpp" />
-    <ClCompile Include="Source\Compiler\Assembler.cpp" />
-    <ClCompile Include="Source\Doc.cpp" />
-    <ClCompile Include="Source\Fader.cpp" />
-    <ClCompile Include="Source\StartButton.cpp" />
-    <ClCompile Include="Source\BlockEffect.cpp" />
-    <ClCompile Include="Source\IO\MemoryStream.cpp" />
-    <ClCompile Include="Source\IO\FileSaver.cpp" />
     <ClCompile Include="Source\Button.cpp" />
-    <ClCompile Include="Source\DocButton.cpp" />
-    <ClCompile Include="Source\WriteButton.cpp" />
-    <ClCompile Include="Source\ReloadButton.cpp" />
     <ClCompile Include="Source\CursorText.cpp" />
-    <ClCompile Include="Source\Info.cpp" />
-    <ClCompile Include="Source\ReadAssemblyButton.cpp" />
-    <ClCompile Include="Source\ClearScene.cpp" />
     <ClCompile Include="Source\Lightning.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Source\Goal.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ReadCodeButton.cpp" />
-    <ClCompile Include="Source\FinalTestButton.cpp" />
-    <ClCompile Include="Source\TutorialScene.cpp" />
+    <ClCompile Include="Source\Compiler\Assembler.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Compiler\Compiler.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Compiler\SyntaxAnalyzer.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Compiler\SemanticAnalyzer.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Compiler\LexicalAnalyzer.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\IO\MemoryStream.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CodeRunner\Stack.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Fader.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\IO\FileSaver.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BlockEffect.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ClearScene.cpp">
+      <Filter>ClearScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ReadAssemblyButton.cpp">
+      <Filter>ClearScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ReadCodeButton.cpp">
+      <Filter>ClearScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\FinalTestButton.cpp">
+      <Filter>ClearScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\StartButton.cpp">
+      <Filter>TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Doc.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Info.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ViewerBox.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WriteButton.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DocButton.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CodeRunner\CodeRunner.cpp">
+      <Filter>CodeRunner</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ReloadButton.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TutorialScene.cpp">
+      <Filter>TutorialScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -267,39 +314,90 @@
     <ClInclude Include="Source\Utility\StringUtility.h">
       <Filter>Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Compiler\LexicalAnalyzer.h" />
-    <ClInclude Include="Source\Compiler\SyntaxAnalyzer.h" />
-    <ClInclude Include="Source\CodeRunner\CodeRunner.h" />
-    <ClInclude Include="Source\CodeRunner\Stack.h" />
-    <ClInclude Include="Source\Compiler\SemanticAnalyzer.h" />
-    <ClInclude Include="Source\ViewerBox.h" />
-    <ClInclude Include="Source\Compiler\Assembler.h" />
-    <ClInclude Include="Source\Doc.h" />
-    <ClInclude Include="Source\Fader.h" />
-    <ClInclude Include="Source\StartButton.h" />
-    <ClInclude Include="Source\BlockEffect.h" />
-    <ClInclude Include="Source\Utility\Easings.h" />
-    <ClInclude Include="Source\IO\FileSaver.h" />
-    <ClInclude Include="Source\IO\Common.h" />
-    <ClInclude Include="Source\IO\MemoryStream.h" />
     <ClInclude Include="Source\Button.h" />
-    <ClInclude Include="Source\DocButton.h" />
-    <ClInclude Include="Source\WriteButton.h" />
-    <ClInclude Include="Source\ReloadButton.h" />
     <ClInclude Include="Source\CursorText.h" />
-    <ClInclude Include="Source\Info.h" />
-    <ClInclude Include="Source\ReadAssemblyButton.h" />
-    <ClInclude Include="Source\ClearScene.h" />
     <ClInclude Include="Source\Goal.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Lightning.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ReadCodeButton.h" />
-    <ClInclude Include="Source\FinalTestButton.h" />
-    <ClInclude Include="Source\TutorialScene.h" />
     <ClInclude Include="Source\MessageBoxUI.h" />
+    <ClInclude Include="Source\Compiler\Assembler.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Compiler\Compiler.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Compiler\SyntaxAnalyzer.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Compiler\SemanticAnalyzer.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Compiler\LexicalAnalyzer.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\IO\MemoryStream.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CodeRunner\Stack.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utility\Easings.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Fader.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\IO\FileSaver.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BlockEffect.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ClearScene.h">
+      <Filter>ClearScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ReadAssemblyButton.h">
+      <Filter>ClearScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ReadCodeButton.h">
+      <Filter>ClearScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\FinalTestButton.h">
+      <Filter>ClearScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\StartButton.h">
+      <Filter>TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Doc.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Info.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ViewerBox.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\WriteButton.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DocButton.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\IO\Common.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CodeRunner\CodeRunner.h">
+      <Filter>CodeRunner</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ReloadButton.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TutorialScene.h">
+      <Filter>TutorialScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -329,10 +427,26 @@
     <Filter Include="Utility">
       <UniqueIdentifier>{a36bd451-a35d-4121-8976-580560b2de90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TutorialScene">
+      <UniqueIdentifier>{5d017be4-a269-47eb-9366-97d2fe0bb26c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ClearScene">
+      <UniqueIdentifier>{eced8151-ad7b-4e81-bf88-925577ae49ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CodeRunner">
+      <UniqueIdentifier>{45234e74-bc21-4144-808e-b3bdc2ca97e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Test1.txt" />
-    <Text Include="CppBNF.txt" />
-    <Text Include="CppBNFRenew.txt" />
+    <Text Include="CppBNF.txt">
+      <Filter>Compiler</Filter>
+    </Text>
+    <Text Include="CppBNFRenew.txt">
+      <Filter>Compiler</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Public\RoboProgram.zip" />
   </ItemGroup>
 </Project>
