@@ -107,7 +107,7 @@ PlayScene::PlayScene() :
 		.SetUseGhost(true)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(false)
-		.SetPosition({ 990, 110 }, ViewerBox::Pivot::TopLeft);
+		.SetPosition({ 1070, 430 }, ViewerBox::Pivot::TopLeft);
 
 	ViewerBox* pStackViewer{ new ViewerBox{} };
 	pStackViewer
@@ -117,7 +117,7 @@ PlayScene::PlayScene() :
 		.SetShowLineCount(7)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(false)
-		.SetPosition({ 1000, 200 }, ViewerBox::Pivot::TopLeft);
+		.SetPosition({ 1129, 260 }, ViewerBox::Pivot::TopLeft);
 
 	ViewerBox* pCallStackViewer{ new ViewerBox{} };
 	pCallStackViewer
@@ -127,7 +127,7 @@ PlayScene::PlayScene() :
 		.SetShowLineCount(7)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(false)
-		.SetPosition({ 1130, 200 }, ViewerBox::Pivot::TopLeft);
+		.SetPosition({ 999, 260 }, ViewerBox::Pivot::TopLeft);
 
 	ViewerBox* pMemoryViewer{ new ViewerBox{} };
 	pMemoryViewer
@@ -136,7 +136,7 @@ PlayScene::PlayScene() :
 		.SetUseGhost(true)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(false)
-		.SetPosition({ Screen::WIDTH - 30, Screen::HEIGHT - 30 }, ViewerBox::Pivot::BottomRight);
+		.SetPosition({ 1020, 502 }, ViewerBox::Pivot::TopLeft);
 #pragma endregion
 
 	pPlayer_ = pStage->GetPlayer();
