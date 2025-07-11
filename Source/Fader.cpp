@@ -7,7 +7,8 @@ Fader::Fader(const char* _imageFileName, const float _fadeTime, const bool _show
 	FADE_TIME{ _fadeTime },
 	timeLeft_{ _fadeTime },
 	showToHide_{ _showToHide },
-	fadeType_{ FadeType::Ghost }
+	fadeType_{ FadeType::Ghost },
+	onFinish_{ []{} }
 {
 	hImage_ = LoadGraph(_imageFileName);
 	assert(hImage_ != -1 && "フェード画像読み込みに失敗");

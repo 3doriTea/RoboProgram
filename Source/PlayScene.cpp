@@ -46,6 +46,7 @@ PlayScene::PlayScene() :
 {
 	Timer::Instance().Clear();  // 最初にタイマーをクリアする
 
+	// エラーログファイルがあるなら即コンパイル
 	if (FileSaver::ExistFile(ERROR_LOG_FILE_NAME))
 	{
 		ByteCodes byteCodes{};
@@ -68,10 +69,8 @@ PlayScene::PlayScene() :
 	}
 
 
-	(new Fader{ PLAY_IMAGE_PATH, 1.0f, true })->OnFinish([&, this]()
-		{
-			//SceneManager::ChangeScene("PLAY");
-		});
+	// 始まったときのフェードイン
+	new Fader{ PLAY_IMAGE_PATH, 1.0f, true };
 
 	Stage* pStage{ new Stage{} };
 	// NOTE: Stageを参照するオブジェクトはこれ以降に書く必要がある

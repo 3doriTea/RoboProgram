@@ -33,6 +33,8 @@ namespace
 
 	static const char SAVE_FILE_NAME[]{ "SaveFile.bin" };
 	static const size_t SAVE_FILE_BUFFER_SIZE{ 1024 };
+	static const char MAP_FILE_NAME_DEFAULT[]{ "Data/map.csv" };
+	static const char MAP_FILE_NAME_FINAL[]{ "Data/mapFinal.csv" };
 }
 
 Stage::Stage() :
@@ -59,7 +61,6 @@ Stage::Stage() :
 			_ms.Write(checkPoint_.y);
 			_ms.Write(documentLevel_);
 			_ms.Write(infoLevel_);
-			//_ms.Write(PlayScene::GetIsFinalMode());
 			_ms.Write(isGoaled_);
 			_ms.Write(readedDocLevel_);
 		});
@@ -76,7 +77,15 @@ Stage::Stage() :
 		&& "画像読み込みに失敗 @Stage::Stage");
 	hImages_.insert({ TILE_1, hImage });
 
-	CsvReader* csv{ new CsvReader{ "Data/map.csv" } };
+	// ロードするマップのcsvファイル
+	const char* LOAD_CSV_FILE_NAME
+	{
+		PlayScene::GetIsFinalMode()  // ファイナルモードなら専用のcsv
+		? MAP_FILE_NAME_FINAL
+		: MAP_FILE_NAME_DEFAULT
+	};
+
+	CsvReader* csv{ new CsvReader { LOAD_CSV_FILE_NAME } };
 	
 	// CSVからステージデータを読み込む
 	for (int line = 0; line < csv->GetLines(); line++)
