@@ -35,10 +35,16 @@ TitleScene::~TitleScene()
 
 void TitleScene::Update()
 {
-	if (CheckHitKey(KEY_INPUT_P)) {
+	if (CheckHitKey(KEY_INPUT_P))
+	{
 		SceneManager::ChangeScene("PLAY");
 	}
-	if (CheckHitKey(KEY_INPUT_ESCAPE)) {
+	if (CheckHitKey(KEY_INPUT_T))
+	{
+		SceneManager::ChangeScene("TUTORIAL");
+	}
+	if (CheckHitKey(KEY_INPUT_ESCAPE))
+	{
 		SceneManager::Exit();
 	}
 }
