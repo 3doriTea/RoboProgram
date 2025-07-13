@@ -268,7 +268,7 @@ bool CodeRunner::TryReadNext()
 		std::ostringstream oss{};
 		oss << "未定義のバイトコード"
 			<< std::dec << bcr_.GetCurrentIndex() << ": 0x"
-			<< std::hex << std::setw(2) << std::setfill('0') << bcr_.SafePeek();
+			<< std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(bcr_.SafePeek());
 		ExitByError(ERR_ON_RUNNING, oss.str());
 	}
 
