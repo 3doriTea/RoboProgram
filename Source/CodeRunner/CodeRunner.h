@@ -3,6 +3,7 @@
 #include "../CodeReader/ByteCodeReader.h"
 #include <functional>
 #include <vector>
+#include <string>
 #include "Stack.h"
 
 /// <summary>
@@ -29,6 +30,12 @@ enum struct GetIOMessage
 /// </summary>
 class CodeRunner
 {
+private:
+	enum ErrorExitCode
+	{
+		ERR_ON_RUNNING = -3104,  // 実行中エラー
+	};
+
 public:
 	CodeRunner(
 		ByteCodeReader& _byteCodeReader,  // コード領域
@@ -58,6 +65,8 @@ public:
 	/// <returns></returns>
 	inline CodeRunner& OnGetIOMessage(const std::function<int(const GetIOMessage)>& _callback) { onGetIOMessage_ = _callback; return *this; }
 	inline int GetReadByteCodeIndex() const { return static_cast<int>(bcr_.GetCurrentIndex()); }
+
+	void ExitByError(const int _errorCode, const std::string& _message);
 private:
 	const int REGISTER_SIZE;  // レジスタのサイズ
 

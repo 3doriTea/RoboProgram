@@ -1,6 +1,10 @@
 #include "CodeRunner.h"
 #include <cassert>
+#include <sstream>
+#include <iomanip>
 #include <DxLib.h>
+#include "../IO/FileSaver.h"
+#include "../PlayScene.h"
 
 
 CodeRunner::CodeRunner(
@@ -260,7 +264,12 @@ bool CodeRunner::TryReadNext()
 	else
 	{
 		//assert(false && "未定義のバイトコード");
-		printfDx("未定義のバイトコード%d:0x%02x\n", bcr_.GetCurrentIndex(), bcr_.SafePeek());
+		//printfDx("未定義のバイトコード%d:0x%02x\n", bcr_.GetCurrentIndex(), bcr_.SafePeek());
+		std::ostringstream oss{};
+		oss << "未定義のバイトコード"
+			<< std::dec << bcr_.GetCurrentIndex() << ": 0x"
+			<< std::hex << std::setw(2) << std::setfill('0') << bcr_.SafePeek();
+		ExitByError(ERR_ON_RUNNING, oss.str());
 	}
 
 	return true;
@@ -275,4 +284,10 @@ void CodeRunner::Reset()
 	callStack_.Clear();
 	register_.clear();
 	register_.resize(REGISTER_SIZE, 0);
+}
+
+void CodeRunner::ExitByError(const int _errorCode, const std::string& _message)
+{
+	FileSaver::QuickWriteText(PlayScene::GetErrorFileName(), _message);
+	ExitProcess(_errorCode);
 }

@@ -302,6 +302,11 @@ void PlayScene::OpenDocument()
 	ShellExecute(NULL, "open", DOC_FILE_NAME, "", "", SW_SHOW);
 }
 
+const char* PlayScene::GetErrorFileName()
+{
+	return ERROR_FILE;
+}
+
 std::string PlayScene::srcCodeCache_{};
 std::string PlayScene::assembleText_{};
 bool PlayScene::isFinalMode_{ false };

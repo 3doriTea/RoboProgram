@@ -26,6 +26,8 @@ public:
 	static const bool GetIsFinalMode() { return isFinalMode_; }
 	static const void SetIsFinalMode(const bool _isFinalMode) { isFinalMode_ = _isFinalMode; }
 
+	static const char* GetErrorFileName();
+
 private:
 	SourceObserver* pSourceObserver_;
 	Player* pPlayer_;
