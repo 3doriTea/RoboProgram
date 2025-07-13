@@ -22,6 +22,5 @@ void Background::Update()
 void Background::Draw()
 {
 	// TODO: “®‚­‰_‚Ì•`‰æ‚Æ‚©
-
 	DrawGraph(0, 0, hImage_, TRUE);
 }

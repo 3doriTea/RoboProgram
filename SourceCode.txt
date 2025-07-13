@@ -19,5 +19,5 @@ void Update()
   }
 
   //Jump();
-  RunLong();
+  RunLong(); 10 / 0;
 }

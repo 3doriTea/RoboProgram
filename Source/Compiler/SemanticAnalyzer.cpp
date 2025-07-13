@@ -523,8 +523,9 @@ void SemanticAnalyzer::ReadProcs(const NODE* n, ByteCodes& bc, int begin)
 		ReadDecrement(n->proc.proc, bc);
 		break;
 	default:
-		assert(false && "例外処理が呼ばれた");
-		break;
+		Error(n->proc.proc, "予期しないトークンです。");
+		return;
+		//assert(false && "例外処理が呼ばれた");
 	}
 
 	// MEMO: 逐次的に処理していく
