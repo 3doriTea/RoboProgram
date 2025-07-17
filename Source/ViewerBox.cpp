@@ -2,6 +2,7 @@
 #include <cassert>
 #include "Utility/RectanUtility.h"
 #include "Screen.h"
+#include "IO/Input.h"
 
 
 namespace
@@ -31,7 +32,12 @@ ViewerBox::ViewerBox() :
 	lineMarks_{},
 	lineSize_{},
 	lineCount_{},
-	drawAlpha_{ UINT8_MAX }
+	drawAlpha_{ UINT8_MAX },
+	isScrollable_{ false },
+	isShowLineCountBar_{ false },
+	isShow_{ true },
+	useGhost_{ false },
+	onClick_{[]{}}
 {
 }
 
@@ -50,6 +56,11 @@ void ViewerBox::Update()
 	GetMousePoint(&mousePos.x, &mousePos.y);
 	if (RectanUtility::IsHit(rect_, Vector2{ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) }))
 	{
+		if (Input::IsMouseDown(MOUSE_INPUT_LEFT))
+		{
+			onClick_();
+		}
+
 		int volume{ GetMouseWheelRotVol() };
 		readingLine_ += -volume;
 		if (readingLine_ < 0)

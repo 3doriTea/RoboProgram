@@ -1,23 +1,5 @@
-void RunLong()
-{
-Run();  // これを書くと走るよ
-  Run();Run();Run();Run();Run();Run();Run();Run();Run();
-  Run();Run();Run();Run();Run();Run();Run();Run();Run();
-}
-
-
 // 毎ビート呼ばれるよ！
 void Update()
 {
-  // 乗っているタイルに書かれている番号を、変数「tileNumber」に代入するよ
-  int tileNumber = GetOnTileNumber();
-
-  // もし、tileの番号が1なら、ジャンプするよ
-  if (tileNumber != 1)
-  {
-    Jump();  // 条件が満たされたとき、「Jump関数」が呼び出される
-  }
-
-  //Jump();
-  RunLong(); 10 / 0;
+  Run();  // これを書くと走るよ
 }

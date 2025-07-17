@@ -90,7 +90,11 @@ PlayScene::PlayScene() :
 		.SetIsScrollable(true)
 		.SetShowLineCount(10)
 		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(true);
+		.SetIsShowLineCountBar(true)
+		.SetOnClick([&, this]()
+		{
+			OpenSrcFile();
+		});
 
 	ViewerBox* pByteViewer{ new ViewerBox{} };
 	pByteViewer
