@@ -1,6 +1,10 @@
 #pragma once
 #include "Button.h"
 
+
+/// <summary>
+/// ‘‚«‚İƒ{ƒ^ƒ“UI
+/// </summary>
 class WriteButton : public Button
 {
 public:

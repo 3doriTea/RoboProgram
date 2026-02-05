@@ -10,10 +10,13 @@ using Byte = unsigned char;
 class ByteCodeReader
 {
 public:
+	/// <summary>
+	/// 読み取り先
+	/// </summary>
 	enum struct SeekPoint
 	{
-		Head,
-		Tail,
+		Head,  // 先頭
+		Tail,  // 末尾
 	};
 
 	ByteCodeReader(const std::vector<Byte>& _byteCode, const size_t _current = 0);
@@ -61,5 +64,5 @@ public:
 
 private:
 	const std::vector<Byte>& byteCode_;  // 読み取るバイトコード
-	size_t current_;  // 現在の位置
+	size_t current_;                     // 現在の位置
 };

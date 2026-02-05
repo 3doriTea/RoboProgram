@@ -10,6 +10,8 @@ namespace
 {
 	static const float RUNNING_TIME_SEC{ 0.3f }; // ‘–‚éŽžŠÔ •b
 }
+const int Robot::REGISTER_SIZE{ 4 };
+const int Robot::MEMORY_SIZE{ 64 };
 
 Robot::Robot(
 	Rectan& _rect,
@@ -29,7 +31,7 @@ Robot::Robot(
 	runningTimeLeft_{ 0.0f },
 	velocity_{ _velocity },
 	prevPushedSpace_{ _prevPushedSpace },
-	codeRunner_{ bcr_, memory_, stackMachine_, callStack_, register_, REGISTER_SIZE },
+	codeRunner_{ bcr_, memory_, stackMachine_, callStack_, register_, REGISTER_SIZE, MEMORY_SIZE },
 	bcr_{ _byteCode },
 	toJump_{ false }
 {
@@ -227,5 +229,3 @@ std::pair<int, Vector2Int> Robot::CheckTile(const Vector2 _checkPos)
 
 	return { pStage_->GetTile(tilePosition), tilePosition };
 }
-
-const int Robot::REGISTER_SIZE{ 4 };

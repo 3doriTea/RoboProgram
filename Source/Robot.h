@@ -48,6 +48,7 @@ private:
 
 private:
 	static const int REGISTER_SIZE;  // レジスタのサイズ
+	static const int MEMORY_SIZE;    // メモリのサイズ
 
 	bool isLeftDir_;  // 左方向を見ている
 	bool toJump_;  // ジャンプする

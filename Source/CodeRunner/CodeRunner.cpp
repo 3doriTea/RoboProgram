@@ -13,13 +13,15 @@ CodeRunner::CodeRunner(
 	Stack<int>& _stackMachine,
 	Stack<int>& _callStack,
 	std::vector<Byte>& _register,
-	const int _registerSize) :
+	const int _registerSize,
+	const int _memorySize) :
 	bcr_{ _byteCodeReader },
 	memory_{ _memory },
 	stackMachine_{ _stackMachine },
 	callStack_{ _callStack },
 	register_{ _register },
-	REGISTER_SIZE{ _registerSize }
+	REGISTER_SIZE{ _registerSize },
+	MEMORY_SIZE{ _memorySize }
 {
 }
 
@@ -263,8 +265,6 @@ bool CodeRunner::TryReadNext()
 	}
 	else
 	{
-		//assert(false && "未定義のバイトコード");
-		//printfDx("未定義のバイトコード%d:0x%02x\n", bcr_.GetCurrentIndex(), bcr_.SafePeek());
 		std::ostringstream oss{};
 		oss << "未定義のバイトコード"
 			<< std::dec << bcr_.GetCurrentIndex() << ": 0x"
@@ -279,7 +279,7 @@ void CodeRunner::Reset()
 {
 	bcr_.Seek(0);
 	memory_.clear();
-	memory_.resize(64);  // 64 byteメモリ
+	memory_.resize(MEMORY_SIZE);
 	stackMachine_.Clear();
 	callStack_.Clear();
 	register_.clear();
