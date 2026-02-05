@@ -38,6 +38,7 @@ namespace
 	static const char DOC_FILE_NAME[]{ "Document.txt" };
 	static const char ERROR_LOG_FILE_NAME[]{ "ErrorLog.txt" };
 	static const char PLAY_IMAGE_PATH[]{ "Data/Image/Background.png" };
+	static const char ERROR_FILE[]{ "ErrorLog.txt" };
 }
 
 PlayScene::PlayScene() :
@@ -45,19 +46,31 @@ PlayScene::PlayScene() :
 {
 	Timer::Instance().Clear();  // 最初にタイマーをクリアする
 
+	// エラーログファイルがあるなら即コンパイル
 	if (FileSaver::ExistFile(ERROR_LOG_FILE_NAME))
 	{
-		Compiler compiler{};
-		compiler.Start();
+		ByteCodes byteCodes{};
 
-		return;
+		Compiler{ FileSaver::QuickReadTextLines(SRC_FILE_NAME), byteCodes }
+			.OnError([&, this](
+				const std::string& _message,
+				const SOURCE_POS _position,
+				const Compiler::ErrorExitCode _code)
+				{
+					FileSaver::QuickWriteText(ERROR_FILE, _message);
+					//exit(_code);
+					ExitProcess(_code);
+					//SceneManager::Exit();
+				})
+			.Start();
+		// コンパイル成功したならここを通過する
+
+		DeleteFile(ERROR_LOG_FILE_NAME);  // エラーログファイル消す
 	}
 
 
-	(new Fader{ PLAY_IMAGE_PATH, 1.0f, true })->OnFinish([&, this]()
-		{
-			//SceneManager::ChangeScene("PLAY");
-		});
+	// 始まったときのフェードイン
+	new Fader{ PLAY_IMAGE_PATH, 1.0f, true };
 
 	Stage* pStage{ new Stage{} };
 	// NOTE: Stageを参照するオブジェクトはこれ以降に書く必要がある
@@ -69,17 +82,19 @@ PlayScene::PlayScene() :
 	new WriteButton{};
 
 	new Background{ PLAY_IMAGE_PATH };
-	//CodeBox* pCodeBox{ new CodeBox{} };
-
+	
+#pragma region ビューボックス
 	ViewerBox* pCodeViewer{ new ViewerBox{} };
 	pCodeViewer
 		->SetFrameWidth(5)
 		.SetIsScrollable(true)
 		.SetShowLineCount(10)
 		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(true);
-
-	//RectInt codeDrawRect{ pCodeViewer->GetDrawRect() };
+		.SetIsShowLineCountBar(true)
+		.SetOnClick([&, this]()
+		{
+			OpenSrcFile();
+		});
 
 	ViewerBox* pByteViewer{ new ViewerBox{} };
 	pByteViewer
@@ -96,7 +111,7 @@ PlayScene::PlayScene() :
 		.SetUseGhost(true)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(false)
-		.SetPosition({ 990, 110 }, ViewerBox::Pivot::TopLeft);
+		.SetPosition({ 1070, 430 }, ViewerBox::Pivot::TopLeft);
 
 	ViewerBox* pStackViewer{ new ViewerBox{} };
 	pStackViewer
@@ -106,7 +121,7 @@ PlayScene::PlayScene() :
 		.SetShowLineCount(7)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(false)
-		.SetPosition({ 1000, 200 }, ViewerBox::Pivot::TopLeft);
+		.SetPosition({ 1129, 260 }, ViewerBox::Pivot::TopLeft);
 
 	ViewerBox* pCallStackViewer{ new ViewerBox{} };
 	pCallStackViewer
@@ -116,7 +131,7 @@ PlayScene::PlayScene() :
 		.SetShowLineCount(7)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(false)
-		.SetPosition({ 1130, 200 }, ViewerBox::Pivot::TopLeft);
+		.SetPosition({ 999, 260 }, ViewerBox::Pivot::TopLeft);
 
 	ViewerBox* pMemoryViewer{ new ViewerBox{} };
 	pMemoryViewer
@@ -125,9 +140,8 @@ PlayScene::PlayScene() :
 		.SetUseGhost(true)
 		.SetTextBoxMargin(3)
 		.SetIsShowLineCountBar(false)
-		.SetPosition({ Screen::WIDTH - 30, Screen::HEIGHT - 30 }, ViewerBox::Pivot::BottomRight);
-
-	//pCodeViewer->SetPosition();
+		.SetPosition({ 1020, 502 }, ViewerBox::Pivot::TopLeft);
+#pragma endregion
 
 	pPlayer_ = pStage->GetPlayer();
 	assert(pPlayer_ != nullptr
@@ -170,130 +184,75 @@ PlayScene::PlayScene() :
 				bool isError{ false };
 				std::string errorMessage{};
 				SOURCE_POS errorPosition{ -1, -1 };
-				//printfDx("ソースファイルに変更があった\n");
- 				//pCodeBox->SetSourceLines(_newSource);
 				pCodeViewer->SetTextLines(_newSource);
-
-				/*pPlayer_->SetByteCode(
-					{
-						{ -1, BCD_CALL },
-						{ -1, 1 },
-						{ -1, BCD_HALT },
-						{ 3, BCD_ACT },
-						{ 3, BCD_ACT_RUN },
-						{ 4, BCD_RET }
-					});*/
-
-				/*std::vector<std::pair<int, Byte>> byteCodeAndLines{};
-				ProtoAnalyzer* analyzer{ new ProtoAnalyzer{ _newSource, byteCodeAndLines } };
-				analyzer->OnError([&, this](const char* _msg, const LineCount& _line)
-					{
-						
-					});
-				analyzer->Analyze()*/;
-				
-				//pPlayer_->SetByteCode(byteCodeAndLines);
-
-				SourceLines sourceLines{};
-
-				for (int l = 0; l < _newSource.size(); l++)
-				{
-					sourceLines.push_back({ l, _newSource[l] });
-				}
-
-				Tokens tokens{};
-
-				// 字句解析をする
-				LexicalAnalyzer{ sourceLines, tokens }
-					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
-						{
-							errorMessage = std::string{ "トークンエラー " };
-							if (_srcPos.line >= 0)
-							{
-								errorMessage += std::to_string(_srcPos.line) + "行 ";
-							}
-							if (_srcPos.column >= 0)
-							{
-								errorMessage += std::to_string(_srcPos.column) + "文字目 ";
-							}
-							errorMessage += _msg;
-							errorPosition = _srcPos;
-							// printfDx("トークンエラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
-							isError = true;
-						})
-					.Analyze();
-
-				if (isError)  // エラーなら止める
-				{
-					pPlayer_->SetError(errorMessage, errorPosition);
-					return;
-				}
-
-				Nodes nodes{};
-
-				SyntaxAnalyzer{ tokens, nodes }
-					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
-						{
-							errorMessage = std::string{ "構文エラー " };
-							if (_srcPos.line >= 0)
-							{
-								errorMessage += std::to_string(_srcPos.line) + "行 ";
-							}
-							if (_srcPos.column >= 0)
-							{
-								errorMessage += std::to_string(_srcPos.column) + "文字目 ";
-							}
-							errorMessage += _msg;
-							errorPosition = _srcPos;
-							//printfDx("構文エラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
-							isError = true;
-						})
-					.Analyze();
-
-				if (isError)  // エラーなら止める
-				{
-					pPlayer_->SetError(errorMessage, errorPosition);
-					return;
-				}
-
-				std::pair<Nodes&, Tokens&> nodeAndTokens{ nodes, tokens };
 
 				ByteCodes byteCodes{};
 
-				SemanticAnalyzer{ nodeAndTokens, byteCodes }
-					.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
+				Compiler{ _newSource, byteCodes }
+					.OnError([&, this](
+						const std::string& _message,
+						const SOURCE_POS _position,
+						const Compiler::ErrorExitCode _code)
 						{
-							errorMessage = std::string{ "文法エラー " };
-							if (_srcPos.line >= 0)
+							switch (_code)
 							{
-								errorMessage += std::to_string(_srcPos.line) + "行 ";
+							case Compiler::ERR_LEXICAL:
+								errorMessage = std::string{ "トークンエラー " };
+								if (_position.line >= 0)
+								{
+									errorMessage += std::to_string(_position.line) + "行 ";
+								}
+								if (_position.column >= 0)
+								{
+									errorMessage += std::to_string(_position.column) + "文字目 ";
+								}
+								errorMessage += _message;
+								errorPosition = _position;
+								isError = true;
+								break;
+							case Compiler::ERR_SYNTAX:
+								errorMessage = std::string{ "構文エラー " };
+								if (_position.line >= 0)
+								{
+									errorMessage += std::to_string(_position.line) + "行 ";
+								}
+								if (_position.column >= 0)
+								{
+									errorMessage += std::to_string(_position.column) + "文字目 ";
+								}
+								errorMessage += _message;
+								errorPosition = _position;
+								isError = true;
+								break;
+							case Compiler::ERR_SEMANTIC:
+								errorMessage = std::string{ "文法エラー " };
+								if (_position.line >= 0)
+								{
+									errorMessage += std::to_string(_position.line) + "行 ";
+								}
+								if (_position.column >= 0)
+								{
+									errorMessage += std::to_string(_position.column) + "文字目 ";
+								}
+								errorMessage += _message;
+								errorPosition = _position;
+								isError = true;
+								break;
+							default:
+								break;
 							}
-							if (_srcPos.column >= 0)
-							{
-								errorMessage += std::to_string(_srcPos.column) + "文字目 ";
-							}
-							errorMessage += _msg;
-							errorPosition = _srcPos;
-							//printfDx("文法エラー(%d行:%d文字目) %s\n", _srcPos.line, _srcPos.column, _msg);
-							isError = true;
 						})
-					.Analyze();
+					.Start();
 
 				if (isError)  // エラーなら止める
 				{
+					FileSaver::QuickWriteText(ERROR_FILE, errorMessage);
 					pPlayer_->SetError(errorMessage, errorPosition);
 					return;
-				}
-
-				for (auto& node : nodeAndTokens.first)
-				{
-					delete node;
 				}
 
 				Assembler::ToString(byteCodes, assembleText_);
 
-				//std::string testout = test.str();
-				//const char* strtestout = testout.c_str();
 				OutputDebugString(assembleText_.c_str());
 
 				pPlayer_->SetByteCode(byteCodes);
@@ -345,6 +304,11 @@ void PlayScene::OpenSrcFile()
 void PlayScene::OpenDocument()
 {
 	ShellExecute(NULL, "open", DOC_FILE_NAME, "", "", SW_SHOW);
+}
+
+const char* PlayScene::GetErrorFileName()
+{
+	return ERROR_FILE;
 }
 
 std::string PlayScene::srcCodeCache_{};

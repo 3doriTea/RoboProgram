@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <functional>
 
 
 using ColorCode = unsigned int;
@@ -53,6 +54,7 @@ public:
 	ViewerBox& SetIsShow(const bool _isShowing)                        { isShow_ = _isShowing; return Recalculate(); }
 	ViewerBox& SetIsScrollable(const bool _isScrollable)               { isScrollable_ = _isScrollable; return Recalculate(); }
 	ViewerBox& SetTextLines(const std::vector<std::string>& _textLines);
+	ViewerBox& SetOnClick(const std::function<void()> _callback)       { onClick_ = _callback; return *this; }
 
 	ViewerBox& ClearMarks();
 
@@ -93,6 +95,7 @@ private:
 	Pivot pivotType_;
 	std::vector<std::string> textLines_;
 	std::map<int, Mark> lineMarks_;
+	std::function<void()> onClick_;
 
 	int drawAlpha_;  // •`‰æŽž‚Ì•s“§–¾“x
 };

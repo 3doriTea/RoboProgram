@@ -53,7 +53,7 @@ namespace
 	/// </summary>
 	/// <param name="_addr">アドレス</param>
 	/// <returns>無効なアドレス true / false</returns>
-	static bool IsInvalidAddr(const int _addr) { return _addr < 0 };
+	static bool IsInvalidAddr(const int _addr) { return _addr < 0; }
 }
 
 #define PRINTF(...) \
@@ -435,7 +435,7 @@ int SemanticAnalyzer::ReadType(const NODE* n)
 
 	if (TYPE_SIZE.count(typeName))
 	{
-		return SIZE_INVALID;
+		return SIZE_4BYTE;
 	}
 
 	return TYPE_SIZE.at(typeName);
@@ -523,8 +523,9 @@ void SemanticAnalyzer::ReadProcs(const NODE* n, ByteCodes& bc, int begin)
 		ReadDecrement(n->proc.proc, bc);
 		break;
 	default:
-		assert(false && "例外処理が呼ばれた");
-		break;
+		Error(n->proc.proc, "予期しないトークンです。");
+		return;
+		//assert(false && "例外処理が呼ばれた");
 	}
 
 	// MEMO: 逐次的に処理していく
@@ -968,7 +969,7 @@ void SemanticAnalyzer::ReadVarDec(const NODE* n, ByteCodes& bc, bool allowInit, 
 	}
 
 
-	int typeSize{ SIZE_INVALID };
+	int typeSize{ 0 };
 	if (n->varDec.type != nullptr)
 	{
 		typeSize = ReadType(n->varDec.type);

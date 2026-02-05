@@ -6,20 +6,12 @@
 
 #include "../IO/FileSaver.h"
 
-namespace
-{
-	static const char SOURCE_FILE[]{ "SourceCode.txt" };
-	static const char ERROR_FILE[]{ "ErrorLog.txt" };
 
-	enum ErrorExitCode
-	{
-		ERR_LEXICAL = -3101,  // 字句エラー
-		ERR_SYNTAX = -3102,  // 構文エラー
-		ERR_SEMANTIC = -3103,  // 文法エラー
-	};
-}
-
-Compiler::Compiler()
+Compiler::Compiler(
+	const std::vector<std::string>& _srcLines,
+	ByteCodes& _byteCodes) :
+	srcLines_{ _srcLines },
+	byteCodes_{ _byteCodes }
 {
 }
 
@@ -30,19 +22,15 @@ Compiler::~Compiler()
 void Compiler::Start()
 {
 	SourceLines sourceLines{};
-	std::vector<std::string> srcLines{ FileSaver::QuickReadTextLines(SOURCE_FILE) };
-
-	for (int l = 0; l < srcLines.size(); l++)
+	
+	for (int l = 0; l < srcLines_.size(); l++)
 	{
-		sourceLines.push_back({ l, srcLines[l] });
+		sourceLines.push_back({ l, srcLines_[l] });
 	}
 
+	bool isError{ false };
+
 	Tokens tokens{};
-	auto Error = [&, this](const std::string& _message, const SOURCE_POS _position, const ErrorExitCode _code)
-		{
-			FileSaver::QuickWriteText(ERROR_FILE, _message);
-			exit(_code);
-		};
 
 	// 字句解析をする
 	LexicalAnalyzer{ sourceLines, tokens }
@@ -59,12 +47,16 @@ void Compiler::Start()
 				}
 
 				errorMessage += _msg;
-				Error(errorMessage, _srcPos, ERR_LEXICAL);
+				onError_(errorMessage, _srcPos, ERR_LEXICAL);
+				isError = true;
 			})
 		.Analyze();
 
+	if (isError) return;  // エラーなら止める
+
 	Nodes nodes{};
 
+	// 構文解析
 	SyntaxAnalyzer{ tokens, nodes }
 		.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
 			{
@@ -78,15 +70,17 @@ void Compiler::Start()
 					errorMessage += std::to_string(_srcPos.column) + "文字目 ";
 				}
 				errorMessage += _msg;
-				Error(errorMessage, _srcPos, ERR_SYNTAX);
+				onError_(errorMessage, _srcPos, ERR_SYNTAX);
+				isError = true;
 			})
 		.Analyze();
 
+	if (isError) return;  // エラーなら止める
+
 	std::pair<Nodes&, Tokens&> nodeAndTokens{ nodes, tokens };
 
-	ByteCodes byteCodes{};
-
-	SemanticAnalyzer{ nodeAndTokens, byteCodes }
+	// 意味解析
+	SemanticAnalyzer{ nodeAndTokens, byteCodes_ }
 		.OnError([&, this](const char* _msg, const SOURCE_POS& _srcPos)
 			{
 				std::string errorMessage = std::string{ "文法エラー " };
@@ -105,7 +99,8 @@ void Compiler::Start()
 					delete node;
 				}
 
-				Error(errorMessage, _srcPos, ERR_SEMANTIC);
+				onError_(errorMessage, _srcPos, ERR_SEMANTIC);
+				isError = true;
 			})
 		.Analyze();
 
@@ -113,4 +108,6 @@ void Compiler::Start()
 	{
 		delete node;
 	}
+
+	if (isError) return;  // エラーなら止める けど関係ない
 }
