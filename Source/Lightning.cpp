@@ -68,8 +68,12 @@ void Lightning::Draw()
 	for (int i = 0; i < effectCount; i++)
 	{
 		drawColor = GetRand(5) == 0 ? 0x000000 : 0xffff00;
-		Vector2 to{ pRect.x + GetRand(pRect.width), pRect.y + GetRand(pRect.height) };
-		DrawLine(from.x, from.y, to.x, to.y, drawColor, 2);
+		Vector2 to
+		{
+			pRect.x + static_cast<float>(GetRand(static_cast<int>(pRect.width))),
+			pRect.y + static_cast<float>(GetRand(static_cast<int>(pRect.height)))
+		};
+		DrawLine(static_cast<int>(from.x), static_cast<int>(from.y), static_cast<int>(to.x), static_cast<int>(to.y), drawColor, 2);
 		from = to;
 		if (GetRand(3) == 0)
 		{

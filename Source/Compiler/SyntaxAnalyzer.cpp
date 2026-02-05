@@ -759,5 +759,5 @@ void SyntaxAnalyzer::Error(const char* _message)
 	{
 		ErrorFull(_message, in_[readIndex_].first);
 	}
-	readIndex_ = in_.size();
+	readIndex_ = static_cast<int>(in_.size());
 }

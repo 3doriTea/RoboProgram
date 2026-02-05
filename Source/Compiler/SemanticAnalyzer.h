@@ -14,7 +14,8 @@ private:
 	{
 		FuncData() :
 			index{ -1 },
-			byteCodes{}
+			byteCodes{},
+			retTypeSize{}
 		{}
 
 		int retTypeSize;

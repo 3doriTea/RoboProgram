@@ -21,11 +21,11 @@ namespace
 	static const char PLAYER_DOWN_IMAGE_FILE[]{ "Data/Image/Player-down.png" };
 	static const float MOVE_SPEED{ 2 };
 	static const float JUMP_HEIGHT{ 80 };
-	static const float GRAVITY{ 0.05 };
+	static const float GRAVITY{ 0.05f };
 	static const int IMAGE_WIDTH{ 80 };
 	static const int IMAGE_HEIGHT{ 160 };
 	//static const float ROBOT_STEP_TIME_SEC{ 0.07 / 3.0f };
-	static const float ROBOT_STEP_TIME_SEC{ 0.07 };
+	static const float ROBOT_STEP_TIME_SEC{ 0.07f };
 	//static const float ROBOT_STEP_TIME_SEC{ 1 };
 	static const float ROBOT_BEAT_TIME_SEC{ 1 };
 
@@ -366,6 +366,11 @@ void Player::SetState(const State _state)
 {
 	assert(0 <= _state && _state < S_MAX
 		&& "範囲外のステータスはセットできません。 @Player::SetState");
+
+	if (_state < 0 || S_MAX <= _state)
+	{
+		return;  // 範囲外ならセットできない
+	}
 
 	hImage_ = hStateImages[static_cast<int>(_state)];
 	currentState_ = _state;

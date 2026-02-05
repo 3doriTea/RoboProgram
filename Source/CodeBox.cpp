@@ -9,11 +9,11 @@
 
 namespace
 {
-	static const int FRAME_MARGIN{ 6 };  // フレームの余白
-	static const int TEXT_MARGIN{ 10 };  // テキストまでの余白
-	static const int LINE_MARGIN{ 5 };  // 行の幅
-	static const int PLAYER_HEAD_MARGIN{ 30 };  // プレイヤー頭からの余白
-	static const int FRAME_OFFSET{ 100 };
+	static const int FRAME_MARGIN{ 6 };          // フレームの余白
+	static const int TEXT_MARGIN{ 10 };          // テキストまでの余白
+	static const int LINE_MARGIN{ 5 };           // 行の幅
+	static const int PLAYER_HEAD_MARGIN{ 30 };   // プレイヤー頭からの余白
+	static const int FRAME_OFFSET{ 100 };        // フレームのオフセット
 	static const int PLAYER_SIDE_MARGIN{ 300 };  // プレイヤー横の余白
 }
 
@@ -98,10 +98,6 @@ void CodeBox::Draw()
 				"%s", sourceLines_[line].c_str());
 		}
 	}
-
-	/*DEBUG_BOX
-	DrawBox(drawBox.x, drawBox.y, drawBox.x + drawBox.width, drawBox.y + drawBox.height, 0x00ff00, TRUE);
-	DrawBox(playerRect.x, playerRect.y, playerRect.x + playerRect.width, playerRect.y + playerRect.height, 0x0000ff, TRUE);*/
 }
 
 void CodeBox::SetSourceLines(const std::vector<std::string>& _lines)
@@ -124,7 +120,7 @@ void CodeBox::SetSourceLines(const std::vector<std::string>& _lines)
 			maxLine = line;
 		}
 	}
-	sourceMaxLength_ = _lines[maxLine].size();
+	sourceMaxLength_ = static_cast<int>(_lines[maxLine].size());
 	sourceMaxLengthLine_ = maxLine;
 }
 
@@ -161,8 +157,8 @@ int CodeBox::GetTextBoxHeight() const
 	};
 
 	int fontHeight = GetFontSize();
-	int textHeight = fontHeight * maxLinesCount;  // テキスト占有の高さ
-	textHeight += LINE_MARGIN;// * sourceLines_.size() - 1;
+	int textHeight = fontHeight * static_cast<int>(maxLinesCount);  // テキスト占有の高さ
+	textHeight += LINE_MARGIN;
 
 	return textHeight;
 }

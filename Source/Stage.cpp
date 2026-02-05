@@ -208,8 +208,8 @@ void Stage::Draw()
 	{
 		for (int x = 0; x < map_[y].size(); x++)
 		{
-			position_.x = x * TILE_WIDTH;
-			position_.y = y * TILE_HEIGHT;
+			position_.x = static_cast<float>(x * TILE_WIDTH);
+			position_.y = static_cast<float>(y * TILE_HEIGHT);
 
 			int tileType = map_[y][x];
 
@@ -285,14 +285,14 @@ bool Stage::IsWall(const Vector2& _position)
 	{
 		return false;
 	}
-	// 同じく配列の外の処理 TODO: 壁の外にいけないようにしたいなら、ここはtrue返す
-	if (tilePosition.x < 0.0f || tilePosition.x >= map_[tilePosition.y].size())
+	// 同じく配列の外の処理 TODO: 壁の外にいけないようにしたいなら、ここは true返す
+	if (tilePosition.x < 0.0f || tilePosition.x >= map_[static_cast<int>(tilePosition.y)].size())
 	{
 		return false;
 	}
 
 	// タイルの番号を見て、壁かどうか確定する
-	switch (map_[tilePosition.y][tilePosition.x])
+	switch (map_[static_cast<int>(tilePosition.y)][static_cast<int>(tilePosition.x)])
 	{
 	case TILE_NONE:  // 空白
 	case TILE_PLAYER:  // プレイヤー
@@ -419,8 +419,8 @@ void Stage::DrawTile(const Vector2Int& _tilePosition, const Tile& _tileId)
 	int h{ TILE_HEIGHT };
 
 	DrawGraph(
-		_tilePosition.x * w - scroll_.x,
-		_tilePosition.y * h - scroll_.y,
+		_tilePosition.x * w - static_cast<int>(scroll_.x),
+		_tilePosition.y * h - static_cast<int>(scroll_.y),
 		hImages_[_tileId], TRUE);
 	/*DrawRectGraph(
 		_tilePosition.x * w - scroll_.x, _tilePosition.y * h - scroll_.y,

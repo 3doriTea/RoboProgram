@@ -249,6 +249,9 @@ using ByteCode = std::pair<SOURCE_POS, Byte>;
 
 struct ByteCodes : public std::vector<ByteCode>
 {
+	inline ByteCodes() :
+		offset{}
+	{}
 	using std::vector<ByteCode>::vector;
 	int offset;  // バイトコード群の絶対オフセット
 };

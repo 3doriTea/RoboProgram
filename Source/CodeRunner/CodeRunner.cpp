@@ -98,7 +98,7 @@ bool CodeRunner::TryReadNext()
 		destPtr[2] = bcr_.Pop();
 		destPtr[3] = bcr_.Pop();
 
-		callStack_.Push(bcr_.GetCurrentIndex());
+		callStack_.Push(static_cast<int>(bcr_.GetCurrentIndex()));
 		bcr_.Seek(dest + bcr_.GetCurrentIndex());
 	}
 	else if (bcr_.Consume(BCD_RET))
@@ -200,13 +200,13 @@ bool CodeRunner::TryReadNext()
 	{
 		int b{ stackMachine_.Pop() };
 		int a{ stackMachine_.Pop() };
-		stackMachine_.Push(a && b);
+		stackMachine_.Push(a & b);
 	}
 	else if (bcr_.Consume(BCD_OR))
 	{
 		int b{ stackMachine_.Pop() };
 		int a{ stackMachine_.Pop() };
-		stackMachine_.Push(a || b);
+		stackMachine_.Push(a | b);
 	}
 	else if (bcr_.Consume(BCD_EQUAL))
 	{

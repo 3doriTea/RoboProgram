@@ -21,7 +21,7 @@ ReloadButton::ReloadButton()
 	GetGraphSizeF(hImage_, &rect_.width, &rect_.height);
 
 	rect_.x = Screen::WIDTH - ((rect_.width + BUTTON_PADDING) * 3);
-	rect_.y = BUTTON_PADDING;
+	rect_.y = static_cast<float>(BUTTON_PADDING);
 
 	SetHintText("é¿å±Ççƒì«Ç›çûÇ›Ç∑ÇÈ");
 }
@@ -40,12 +40,12 @@ void ReloadButton::OnDraw(const bool _onTouching, const bool _isPushing)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 	}
-	DrawGraph(rect_.x, rect_.y, hImage_, TRUE);
+	DrawGraph(static_cast<int>(rect_.x), static_cast<int>(rect_.y), hImage_, TRUE);
 
 	if (_isPushing)
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ADD, 100);
-		DrawGraph(rect_.x, rect_.y, hImage_, TRUE);
+		DrawGraph(static_cast<int>(rect_.x), static_cast<int>(rect_.y), hImage_, TRUE);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }

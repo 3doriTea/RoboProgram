@@ -382,7 +382,7 @@ void SemanticAnalyzer::ReadFuncDec(const NODE* n, ByteCodes& bc, int position)
 	FuncData& data{ funcGroup[funcName] };
 	data.index = position;
 	ByteCodes& funcBlock{ data.byteCodes };
-	funcBlock.offset = bc.offset + bc.size();
+	funcBlock.offset = bc.offset + static_cast<int>(bc.size());
 	data.index = position;
 
 	if (n->funcDec.param != nullptr)  // パラメータがあるなら
@@ -540,7 +540,7 @@ void SemanticAnalyzer::ReadGlobal(const NODE* n, int begin, ByteCodes& bc, int& 
 	assert(n->type_ == NODE_GLOBAL);
 
 	ByteCodes globalBlock{};
-	globalBlock.offset = bc.offset + bc.size();
+	globalBlock.offset = bc.offset + static_cast<int>(bc.size());
 
 	ReadFuncDec(n->global.funcDef, globalBlock, begin);
 
@@ -562,7 +562,7 @@ void SemanticAnalyzer::ReadGlobal(const NODE* n, int begin, ByteCodes& bc, int& 
 		}
 		else
 		{
-			updateIndex += globalBlock.size();
+			updateIndex += static_cast<int>(globalBlock.size());
 		}
 
 	}
@@ -574,7 +574,7 @@ void SemanticAnalyzer::ReadGlobal(const NODE* n, int begin, ByteCodes& bc, int& 
 
 	if (n->global.next != nullptr)
 	{
-		ReadGlobal(n->global.next, begin + globalBlock.size(), bc, updateIndex, isFoundUpdate);
+		ReadGlobal(n->global.next, begin + static_cast<int>(globalBlock.size()), bc, updateIndex, isFoundUpdate);
 	}
 }
 
@@ -615,7 +615,7 @@ void SemanticAnalyzer::ReadNFor(const NODE* n, ByteCodes& bc, int blockBegin)
 
 	// 条件確認
 	ByteCodes forExpr{};
-	forExpr.offset = bc.offset + bc.size();
+	forExpr.offset = bc.offset + static_cast<int>(bc.size());
 	ReadExpr(n->nfor.expr, forExpr);
 
 	// 条件確認のためレジスタに結果をポップ
@@ -628,9 +628,9 @@ void SemanticAnalyzer::ReadNFor(const NODE* n, ByteCodes& bc, int blockBegin)
 	forExpr.push_back({ GetSrcPos(n->nfor.expr), REG_0 });  // 参照レジスタ基準
 
 	ByteCodes forBlock{};
-	forBlock.offset = forExpr.offset + forExpr.size();
+	forBlock.offset = forExpr.offset + static_cast<int>(forExpr.size());
 	// 条件を確認する前にブロック確認
-	ReadProcs(n->nfor.proc, forBlock, blockBegin + bc.size());
+	ReadProcs(n->nfor.proc, forBlock, blockBegin + static_cast<int>(bc.size()));
 
 	if (n->nfor.updt->type_ == NODE_ASSIGN)
 	{
@@ -681,8 +681,8 @@ void SemanticAnalyzer::ReadNIf(const NODE* n, ByteCodes& bc, int blockBegin)
 	ReadExpr(n->nif.expr, bc);
 
 	ByteCodes ifBlock{};
-	ifBlock.offset = bc.offset + bc.size();
-	ReadProcs(n->nif.proc, ifBlock, blockBegin + bc.size());
+	ifBlock.offset = bc.offset + static_cast<int>(bc.size());
+	ReadProcs(n->nif.proc, ifBlock, blockBegin + static_cast<int>(bc.size()));
 
 	// TODO: ifのところのジャンプミスっていたらここが原因
 	bc.push_back({ GetSrcPos(n->nif.expr), BCD_POPW });  // 式の結果をレジスタに吐き出す
