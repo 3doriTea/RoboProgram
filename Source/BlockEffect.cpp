@@ -43,8 +43,8 @@ void BlockEffect::Draw()
 	for (int i = 0; i < FRAME_WIDTH; i++)
 	{
 		DrawBox(
-			drawRect.x - i, drawRect.y - i,
-			drawRect.x + drawRect.width + i, drawRect.y + drawRect.height + i,
+			static_cast<int>(drawRect.x - i), static_cast<int>(drawRect.y - i),
+			static_cast<int>(drawRect.x + drawRect.width + i), static_cast<int>(drawRect.y + drawRect.height + i),
 			color_, FALSE);
 	}
 

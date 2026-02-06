@@ -33,7 +33,7 @@ void ReadCodeButton::OnDraw(const bool _onTouching, const bool _isPushing)
 {
 	if (_onTouching)
 	{
-		DrawGraph(rect_.x, rect_.y, hImage_, TRUE);
+		DrawGraph(static_cast<int>(rect_.x), static_cast<int>(rect_.y), hImage_, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_ADD, 100);
 	}
 	else

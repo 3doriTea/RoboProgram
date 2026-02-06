@@ -2,10 +2,6 @@
 #include "Stage.h"
 
 
-namespace
-{
-}
-
 Object2D::Object2D() :
 	hImage_{ -1 },
 	rect_{},
@@ -27,24 +23,15 @@ void Object2D::Draw()
 	{
 		int width{};
 		GetGraphSize(hImage_, &width, nullptr);
-		int x = rect_.x;
-		int y = rect_.y;
+		int x = static_cast<int>(rect_.x);
+		int y = static_cast<int>(rect_.y);
 
 		Vector2 scroll{};
 		if (pStage_ != nullptr)
 		{
 			scroll = pStage_->GetScroll();
 		}
-		//DrawRectGraph(x - scroll.x, y - scroll.y, anim * imageSize.x, animY * imageSize.y, imageSize.x, imageSize.y, hImage, TRUE);
-		//DrawRectGraph(x - scroll.x, y - scroll.y, 0, 0, IMAGE_SIZE, IMAGE_SIZE, hImage_, TRUE);
-		DrawGraph(x - scroll.x - (width - rect_.width) / 2, y - scroll.y, hImage_, TRUE);
-
-		#if false
-		DrawBox(
-			x - scroll.x, y - scroll.y,
-			x - scroll.x + rect_.width, y - scroll.y + rect_.height,
-			0xff00ff, FALSE);
-		#endif
+		DrawGraph(static_cast<int>(x - scroll.x - (width - rect_.width) / 2.0f), static_cast<int>(y - scroll.y), hImage_, TRUE);
 	}
 }
 

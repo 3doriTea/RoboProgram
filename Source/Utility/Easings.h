@@ -25,7 +25,7 @@ public:
 	static inline float InOutElastic(float x)
 	{
 		static const float PI{ std::acosf(-1) };
-		static const float c5 = (2.0f * PI) / 4.5;
+		static const float c5 = (2.0f * PI) / 4.5f;
 
 		return x == 0
 		  ? 0

@@ -71,13 +71,13 @@ CsvReader::~CsvReader()
 
 int CsvReader::GetLines()
 {
-	return all.size();
+	return static_cast<int>(all.size());
 }
 
 int CsvReader::GetColumns(int line)
 {
 	assert(line < GetLines());
-	return all[line].record.size();
+	return static_cast<int>(all[line].record.size());
 }
 
 std::string CsvReader::GetString(int line, int column)
