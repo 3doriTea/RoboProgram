@@ -3,6 +3,9 @@
 #include "Fader.h"
 
 
+/// <summary>
+/// 開始ボタンUI
+/// </summary>
 class StartButton : public Object2D
 {
 public:

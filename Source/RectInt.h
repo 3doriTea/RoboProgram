@@ -1,6 +1,10 @@
 #pragma once
 #include "Vector2Int.h"
 
+
+/// <summary>
+/// ®”Œ^ ‹éŒ`\‘¢‘Ì
+/// </summary>
 struct RectInt
 {
 	union

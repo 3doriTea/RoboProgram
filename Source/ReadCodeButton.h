@@ -1,6 +1,10 @@
 #pragma once
 #include "Button.h"
 
+
+/// <summary>
+/// UIコードを見るボタン
+/// </summary>
 class ReadCodeButton : public Button
 {
 public:

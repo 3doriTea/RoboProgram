@@ -39,6 +39,99 @@ namespace
 	static const char ERROR_LOG_FILE_NAME[]{ "ErrorLog.txt" };
 	static const char PLAY_IMAGE_PATH[]{ "Data/Image/Background.png" };
 	static const char ERROR_FILE[]{ "ErrorLog.txt" };
+	static const std::vector<std::string> DEFAULT_SOURCE_LINE
+	{
+		u8"// 毎ビート呼ばれるよ！",
+		u8"void Update()",
+		u8"{",
+		u8"  Run();  // これを書くと走るよ",
+		u8"}",
+	};
+	static const float SOURCE_CHECK_INTERVAL_SEC{ 1.0f };
+
+	static constexpr auto createCodeViewer
+	{
+		[](ViewerBox* _p) -> ViewerBox*
+		{
+			return &_p
+				->SetFrameWidth(5)
+				.SetIsScrollable(true)
+				.SetShowLineCount(10)
+				.SetTextBoxMargin(3)
+				.SetIsShowLineCountBar(true);
+		}
+	};
+
+	static constexpr auto createByteViewer
+	{
+		[](ViewerBox* _p) -> ViewerBox*
+		{
+			return &_p
+				->SetFrameWidth(5)
+				.SetIsScrollable(true)
+				.SetShowLineCount(10)
+				.SetTextBoxMargin(3)
+				.SetIsShowLineCountBar(true);
+		}
+	};
+
+	static constexpr auto createRegisterViewer
+	{
+		[](ViewerBox* _p) -> ViewerBox*
+		{
+			return &_p
+				->SetFrameWidth(5)
+				.SetIsScrollable(true)
+				.SetUseGhost(true)
+				.SetTextBoxMargin(3)
+				.SetIsShowLineCountBar(false)
+				.SetPosition({ 1070, 430 }, ViewerBox::Pivot::TopLeft);
+		}
+	};
+
+	static constexpr auto createStackViewer
+	{
+		[](ViewerBox* _p) -> ViewerBox*
+		{
+			return &_p
+				->SetFrameWidth(5)
+				.SetIsScrollable(true)
+				.SetUseGhost(true)
+				.SetShowLineCount(7)
+				.SetTextBoxMargin(3)
+				.SetIsShowLineCountBar(false)
+				.SetPosition({ 1129, 260 }, ViewerBox::Pivot::TopLeft);
+		}
+	};
+
+	static constexpr auto createCallStackViewer
+	{
+		[](ViewerBox* _p) -> ViewerBox*
+		{
+			return &_p
+				->SetFrameWidth(5)
+				.SetIsScrollable(true)
+				.SetUseGhost(true)
+				.SetShowLineCount(7)
+				.SetTextBoxMargin(3)
+				.SetIsShowLineCountBar(false)
+				.SetPosition({ 999, 260 }, ViewerBox::Pivot::TopLeft);
+		}
+	};
+
+	static constexpr auto createMemoryViewer
+	{
+		[](ViewerBox* _p) -> ViewerBox*
+		{
+			return &_p
+				->SetFrameWidth(5)
+				.SetIsScrollable(false)
+				.SetUseGhost(true)
+				.SetTextBoxMargin(3)
+				.SetIsShowLineCountBar(false)
+				.SetPosition({ 1020, 502 }, ViewerBox::Pivot::TopLeft);
+		}
+	};
 }
 
 PlayScene::PlayScene() :
@@ -84,63 +177,21 @@ PlayScene::PlayScene() :
 	new Background{ PLAY_IMAGE_PATH };
 	
 #pragma region ビューボックス
-	ViewerBox* pCodeViewer{ new ViewerBox{} };
-	pCodeViewer
-		->SetFrameWidth(5)
-		.SetIsScrollable(true)
-		.SetShowLineCount(10)
-		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(true)
-		.SetOnClick([&, this]()
+	ViewerBox* pCodeViewer{ createCodeViewer(new ViewerBox{}) };
+	pCodeViewer->SetOnClick([&, this]()
 		{
 			OpenSrcFile();
 		});
 
-	ViewerBox* pByteViewer{ new ViewerBox{} };
-	pByteViewer
-		->SetFrameWidth(5)
-		.SetIsScrollable(true)
-		.SetShowLineCount(10)
-		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(true);
+	ViewerBox* pByteViewer{ createByteViewer(new ViewerBox{}) };
 	
-	ViewerBox* pRegisterViewer{ new ViewerBox{} };
-	pRegisterViewer
-		->SetFrameWidth(5)
-		.SetIsScrollable(true)
-		.SetUseGhost(true)
-		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(false)
-		.SetPosition({ 1070, 430 }, ViewerBox::Pivot::TopLeft);
+	ViewerBox* pRegisterViewer{ createRegisterViewer(new ViewerBox{}) };
 
-	ViewerBox* pStackViewer{ new ViewerBox{} };
-	pStackViewer
-		->SetFrameWidth(5)
-		.SetIsScrollable(true)
-		.SetUseGhost(true)
-		.SetShowLineCount(7)
-		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(false)
-		.SetPosition({ 1129, 260 }, ViewerBox::Pivot::TopLeft);
+	ViewerBox* pStackViewer{ createStackViewer(new ViewerBox{}) };
 
-	ViewerBox* pCallStackViewer{ new ViewerBox{} };
-	pCallStackViewer
-		->SetFrameWidth(5)
-		.SetIsScrollable(true)
-		.SetUseGhost(true)
-		.SetShowLineCount(7)
-		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(false)
-		.SetPosition({ 999, 260 }, ViewerBox::Pivot::TopLeft);
+	ViewerBox* pCallStackViewer{ createCallStackViewer(new ViewerBox{}) };
 
-	ViewerBox* pMemoryViewer{ new ViewerBox{} };
-	pMemoryViewer
-		->SetFrameWidth(5)
-		.SetIsScrollable(false)
-		.SetUseGhost(true)
-		.SetTextBoxMargin(3)
-		.SetIsShowLineCountBar(false)
-		.SetPosition({ 1020, 502 }, ViewerBox::Pivot::TopLeft);
+	ViewerBox* pMemoryViewer{ createMemoryViewer(new ViewerBox{}) };
 #pragma endregion
 
 	pPlayer_ = pStage->GetPlayer();
@@ -161,18 +212,14 @@ PlayScene::PlayScene() :
 		->OnCreateSource([&, this](
 			std::vector<std::string>& _newSource)
 			{
-				_newSource =
-				{
-					u8"// 毎ビート呼ばれるよ！",
-					u8"void Update()",
-					u8"{",
-					u8"  Run();  // これを書くと走るよ",
-					u8"}",
-				};
+				// ソースファイルを新しく作るときの処理
+				_newSource = DEFAULT_SOURCE_LINE;
 			})
 		.OnUpdateSource([&, this, pCodeViewer](
 			const std::vector<std::string>& _newSource)
 			{
+				// ソースファイルが更新されたときの処理
+
 				srcCodeCache_ = "";
 				for (const auto& line : _newSource)
 				{
@@ -188,12 +235,14 @@ PlayScene::PlayScene() :
 
 				ByteCodes byteCodes{};
 
+				// コンパイラ作成
 				Compiler{ _newSource, byteCodes }
 					.OnError([&, this](
 						const std::string& _message,
 						const SOURCE_POS _position,
 						const Compiler::ErrorExitCode _code)
 						{
+							// コンパイルエラー発生時の処理
 							switch (_code)
 							{
 							case Compiler::ERR_LEXICAL:
@@ -242,7 +291,7 @@ PlayScene::PlayScene() :
 								break;
 							}
 						})
-					.Start();
+					.Start();  // いざコンパイル！
 
 				if (isError)  // エラーなら止める
 				{
@@ -251,19 +300,20 @@ PlayScene::PlayScene() :
 					return;
 				}
 
+				// 表示するバイトコードも更新する
 				Assembler::ToString(byteCodes, assembleText_);
-
 				OutputDebugString(assembleText_.c_str());
-
 				pPlayer_->SetByteCode(byteCodes);
 
 				if (FileSaver::ExistFile(ERROR_LOG_FILE_NAME))
 				{
+					// 前回のエラーログが残っているなら、コンパイル成功したから消す
 					DeleteFile(ERROR_LOG_FILE_NAME);
 				}
 			});
 
-	Timer::AddInterval(1.0f, [&, this]()
+
+	Timer::AddInterval(SOURCE_CHECK_INTERVAL_SEC, [&, this]()
 	{
 		pSourceObserver_->Update();
 	}, true);
@@ -291,13 +341,10 @@ void PlayScene::Update()
 
 void PlayScene::Draw()
 {
-	/*DrawString(0, 0, "PLAY SCENE", GetColor(255, 255, 255));
-	DrawString(100, 400, "Push [T]Key To Title", GetColor(255, 255, 255));*/
 }
 
 void PlayScene::OpenSrcFile()
 {
-	//system(SRC_FILE_NAME);
 	ShellExecute(NULL, "open", SRC_FILE_NAME, "", "", SW_SHOW);
 }
 

@@ -69,7 +69,7 @@ void ViewerBox::Update()
 		}
 		else if (readingLine_ >= textLines_.size())
 		{
-			readingLine_ = textLines_.size() - 1;
+			readingLine_ = static_cast<int>(textLines_.size() - 1);
 		}
 		drawAlpha_ = UINT8_MAX;
 	}
@@ -90,25 +90,24 @@ void ViewerBox::Draw()
 	{
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, drawAlpha_);
 	}
-	//printfDx("%d\n", defaultBackgroundColor_);
 	DrawBox(  // ògï\é¶
-		rect_.x - frameWidth_,
-		rect_.y - frameWidth_,
-		rect_.x + rect_.width + frameWidth_,
-		rect_.y + rect_.height + frameWidth_,
+		static_cast<int>(rect_.x) - frameWidth_,
+		static_cast<int>(rect_.y) - frameWidth_,
+		static_cast<int>(rect_.x + rect_.width) + frameWidth_,
+		static_cast<int>(rect_.y + rect_.height) + frameWidth_,
 		frameColor_,
 		TRUE);
 
 	DrawBox(  // îwåiï\é¶
-		rect_.x,
-		rect_.y,
-		rect_.x + rect_.width,
-		rect_.y + rect_.height,
+		static_cast<int>(rect_.x),
+		static_cast<int>(rect_.y),
+		static_cast<int>(rect_.x + rect_.width),
+		static_cast<int>(rect_.y + rect_.height),
 		defaultBackgroundColor_,
 		TRUE);
 
 	int beginLine = 0;
-	int endLine = textLines_.size();
+	int endLine = static_cast<int>(textLines_.size());
 
 	if (showLineCount_ > 0)
 	{
@@ -138,14 +137,14 @@ void ViewerBox::Draw()
 		}
 
 		DrawBox(
-			rect_.x + textBoxMargin_, rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine),
-			rect_.x + rect_.width - textBoxMargin_, rect_.y + (lineSize_ + lineMarginSize_) * (l - beginLine + 1),
+			static_cast<int>(rect_.x) + textBoxMargin_, static_cast<int>(rect_.y) + (lineSize_ + lineMarginSize_) * (l - beginLine),
+			static_cast<int>(rect_.x) + static_cast<int>(rect_.width) - textBoxMargin_, static_cast<int>(rect_.y) + (lineSize_ + lineMarginSize_) * (l - beginLine + 1),
 			bgColor, TRUE);
 		if (isShowLineCountBar_)
 		{
 			DrawFormatString(
-				rect_.x + textBoxMargin_,
-				rect_.y + textBoxMargin_ + (lineSize_ + lineMarginSize_) * (l - beginLine),
+				static_cast<int>(rect_.x) + textBoxMargin_,
+				static_cast<int>(rect_.y) + textBoxMargin_ + (lineSize_ + lineMarginSize_) * (l - beginLine),
 				textColor,
 				"%2d:%s",
 				l,
@@ -154,8 +153,8 @@ void ViewerBox::Draw()
 		else
 		{
 			DrawFormatString(
-				rect_.x + textBoxMargin_,
-				rect_.y + textBoxMargin_ + (lineSize_ + lineMarginSize_) * (l - beginLine),
+				static_cast<int>(rect_.x) + textBoxMargin_,
+				static_cast<int>(rect_.y) + textBoxMargin_ + (lineSize_ + lineMarginSize_) * (l - beginLine),
 				textColor,
 				"%s",
 				textLines_[l].c_str());
@@ -234,7 +233,7 @@ ViewerBox& ViewerBox::Recalculate()
 		
 		if (maxCount <= textLines_[l].size())
 		{
-			maxCount = textLines_[l].size();
+			maxCount = static_cast<int>(textLines_[l].size());
 			maxCountLine = l;
 		}
 
@@ -249,18 +248,18 @@ ViewerBox& ViewerBox::Recalculate()
 
 	if (isShowLineCountBar_)
 	{
-		rect_.width = GetDrawFormatStringWidth(
+		rect_.width = static_cast<float>(GetDrawFormatStringWidth(
 			"%s:%s",
 			std::to_string(textLines_.size()).c_str(),
-			textLines_[maxCountLine].c_str()) + 30;
+			textLines_[maxCountLine].c_str()) + 30);
 	}
 	else
 	{
-		rect_.width = textBoxSize_.x;
+		rect_.width = static_cast<float>(textBoxSize_.x);
 	}
 	rect_.width += textBoxMargin_ * 2;
 
-	rect_.height = (lineSize_ + lineMarginSize_);
+	rect_.height = static_cast<float>(lineSize_ + lineMarginSize_);
 	rect_.height *= (showLineCount_ == 0) ? textLines_.size() : showLineCount_;
 	rect_.height += textBoxMargin_ * 2;
 

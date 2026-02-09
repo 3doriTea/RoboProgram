@@ -5,6 +5,9 @@
 #include <cassert>
 
 
+/// <summary>
+/// ステージにあるオブジェクト
+/// </summary>
 class StageObject : public Object2D
 {
 public:

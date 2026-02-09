@@ -11,6 +11,9 @@
 class CsvReader;
 class Player;
 
+/// <summary>
+/// 2Dのステージ
+/// </summary>
 class Stage : public Object2D
 {
 private:

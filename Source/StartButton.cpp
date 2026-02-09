@@ -7,9 +7,12 @@
 namespace
 {
 	static const char FADE_IMAGE_FILE[]{ "Data/Image/background.png" };
+	static const int DRAW_ORDER{ -10 };
+	static const int ON_HIT_COLOR_ALPHA{ 200 };
 }
 
 StartButton::StartButton(const char* _imageFile) : 
+	alpha_{ INT8_MAX },
 	pushed_{ false }
 {
 	hImage_ = LoadGraph(_imageFile);
@@ -17,7 +20,7 @@ StartButton::StartButton(const char* _imageFile) :
 
 	GetGraphSizeF(hImage_, &rect_.width, &rect_.height);
 
-	SetDrawOrder(-10);
+	SetDrawOrder(DRAW_ORDER);
 }
 
 StartButton::~StartButton()
@@ -37,7 +40,7 @@ void StartButton::Update()
 
 	if (RectanUtility::IsHit(rect_, Vector2{ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) }))
 	{
-		alpha_ = 200;
+		alpha_ = ON_HIT_COLOR_ALPHA;
 		if (Input::IsMouseDown(MOUSE_INPUT_LEFT))
 		{
 			pushed_ = true;
@@ -55,8 +58,8 @@ void StartButton::Update()
 
 void StartButton::Draw()
 {
-	DrawGraph(rect_.x, rect_.y, hImage_, TRUE);
+	DrawGraph(static_cast<int>(rect_.x), static_cast<int>(rect_.y), hImage_, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, alpha_);
-	DrawGraph(rect_.x, rect_.y, hImage_, TRUE);
+	DrawGraph(static_cast<int>(rect_.x), static_cast<int>(rect_.y), hImage_, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }

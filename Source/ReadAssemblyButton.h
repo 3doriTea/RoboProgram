@@ -1,6 +1,10 @@
 #pragma once
 #include "Button.h"
 
+
+/// <summary>
+/// UIアセンブリを見るボタン
+/// </summary>
 class ReadAssemblyButton : public Button
 {
 public:

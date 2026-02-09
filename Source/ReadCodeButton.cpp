@@ -8,8 +8,13 @@
 
 namespace
 {
-	static char BUTTON_IMAGE[]{ "Data/Image/ReadCodeButton.png" };
-	static char CODE_TEXT_NAME[]{ "ReadOnlySourceCode.txt" };
+	static const char BUTTON_IMAGE[]{ "Data/Image/ReadCodeButton.png" };
+	static const char CODE_TEXT_NAME[]{ "ReadOnlySourceCode.txt" };
+	static const int BUTTON_POS_X{ 740 }; // コード読み取りボタンの座標x
+	static const int BUTTON_POS_Y{ 570 }; // コード読み取りボタンの座標y
+
+	static const int ADD_BLEND_VALUE{ 100 };
+	static const int NO_BLEND_VALUE{ 0 };
 }
 
 ReadCodeButton::ReadCodeButton()
@@ -19,8 +24,8 @@ ReadCodeButton::ReadCodeButton()
 
 	GetGraphSizeF(hImage_, &rect_.width, &rect_.height);
 
-	rect_.x = 740;//Screen::WIDTH / 2 - rect_.width / 2;
-	rect_.y = 570;//Screen::HEIGHT - ;
+	rect_.x = BUTTON_POS_X;
+	rect_.y = BUTTON_POS_Y;
 
 	SetHintText("ゴールしたソースコードを表示します。");
 }
@@ -34,20 +39,20 @@ void ReadCodeButton::OnDraw(const bool _onTouching, const bool _isPushing)
 	if (_onTouching)
 	{
 		DrawGraph(static_cast<int>(rect_.x), static_cast<int>(rect_.y), hImage_, TRUE);
-		SetDrawBlendMode(DX_BLENDMODE_ADD, 100);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, ADD_BLEND_VALUE);
 	}
 	else
 	{
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, NO_BLEND_VALUE);
 	}
-	DrawGraph(rect_.x, rect_.y, hImage_, TRUE);
+	DrawGraph(static_cast<int>(rect_.x), static_cast<int>(rect_.y), hImage_, TRUE);
 
 	if (_isPushing)
 	{
-		SetDrawBlendMode(DX_BLENDMODE_ADD, 100);
-		DrawGraph(rect_.x, rect_.y, hImage_, TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, ADD_BLEND_VALUE);
+		DrawGraph(static_cast<int>(rect_.x), static_cast<int>(rect_.y), hImage_, TRUE);
 	}
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, NO_BLEND_VALUE);
 }
 
 void ReadCodeButton::OnPush()

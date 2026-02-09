@@ -11,17 +11,21 @@ using BackgroundColor = ColorCode;
 using TextColor = ColorCode;
 using Mark = std::pair<BackgroundColor, ColorCode>;
 
+
+/// <summary>
+/// UIの表示ボックス
+/// </summary>
 class ViewerBox : public Object2D
 {
 public:
 	enum struct Pivot
 	{
-		Center,
-		BottomCenter,
-		RightCenter,
-		TopLeft,  // 左上
-		BottomRight,  // 右下
-		BottomLeft,  // 左下
+		Center,        // 中心
+		BottomCenter,  // 下の中心
+		RightCenter,   // 右の中心
+		TopLeft,       // 左上
+		BottomRight,   // 右下
+		BottomLeft,    // 左下
 	};
 public:
 	ViewerBox();

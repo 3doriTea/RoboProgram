@@ -1,14 +1,11 @@
 #pragma once
-//#include "Vector2.h"
 
-//struct Vector2;
 
+/// <summary>
+/// ®”Œ^2ŸŒ³ƒxƒNƒgƒ‹
+/// </summary>
 struct Vector2Int
 {
-	/*Vector2Int(const Vector2& _other) :
-		Vector2Int{ static_cast<int>(_other.x), static_cast<int>(_other.y) }
-	{}*/
-
 	Vector2Int(const int _x, const int _y) :
 		x{ _x },
 		y{ _y }
@@ -17,13 +14,6 @@ struct Vector2Int
 		x{ 0 },
 		y{ 0 }
 	{}
-
-	/*Vector2Int& operator=(const Vector2& _other)
-	{
-		x = _other.x;
-		y = _other.y;
-		return *this;
-	}*/
 
 	int x;
 	int y;

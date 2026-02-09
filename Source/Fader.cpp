@@ -42,7 +42,7 @@ void Fader::Draw()
 	switch (fadeType_)
 	{
 	case Fader::FadeType::Ghost:
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(larp) * UINT8_MAX);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(larp * UINT8_MAX));
 		DrawGraph(0, 0, hImage_, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		break;

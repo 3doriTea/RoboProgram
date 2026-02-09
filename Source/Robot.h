@@ -10,6 +10,9 @@ using Byte = unsigned char;
 
 class Stage;
 
+/// <summary>
+/// 全般をコントロールするロボットの体
+/// </summary>
 class Robot
 {
 public:

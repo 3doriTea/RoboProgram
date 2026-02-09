@@ -5,6 +5,9 @@
 
 struct Vector2Int;
 
+/// <summary>
+/// 2ŽŸŒ³ƒxƒNƒgƒ‹
+/// </summary>
 struct Vector2
 {
 	Vector2() :

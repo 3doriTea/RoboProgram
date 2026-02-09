@@ -1,6 +1,10 @@
 #pragma once
 #include "Button.h"
 
+
+/// <summary>
+/// UI‚â‚è’¼‚µƒ{ƒ^ƒ“
+/// </summary>
 class ReloadButton : public Button
 {
 public:

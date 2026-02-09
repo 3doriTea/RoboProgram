@@ -3,6 +3,9 @@
 #include <functional>
 
 
+/// <summary>
+/// 遷移時にフェードアウトするフェーダ
+/// </summary>
 class Fader : public Object2D
 {
 public:

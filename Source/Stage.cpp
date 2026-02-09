@@ -198,10 +198,6 @@ Stage::~Stage()
 	}
 }
 
-//void Stage::Update()
-//{
-//}
-
 void Stage::Draw()
 {
 	for (int y = 0; y < map_.size(); y++)
@@ -422,11 +418,6 @@ void Stage::DrawTile(const Vector2Int& _tilePosition, const Tile& _tileId)
 		_tilePosition.x * w - static_cast<int>(scroll_.x),
 		_tilePosition.y * h - static_cast<int>(scroll_.y),
 		hImages_[_tileId], TRUE);
-	/*DrawRectGraph(
-		_tilePosition.x * w - scroll_.x, _tilePosition.y * h - scroll_.y,
-		TILE_WIDTH * w, TILE_HEIGHT * h,
-		w, h,
-		hImages_[_tileId], TRUE);*/
 }
 
 bool Stage::TryFindPlayerPositionFromMap(Vector2* _pPosition) const
